@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:autobus_complete/gen/assets.gen.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
+import 'package:autobus_complete/src/core/widgets/image_source_selection_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserAvatarPicker extends StatelessWidget {
   final File? selectedImage;
   final String? imageUrl;
-  final VoidCallback onPickImage;
+  final VoidCallback? onPickImage;
+  final ValueChanged<ImageSource>? onPickImageSource;
   final VoidCallback onRemoveImage;
   final double radius;
 
@@ -15,7 +19,8 @@ class UserAvatarPicker extends StatelessWidget {
     super.key,
     this.selectedImage,
     this.imageUrl,
-    required this.onPickImage,
+    this.onPickImage,
+    this.onPickImageSource,
     required this.onRemoveImage,
     this.radius = 72,
   });
@@ -25,6 +30,12 @@ class UserAvatarPicker extends StatelessWidget {
       return FileImage(selectedImage!);
     }
     if (imageUrl != null && imageUrl!.isNotEmpty) {
+      if (imageUrl!.startsWith('data:image')) {
+        try {
+          final base64Str = imageUrl!.split(',').last;
+          return MemoryImage(base64Decode(base64Str));
+        } catch (_) {}
+      }
       return NetworkImage(imageUrl!);
     }
     return AssetImage(Assets.pngs.userimage.path);
@@ -59,7 +70,23 @@ class UserAvatarPicker extends StatelessWidget {
             bottom: 4,
             right: 4,
             child: GestureDetector(
-              onTap: hasImage ? onRemoveImage : onPickImage,
+              onTap: hasImage
+                  ? onRemoveImage
+                  : () {
+                      if (onPickImageSource != null) {
+                        ImageSourceSelectionBottomSheet.show(
+                          context,
+                          onSourceSelected: onPickImageSource!,
+                        );
+                      } else if (onPickImage != null) {
+                        ImageSourceSelectionBottomSheet.show(
+                          context,
+                          onSourceSelected: (source) {
+                            onPickImage!();
+                          },
+                        );
+                      }
+                    },
               child: Container(
                 padding: EdgeInsets.all(2.r),
                 decoration: BoxDecoration(

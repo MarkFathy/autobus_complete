@@ -22,13 +22,32 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "aboutUs": MessageLookupByLibrary.simpleMessage("About Us"),
+    "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("Bus Complete!"),
+    "camera": MessageLookupByLibrary.simpleMessage("Camera"),
+    "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "changePassword": MessageLookupByLibrary.simpleMessage("Change Password"),
+    "changePasswordInfo": MessageLookupByLibrary.simpleMessage(
+      "Send password reset link to email",
+    ),
+    "chooseImageSource": MessageLookupByLibrary.simpleMessage(
+      "Choose Image Source",
+    ),
+    "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
+    "contactUs": MessageLookupByLibrary.simpleMessage("Contact Us"),
+    "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete Account"),
+    "deleteAccountConfirmation": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to delete your account? This action cannot be undone.",
+    ),
     "dontHaveAnAccount": MessageLookupByLibrary.simpleMessage(
       "Don\'t have an account?",
     ),
+    "editProfile": MessageLookupByLibrary.simpleMessage("Edit Profile"),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "emailHint": MessageLookupByLibrary.simpleMessage("Enter your email"),
     "emailRequired": MessageLookupByLibrary.simpleMessage("Email is required"),
+    "english": MessageLookupByLibrary.simpleMessage("English"),
     "enterEmailToResetPassword": MessageLookupByLibrary.simpleMessage(
       "Enter your registered email address to receive a password reset link.\n(Note: Please check your Spam / Junk folder if you don\'t see it in your Inbox)",
     ),
@@ -93,23 +112,34 @@ class MessageLookup extends MessageLookupByLibrary {
     "fullNameRequired": MessageLookupByLibrary.simpleMessage(
       "Full name is required",
     ),
+    "gallery": MessageLookupByLibrary.simpleMessage("Gallery"),
     "hostGame": MessageLookupByLibrary.simpleMessage("Host Game"),
+    "hostGameSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Create a new game with your friends",
+    ),
     "invalidEmail": MessageLookupByLibrary.simpleMessage(
       "Please enter a valid email address",
     ),
     "joinGame": MessageLookupByLibrary.simpleMessage("Join Game"),
+    "joinGameSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Join an existing game room",
+    ),
+    "language": MessageLookupByLibrary.simpleMessage("Language"),
     "login": MessageLookupByLibrary.simpleMessage("Login"),
     "loginSuccess": MessageLookupByLibrary.simpleMessage(
       "Logged in successfully!",
     ),
     "loginTitle": MessageLookupByLibrary.simpleMessage("Login"),
     "loginWith": MessageLookupByLibrary.simpleMessage("Login with"),
-    "loginWithGoogle": MessageLookupByLibrary.simpleMessage(
-      "Login with Google",
+    "loginWithGoogle": MessageLookupByLibrary.simpleMessage("Login with"),
+    "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+    "logoutConfirmation": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to log out?",
     ),
     "logoutSuccess": MessageLookupByLibrary.simpleMessage(
       "Logged out successfully!",
     ),
+    "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
     "operationCancelled": MessageLookupByLibrary.simpleMessage(
       "Operation was cancelled",
     ),
@@ -137,11 +167,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseFillAllFields": MessageLookupByLibrary.simpleMessage(
       "Please fill in all required fields",
     ),
+    "profile": MessageLookupByLibrary.simpleMessage("Profile"),
+    "profileUpdatedSuccess": MessageLookupByLibrary.simpleMessage(
+      "Profile updated successfully!",
+    ),
     "register": MessageLookupByLibrary.simpleMessage("Register"),
     "registerSuccess": MessageLookupByLibrary.simpleMessage(
       "Account created successfully!",
     ),
     "registerTitle": MessageLookupByLibrary.simpleMessage("Register"),
+    "saveChanges": MessageLookupByLibrary.simpleMessage("Save Changes"),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("Send Reset Link"),
+    "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "yesDeleteAccount": MessageLookupByLibrary.simpleMessage(
+      "Yes, Delete Account",
+    ),
+    "yesLogout": MessageLookupByLibrary.simpleMessage("Yes, Logout"),
   };
 }

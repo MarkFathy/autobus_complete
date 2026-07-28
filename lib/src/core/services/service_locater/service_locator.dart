@@ -11,8 +11,17 @@ import 'package:autobus_complete/src/features/auth/presentation/cubit/auth_cubit
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:autobus_complete/src/features/profile/data/datasources/profile_remote_data_source.dart';
+import 'package:autobus_complete/src/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:autobus_complete/src/features/profile/domain/abstract_repository/profile_repository.dart';
+import 'package:autobus_complete/src/features/profile/domain/usecases/delete_account_usecase.dart';
+import 'package:autobus_complete/src/features/profile/domain/usecases/get_user_profile_usecase.dart';
+import 'package:autobus_complete/src/features/profile/domain/usecases/send_password_reset_usecase.dart';
+import 'package:autobus_complete/src/features/profile/domain/usecases/update_profile_usecase.dart';
+import 'package:autobus_complete/src/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'package:autobus_complete/src/core/app_cubit/app_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -20,6 +29,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  // Core AppCubit
+  sl.registerLazySingleton(() => AppCubit());
   // Features - Auth
   // Cubit
   sl.registerFactory(
@@ -60,14 +71,37 @@ Future<void> init() async {
   );
 
   
+  // Features - Profile
   // Cubit
-
+  sl.registerFactory(
+    () => ProfileCubit(
+      getUserProfileUseCase: sl(),
+      updateProfileUseCase: sl(),
+      sendPasswordResetUseCase: sl(),
+      deleteAccountUseCase: sl(),
+    ),
+  );
 
   // Use cases
+  sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
+  sl.registerLazySingleton(() => SendPasswordResetUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
 
   // Repository
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(remoteDataSource: sl()),
+  );
 
   // Data sources
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(
+      firebaseAuth: sl(),
+      firestore: sl(),
+      storage: sl(),
+      authLocalDataSource: sl(),
+    ),
+  );
 
   // Features - Game
   // Cubit

@@ -73,10 +73,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   File? selectedImage;
 
-  Future<void> pickImage() async {
+  Future<void> pickImage([ImageSource source = ImageSource.gallery]) async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(
-      source: ImageSource.gallery,
+      source: source,
       imageQuality: 80,
     );
     if (picked != null) {

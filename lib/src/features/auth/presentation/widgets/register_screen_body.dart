@@ -69,7 +69,7 @@ class _RegisterScreenBodyState extends State<RegisterScreenBody> {
                   children: [
                       UserAvatarPicker(
                         selectedImage: selectedImage,
-                        onPickImage: cubit.pickImage,
+                        onPickImageSource: (source) => cubit.pickImage(source),
                         onRemoveImage: cubit.removeImage,
                       ),
                       40.szH,

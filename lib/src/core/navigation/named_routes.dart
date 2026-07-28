@@ -6,7 +6,9 @@ enum NamedRoutes {
   roomLobby('/roomLobby'),
   gameBoard('/gameBoard'),
   scoring('/scoring'),
-  leaderboard('/leaderboard');
+  leaderboard('/leaderboard'),
+  settings('/settings'),
+  profile('/profile');
   
   final String routeName;
 

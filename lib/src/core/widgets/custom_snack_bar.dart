@@ -92,13 +92,13 @@ class CustomSnackBar {
     switch (type) {
       case SnackBarType.success:
         return const _SnackBarThemeData(
-          backgroundColor: Color(0xFF2E7D32),
+          backgroundColor: AppColors.textFieldFillColor,
           icon: Icons.check_circle_outline_rounded,
           iconColor: Colors.white,
         );
       case SnackBarType.warning:
         return const _SnackBarThemeData(
-          backgroundColor: Color(0xFFED6C02),
+          backgroundColor:AppColors.redColor,
           icon: Icons.warning_amber_rounded,
           iconColor: Colors.white,
         );

@@ -45,7 +45,15 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
 
     _timer = Timer(const Duration(seconds: 3), () async {
-      Go.offNamed(NamedRoutes.login);
+      final authLocalDataSource = sl<AuthLocalDataSource>();
+      final isLoggedIn = await authLocalDataSource.isUserLoggedIn();
+      final token = await authLocalDataSource.getToken();
+
+      if (isLoggedIn && token != null && token.trim().isNotEmpty) {
+        Go.offNamed(NamedRoutes.home);
+      } else {
+        Go.offNamed(NamedRoutes.login);
+      }
     });
   }
 

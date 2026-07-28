@@ -21,12 +21,16 @@ class $AssetsLottiesGen {
   /// File path: assets/lotties/bus.json
   LottieGenImage get bus => const LottieGenImage('assets/lotties/bus.json');
 
+  /// File path: assets/lotties/bus_home.json
+  LottieGenImage get busHome =>
+      const LottieGenImage('assets/lotties/bus_home.json');
+
   /// File path: assets/lotties/loading.json
   LottieGenImage get loading =>
       const LottieGenImage('assets/lotties/loading.json');
 
   /// List of all assets
-  List<LottieGenImage> get values => [bus, loading];
+  List<LottieGenImage> get values => [bus, busHome, loading];
 }
 
 class $AssetsPngsGen {

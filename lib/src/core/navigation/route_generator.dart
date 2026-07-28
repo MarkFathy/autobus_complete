@@ -2,11 +2,13 @@ import 'package:autobus_complete/src/core/navigation/constants/imports_constants
 import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/register_screen.dart';
+import 'package:autobus_complete/src/features/home/presentation/screens/home_screen.dart';
+import 'package:autobus_complete/src/features/profile/presentation/screens/profile_screen.dart';
+import 'package:autobus_complete/src/features/settings/presentation/screens/settings_screen.dart';
 import 'package:autobus_complete/src/features/splash/presentation/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'named_routes.dart';
 import 'page_router/imports_page_router_builder.dart';
-
 import 'navigator.dart';
 
 class RouterGenerator {
@@ -33,6 +35,8 @@ class RouterGenerator {
     final namedRoute = NamedRoutes.values.firstWhere(
       (e) => e.routeName == actualSettings.name,
     );
+
+    //Splash Screen
     return switch (namedRoute) {
       NamedRoutes.splash => _pageRouter.build(
         const SplashScreen(),
@@ -41,18 +45,47 @@ class RouterGenerator {
         options: options,
    
       ),
-      NamedRoutes.register => _pageRouter.build(
-        const RegisterScreen(),
-        settings: actualSettings,
-        transition: transition,
-        options: options,
-      ),
+        //Login Screen
       NamedRoutes.login => _pageRouter.build(
         const LoginScreen(),
         settings: actualSettings,
         transition: transition,
         options: options,
       ),
+
+      //Register Screen
+      NamedRoutes.register => _pageRouter.build(
+        const RegisterScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+
+      //Home Screen
+       NamedRoutes.home => _pageRouter.build(
+        const HomeScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+
+      //Settings Screen
+      NamedRoutes.settings => _pageRouter.build(
+        const SettingsScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+
+      //Profile Screen
+      NamedRoutes.profile => _pageRouter.build(
+        const ProfileScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+
+
     _ => undefineRoute(),
     };
   }

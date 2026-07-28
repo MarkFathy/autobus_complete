@@ -22,13 +22,32 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "aboutUs": MessageLookupByLibrary.simpleMessage("عن اللعبة"),
+    "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("أتوبيس كومبليت!"),
+    "camera": MessageLookupByLibrary.simpleMessage("الكاميرا"),
+    "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
+    "changePassword": MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
+    "changePasswordInfo": MessageLookupByLibrary.simpleMessage(
+      "إرسال رابط إعادة تعيين كلمة المرور إلى البريد",
+    ),
+    "chooseImageSource": MessageLookupByLibrary.simpleMessage(
+      "اختر مصدر الصورة",
+    ),
+    "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
+    "contactUs": MessageLookupByLibrary.simpleMessage("تواصل معنا"),
+    "deleteAccount": MessageLookupByLibrary.simpleMessage("حذف الحساب"),
+    "deleteAccountConfirmation": MessageLookupByLibrary.simpleMessage(
+      "هل أنت تأكد من حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
+    ),
     "dontHaveAnAccount": MessageLookupByLibrary.simpleMessage("لا تمتلك حساب؟"),
+    "editProfile": MessageLookupByLibrary.simpleMessage("تعديل الملف الشخصي"),
     "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
     "emailHint": MessageLookupByLibrary.simpleMessage("ادخل بريدك الالكتروني"),
     "emailRequired": MessageLookupByLibrary.simpleMessage(
       "البريد الإلكتروني مطلوب",
     ),
+    "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
     "enterEmailToResetPassword": MessageLookupByLibrary.simpleMessage(
       "أدخل بريدك الإلكتروني المسجل لاستلام رابط إعادة تعيين كلمة المرور.\n(تنويه: يرجى مراجعة مجلد الرسائل غير المرغوب فيها Spam إذا لم يظهر الإيميل)",
     ),
@@ -89,11 +108,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "fullNameRequired": MessageLookupByLibrary.simpleMessage(
       "الاسم الكامل مطلوب",
     ),
+    "gallery": MessageLookupByLibrary.simpleMessage("المعرض"),
     "hostGame": MessageLookupByLibrary.simpleMessage("إنشاء لعبة"),
+    "hostGameSubtitle": MessageLookupByLibrary.simpleMessage(
+      "إنشاء لعبة جديدة مع أصدقائك",
+    ),
     "invalidEmail": MessageLookupByLibrary.simpleMessage(
       "يرجى إدخال بريد إلكتروني صحيح",
     ),
     "joinGame": MessageLookupByLibrary.simpleMessage("انضمام للعبة"),
+    "joinGameSubtitle": MessageLookupByLibrary.simpleMessage(
+      "انضمام لغرفه موجوده بالفعل",
+    ),
+    "language": MessageLookupByLibrary.simpleMessage("اللغة"),
     "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "loginSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تسجيل الدخول بنجاح!",
@@ -101,11 +128,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "loginTitle": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "loginWith": MessageLookupByLibrary.simpleMessage("تسجيل الدخول ب"),
     "loginWithGoogle": MessageLookupByLibrary.simpleMessage(
-      "تسجيل الدخول بواسطة جوجل",
+      "تسجيل الدخول بواسطة ",
+    ),
+    "logout": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
+    "logoutConfirmation": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متاكد من تسجيل الخروج؟",
     ),
     "logoutSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تسجيل الخروج بنجاح!",
     ),
+    "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
     "operationCancelled": MessageLookupByLibrary.simpleMessage(
       "تم إلغاء العملية",
     ),
@@ -133,11 +165,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseFillAllFields": MessageLookupByLibrary.simpleMessage(
       "يرجى ملء جميع الحقول المطلوبة",
     ),
+    "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
+    "profileUpdatedSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم تحديث الملف الشخصي بنجاح!",
+    ),
     "register": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
     "registerSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إنشاء الحساب بنجاح!",
     ),
     "registerTitle": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+    "saveChanges": MessageLookupByLibrary.simpleMessage("حفظ التغييرات"),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("إرسال الرابط"),
+    "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
+    "yesDeleteAccount": MessageLookupByLibrary.simpleMessage("نعم، حذف الحساب"),
+    "yesLogout": MessageLookupByLibrary.simpleMessage("نعم، تسجيل الخروج"),
   };
 }

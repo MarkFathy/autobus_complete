@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:autobus_complete/generated/l10n.dart';
+import 'package:autobus_complete/src/core/services/session_manager.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:autobus_complete/src/features/auth/data/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -198,6 +199,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> logout() async {
     await authLocalDataSource.clearToken();
     await authLocalDataSource.saveUserLoggedIn(false);
+    await SessionManager.clearSession();
     await firebaseAuth.signOut();
     try {
       await GoogleSignIn.instance.signOut();
