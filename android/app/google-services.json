@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "55011551290",
+    "project_id": "autobus-complete-f3f40",
+    "storage_bucket": "autobus-complete-f3f40.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55011551290:android:1d78d02ac0fa49a235ed03",
+        "android_client_info": {
+          "package_name": "com.mark.autobus_completegame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "55011551290-pamklni64cjdokreu8kqmodbduo46hl0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqNbLLrnyfUCDyrWuVIEQzc-6sS-rWoyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "55011551290-pamklni64cjdokreu8kqmodbduo46hl0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "55011551290-kjh19v2pho60s63jl1meprbem5vo83g6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.autobusComplete"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

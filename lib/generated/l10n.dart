@@ -1,0 +1,538 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'intl/messages_all.dart';
+
+// **************************************************************************
+// Generator: Flutter Intl IDE plugin
+// Made by Localizely
+// **************************************************************************
+
+// ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
+// ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
+// ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
+
+class S {
+  S();
+
+  static S? _current;
+
+  static S get current {
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
+    return _current!;
+  }
+
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
+
+  static Future<S> load(Locale locale) {
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
+    return initializeMessages(localeName).then((_) {
+      Intl.defaultLocale = localeName;
+      final instance = S();
+      S._current = instance;
+
+      return instance;
+    });
+  }
+
+  static S of(BuildContext context) {
+    final instance = S.maybeOf(context);
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
+    return instance!;
+  }
+
+  static S? maybeOf(BuildContext context) {
+    return Localizations.of<S>(context, S);
+  }
+
+  /// `Login`
+  String get login {
+    return Intl.message('Login', name: 'login', desc: '', args: []);
+  }
+
+  /// `Login`
+  String get loginTitle {
+    return Intl.message('Login', name: 'loginTitle', desc: '', args: []);
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message('Email', name: 'email', desc: '', args: []);
+  }
+
+  /// `Enter your email`
+  String get emailHint {
+    return Intl.message(
+      'Enter your email',
+      name: 'emailHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email is required`
+  String get emailRequired {
+    return Intl.message(
+      'Email is required',
+      name: 'emailRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid email address`
+  String get invalidEmail {
+    return Intl.message(
+      'Please enter a valid email address',
+      name: 'invalidEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password`
+  String get password {
+    return Intl.message('Password', name: 'password', desc: '', args: []);
+  }
+
+  /// `Enter your password`
+  String get passwordHint {
+    return Intl.message(
+      'Enter your password',
+      name: 'passwordHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password is required`
+  String get passwordRequired {
+    return Intl.message(
+      'Password is required',
+      name: 'passwordRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password must be at least 8 characters`
+  String get passwordMinLength {
+    return Intl.message(
+      'Password must be at least 8 characters',
+      name: 'passwordMinLength',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forgot your password?`
+  String get forgotPassword {
+    return Intl.message(
+      'Forgot your password?',
+      name: 'forgotPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset Password`
+  String get forgotPasswordTitle {
+    return Intl.message(
+      'Reset Password',
+      name: 'forgotPasswordTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your registered email address to receive a password reset link.\n(Note: Please check your Spam / Junk folder if you don't see it in your Inbox)`
+  String get enterEmailToResetPassword {
+    return Intl.message(
+      'Enter your registered email address to receive a password reset link.\n(Note: Please check your Spam / Junk folder if you don\'t see it in your Inbox)',
+      name: 'enterEmailToResetPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Reset Link`
+  String get sendResetLink {
+    return Intl.message(
+      'Send Reset Link',
+      name: 'sendResetLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password reset link sent to your email!`
+  String get passwordResetEmailSent {
+    return Intl.message(
+      'Password reset link sent to your email!',
+      name: 'passwordResetEmailSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don't have an account?`
+  String get dontHaveAnAccount {
+    return Intl.message(
+      'Don\'t have an account?',
+      name: 'dontHaveAnAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login with`
+  String get loginWith {
+    return Intl.message('Login with', name: 'loginWith', desc: '', args: []);
+  }
+
+  /// `Login with Google`
+  String get loginWithGoogle {
+    return Intl.message(
+      'Login with Google',
+      name: 'loginWithGoogle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Or`
+  String get or {
+    return Intl.message('Or', name: 'or', desc: '', args: []);
+  }
+
+  /// `Bus Complete!`
+  String get autobusComplete {
+    return Intl.message(
+      'Bus Complete!',
+      name: 'autobusComplete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Register`
+  String get register {
+    return Intl.message('Register', name: 'register', desc: '', args: []);
+  }
+
+  /// `Register`
+  String get registerTitle {
+    return Intl.message('Register', name: 'registerTitle', desc: '', args: []);
+  }
+
+  /// `Full Name`
+  String get fullName {
+    return Intl.message('Full Name', name: 'fullName', desc: '', args: []);
+  }
+
+  /// `Enter your full name`
+  String get fullNameHint {
+    return Intl.message(
+      'Enter your full name',
+      name: 'fullNameHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Full name is required`
+  String get fullNameRequired {
+    return Intl.message(
+      'Full name is required',
+      name: 'fullNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password Confirmation`
+  String get passwordConfirmation {
+    return Intl.message(
+      'Password Confirmation',
+      name: 'passwordConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your password again`
+  String get passwordConfirmationHint {
+    return Intl.message(
+      'Enter your password again',
+      name: 'passwordConfirmationHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Host Game`
+  String get hostGame {
+    return Intl.message('Host Game', name: 'hostGame', desc: '', args: []);
+  }
+
+  /// `Join Game`
+  String get joinGame {
+    return Intl.message('Join Game', name: 'joinGame', desc: '', args: []);
+  }
+
+  /// `Passwords do not match`
+  String get passwordsDoNotMatch {
+    return Intl.message(
+      'Passwords do not match',
+      name: 'passwordsDoNotMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logged in successfully!`
+  String get loginSuccess {
+    return Intl.message(
+      'Logged in successfully!',
+      name: 'loginSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account created successfully!`
+  String get registerSuccess {
+    return Intl.message(
+      'Account created successfully!',
+      name: 'registerSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logged out successfully!`
+  String get logoutSuccess {
+    return Intl.message(
+      'Logged out successfully!',
+      name: 'logoutSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please fill in all required fields`
+  String get pleaseFillAllFields {
+    return Intl.message(
+      'Please fill in all required fields',
+      name: 'pleaseFillAllFields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Operation was cancelled`
+  String get operationCancelled {
+    return Intl.message(
+      'Operation was cancelled',
+      name: 'operationCancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User not found. Please check your email`
+  String get firebaseUserNotFound {
+    return Intl.message(
+      'User not found. Please check your email',
+      name: 'firebaseUserNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Incorrect password`
+  String get firebaseWrongPassword {
+    return Intl.message(
+      'Incorrect password',
+      name: 'firebaseWrongPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid email or password`
+  String get firebaseInvalidCredential {
+    return Intl.message(
+      'Invalid email or password',
+      name: 'firebaseInvalidCredential',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email is already in use. Please login`
+  String get firebaseEmailAlreadyInUse {
+    return Intl.message(
+      'Email is already in use. Please login',
+      name: 'firebaseEmailAlreadyInUse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid email address format`
+  String get firebaseInvalidEmail {
+    return Intl.message(
+      'Invalid email address format',
+      name: 'firebaseInvalidEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password is too weak. Please use a stronger password`
+  String get firebaseWeakPassword {
+    return Intl.message(
+      'Password is too weak. Please use a stronger password',
+      name: 'firebaseWeakPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network error. Please check your internet connection`
+  String get firebaseNetworkFailed {
+    return Intl.message(
+      'Network error. Please check your internet connection',
+      name: 'firebaseNetworkFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Too many failed attempts. Please try again later`
+  String get firebaseTooManyRequests {
+    return Intl.message(
+      'Too many failed attempts. Please try again later',
+      name: 'firebaseTooManyRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This user account has been disabled`
+  String get firebaseUserDisabled {
+    return Intl.message(
+      'This user account has been disabled',
+      name: 'firebaseUserDisabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Authentication error occurred`
+  String get firebaseAuthError {
+    return Intl.message(
+      'Authentication error occurred',
+      name: 'firebaseAuthError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account created! Verification link sent to your email.`
+  String get firebaseEmailVerificationSent {
+    return Intl.message(
+      'Account created! Verification link sent to your email.',
+      name: 'firebaseEmailVerificationSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email not verified. Please check your inbox and verify.`
+  String get firebaseEmailNotVerified {
+    return Intl.message(
+      'Email not verified. Please check your inbox and verify.',
+      name: 'firebaseEmailNotVerified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Google sign-in was cancelled`
+  String get firebaseGoogleSignCancel {
+    return Intl.message(
+      'Google sign-in was cancelled',
+      name: 'firebaseGoogleSignCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to create user account`
+  String get firebaseFailedToCreateUser {
+    return Intl.message(
+      'Failed to create user account',
+      name: 'firebaseFailedToCreateUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to sign in with Google`
+  String get firebaseFailedToSignInGoogle {
+    return Intl.message(
+      'Failed to sign in with Google',
+      name: 'firebaseFailedToSignInGoogle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This email is already registered. Please login`
+  String get firebaseEmailAlreadyRegistered {
+    return Intl.message(
+      'This email is already registered. Please login',
+      name: 'firebaseEmailAlreadyRegistered',
+      desc: '',
+      args: [],
+    );
+  }
+}
+
+class AppLocalizationDelegate extends LocalizationsDelegate<S> {
+  const AppLocalizationDelegate();
+
+  List<Locale> get supportedLocales {
+    return const <Locale>[
+      Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'ar'),
+    ];
+  }
+
+  @override
+  bool isSupported(Locale locale) => _isSupported(locale);
+  @override
+  Future<S> load(Locale locale) => S.load(locale);
+  @override
+  bool shouldReload(AppLocalizationDelegate old) => false;
+
+  bool _isSupported(Locale locale) {
+    for (var supportedLocale in supportedLocales) {
+      if (supportedLocale.languageCode == locale.languageCode) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
