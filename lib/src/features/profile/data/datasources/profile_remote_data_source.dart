@@ -39,19 +39,47 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     if (user == null) {
       throw Exception(S.current.firebaseUserNotFound);
     }
+    await user.reload();
+    final refreshedUser = firebaseAuth.currentUser ?? user;
 
-    final docSnapshot = await firestore.collection('users').doc(user.uid).get();
+    final docSnapshot =
+        await firestore.collection('users').doc(refreshedUser.uid).get();
+
+    String resolvedName = refreshedUser.displayName ?? '';
+    String resolvedEmail = refreshedUser.email ?? '';
+    String? resolvedPhotoUrl = refreshedUser.photoURL;
+
     if (docSnapshot.exists && docSnapshot.data() != null) {
       final data = docSnapshot.data()!;
-      return ProfileModel(
-        id: user.uid,
-        name: data['name'] ?? user.displayName ?? '',
-        email: data['email'] ?? user.email ?? '',
-        photoUrl: data['photoUrl'] ?? user.photoURL,
-      );
+      if ((data['name'] as String?)?.isNotEmpty == true) {
+        resolvedName = data['name'];
+      }
+      if ((data['email'] as String?)?.isNotEmpty == true) {
+        resolvedEmail = data['email'];
+      }
+      if (data['photoUrl'] != null) {
+        resolvedPhotoUrl = data['photoUrl'];
+      }
     }
 
-    return ProfileModel.fromFirebaseUser(user);
+    if (!docSnapshot.exists ||
+        (docSnapshot.data()?['name'] as String?)?.isEmpty != false ||
+        docSnapshot.data()?['photoUrl'] == null) {
+      await firestore.collection('users').doc(refreshedUser.uid).set({
+        'email': resolvedEmail,
+        if (resolvedName.isNotEmpty) 'name': resolvedName,
+        if (resolvedPhotoUrl != null) 'photoUrl': resolvedPhotoUrl,
+        'emailVerified': refreshedUser.emailVerified,
+        'provider': 'email',
+      }, SetOptions(merge: true));
+    }
+
+    return ProfileModel(
+      id: refreshedUser.uid,
+      name: resolvedName,
+      email: resolvedEmail,
+      photoUrl: resolvedPhotoUrl,
+    );
   }
 
   @override

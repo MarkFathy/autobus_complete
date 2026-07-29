@@ -489,6 +489,201 @@ class S {
     return Intl.message('Gallery', name: 'gallery', desc: '', args: []);
   }
 
+  /// `Enter 6-digit room code`
+  String get enterRoomCode {
+    return Intl.message(
+      'Enter 6-digit room code',
+      name: 'enterRoomCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join`
+  String get join {
+    return Intl.message('Join', name: 'join', desc: '', args: []);
+  }
+
+  /// `Lobby`
+  String get lobby {
+    return Intl.message('Lobby', name: 'lobby', desc: '', args: []);
+  }
+
+  /// `Copy Room Code`
+  String get copyRoomCode {
+    return Intl.message(
+      'Copy Room Code',
+      name: 'copyRoomCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Room Code`
+  String get roomCode {
+    return Intl.message('Room Code', name: 'roomCode', desc: '', args: []);
+  }
+
+  /// `Room code copied successfully!`
+  String get roomCodeCopied {
+    return Intl.message(
+      'Room code copied successfully!',
+      name: 'roomCodeCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for other players`
+  String get waitingForOtherPlayers {
+    return Intl.message(
+      'Waiting for other players',
+      name: 'waitingForOtherPlayers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ready`
+  String get ready {
+    return Intl.message('Ready', name: 'ready', desc: '', args: []);
+  }
+
+  /// `Not Ready`
+  String get unReady {
+    return Intl.message('Not Ready', name: 'unReady', desc: '', args: []);
+  }
+
+  /// `Leave Room`
+  String get leaveRoom {
+    return Intl.message('Leave Room', name: 'leaveRoom', desc: '', args: []);
+  }
+
+  /// `Are you sure you want to leave the room?`
+  String get leaveRoomConfirmation {
+    return Intl.message(
+      'Are you sure you want to leave the room?',
+      name: 'leaveRoomConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave`
+  String get yesLeave {
+    return Intl.message('Leave', name: 'yesLeave', desc: '', args: []);
+  }
+
+  /// `Start Game`
+  String get startGame {
+    return Intl.message('Start Game', name: 'startGame', desc: '', args: []);
+  }
+
+  /// `Room Settings`
+  String get roomSettings {
+    return Intl.message(
+      'Room Settings',
+      name: 'roomSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Number of Rounds`
+  String get numberOfRounds {
+    return Intl.message(
+      'Number of Rounds',
+      name: 'numberOfRounds',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rounds`
+  String get rounds {
+    return Intl.message('Rounds', name: 'rounds', desc: '', args: []);
+  }
+
+  /// `Categories`
+  String get categories {
+    return Intl.message('Categories', name: 'categories', desc: '', args: []);
+  }
+
+  /// `Select at least 4 categories`
+  String get selectAtLeast4Categories {
+    return Intl.message(
+      'Select at least 4 categories',
+      name: 'selectAtLeast4Categories',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boy`
+  String get boyCategory {
+    return Intl.message('Boy', name: 'boyCategory', desc: '', args: []);
+  }
+
+  /// `Girl`
+  String get girlCategory {
+    return Intl.message('Girl', name: 'girlCategory', desc: '', args: []);
+  }
+
+  /// `Object`
+  String get objectCategory {
+    return Intl.message('Object', name: 'objectCategory', desc: '', args: []);
+  }
+
+  /// `Plant`
+  String get plantCategory {
+    return Intl.message('Plant', name: 'plantCategory', desc: '', args: []);
+  }
+
+  /// `Food`
+  String get foodCategory {
+    return Intl.message('Food', name: 'foodCategory', desc: '', args: []);
+  }
+
+  /// `Animal`
+  String get animalCategory {
+    return Intl.message('Animal', name: 'animalCategory', desc: '', args: []);
+  }
+
+  /// `Country`
+  String get countryCategory {
+    return Intl.message('Country', name: 'countryCategory', desc: '', args: []);
+  }
+
+  /// `Players`
+  String get players {
+    return Intl.message('Players', name: 'players', desc: '', args: []);
+  }
+
+  /// `Host`
+  String get host {
+    return Intl.message('Host', name: 'host', desc: '', args: []);
+  }
+
+  /// `Make Host`
+  String get makeHost {
+    return Intl.message('Make Host', name: 'makeHost', desc: '', args: []);
+  }
+
+  /// `Kick Player`
+  String get kickPlayer {
+    return Intl.message('Kick Player', name: 'kickPlayer', desc: '', args: []);
+  }
+
+  /// `The host has removed you from the room`
+  String get kickedByHost {
+    return Intl.message(
+      'The host has removed you from the room',
+      name: 'kickedByHost',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Passwords do not match`
   String get passwordsDoNotMatch {
     return Intl.message(

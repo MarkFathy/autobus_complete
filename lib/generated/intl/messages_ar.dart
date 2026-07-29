@@ -23,10 +23,13 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "aboutUs": MessageLookupByLibrary.simpleMessage("عن اللعبة"),
+    "animalCategory": MessageLookupByLibrary.simpleMessage("حيوان"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("أتوبيس كومبليت!"),
+    "boyCategory": MessageLookupByLibrary.simpleMessage("ولد"),
     "camera": MessageLookupByLibrary.simpleMessage("الكاميرا"),
     "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
+    "categories": MessageLookupByLibrary.simpleMessage("الفئات"),
     "changePassword": MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
     "changePasswordInfo": MessageLookupByLibrary.simpleMessage(
       "إرسال رابط إعادة تعيين كلمة المرور إلى البريد",
@@ -36,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
     "contactUs": MessageLookupByLibrary.simpleMessage("تواصل معنا"),
+    "copyRoomCode": MessageLookupByLibrary.simpleMessage("نسخ رمز الغرفة"),
+    "countryCategory": MessageLookupByLibrary.simpleMessage("بلد"),
     "deleteAccount": MessageLookupByLibrary.simpleMessage("حذف الحساب"),
     "deleteAccountConfirmation": MessageLookupByLibrary.simpleMessage(
       "هل أنت تأكد من حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
@@ -50,6 +55,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
     "enterEmailToResetPassword": MessageLookupByLibrary.simpleMessage(
       "أدخل بريدك الإلكتروني المسجل لاستلام رابط إعادة تعيين كلمة المرور.\n(تنويه: يرجى مراجعة مجلد الرسائل غير المرغوب فيها Spam إذا لم يظهر الإيميل)",
+    ),
+    "enterRoomCode": MessageLookupByLibrary.simpleMessage(
+      "أدخل رمز الغرفة المكون من 6 أرقام",
     ),
     "firebaseAuthError": MessageLookupByLibrary.simpleMessage(
       "حدث خطأ في عملية المصادقة",
@@ -99,6 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "firebaseWrongPassword": MessageLookupByLibrary.simpleMessage(
       "كلمة المرور غير صحيحة",
     ),
+    "foodCategory": MessageLookupByLibrary.simpleMessage("أكلة"),
     "forgotPassword": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور؟"),
     "forgotPasswordTitle": MessageLookupByLibrary.simpleMessage(
       "إعادة تعيين كلمة المرور",
@@ -109,6 +118,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "الاسم الكامل مطلوب",
     ),
     "gallery": MessageLookupByLibrary.simpleMessage("المعرض"),
+    "girlCategory": MessageLookupByLibrary.simpleMessage("بنت"),
+    "host": MessageLookupByLibrary.simpleMessage("المنشئ"),
     "hostGame": MessageLookupByLibrary.simpleMessage("إنشاء لعبة"),
     "hostGameSubtitle": MessageLookupByLibrary.simpleMessage(
       "إنشاء لعبة جديدة مع أصدقائك",
@@ -116,11 +127,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidEmail": MessageLookupByLibrary.simpleMessage(
       "يرجى إدخال بريد إلكتروني صحيح",
     ),
+    "join": MessageLookupByLibrary.simpleMessage("انضمام"),
     "joinGame": MessageLookupByLibrary.simpleMessage("انضمام للعبة"),
     "joinGameSubtitle": MessageLookupByLibrary.simpleMessage(
       "انضمام لغرفه موجوده بالفعل",
     ),
+    "kickPlayer": MessageLookupByLibrary.simpleMessage("طرد من الغرفة"),
+    "kickedByHost": MessageLookupByLibrary.simpleMessage(
+      "قام منشئ الغرفة بطردك من الغرفة",
+    ),
     "language": MessageLookupByLibrary.simpleMessage("اللغة"),
+    "leaveRoom": MessageLookupByLibrary.simpleMessage("مغادرة الغرفة"),
+    "leaveRoomConfirmation": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من رغبتك في مغادرة الغرفة؟",
+    ),
+    "lobby": MessageLookupByLibrary.simpleMessage("غرفة اللعبة"),
     "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "loginSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تسجيل الدخول بنجاح!",
@@ -137,7 +158,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "logoutSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تسجيل الخروج بنجاح!",
     ),
+    "makeHost": MessageLookupByLibrary.simpleMessage("تعيين كمنشئ الغرفة"),
     "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
+    "numberOfRounds": MessageLookupByLibrary.simpleMessage("عدد الجولات"),
+    "objectCategory": MessageLookupByLibrary.simpleMessage("جماد"),
     "operationCancelled": MessageLookupByLibrary.simpleMessage(
       "تم إلغاء العملية",
     ),
@@ -162,6 +186,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordsDoNotMatch": MessageLookupByLibrary.simpleMessage(
       "كلمتا المرور غير متطابقتين",
     ),
+    "plantCategory": MessageLookupByLibrary.simpleMessage("نبات"),
+    "players": MessageLookupByLibrary.simpleMessage("اللاعبون"),
     "pleaseFillAllFields": MessageLookupByLibrary.simpleMessage(
       "يرجى ملء جميع الحقول المطلوبة",
     ),
@@ -169,15 +195,31 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileUpdatedSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تحديث الملف الشخصي بنجاح!",
     ),
+    "ready": MessageLookupByLibrary.simpleMessage("جاهز"),
     "register": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
     "registerSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إنشاء الحساب بنجاح!",
     ),
     "registerTitle": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+    "roomCode": MessageLookupByLibrary.simpleMessage("رمز الغرفة"),
+    "roomCodeCopied": MessageLookupByLibrary.simpleMessage(
+      "تم نسخ رمز الغرفة بنجاح!",
+    ),
+    "roomSettings": MessageLookupByLibrary.simpleMessage("إعدادات الغرفة"),
+    "rounds": MessageLookupByLibrary.simpleMessage("جولات"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("حفظ التغييرات"),
+    "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
+      "اختر 4 فئات على الأقل",
+    ),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("إرسال الرابط"),
     "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
+    "startGame": MessageLookupByLibrary.simpleMessage("ابدأ اللعبة"),
+    "unReady": MessageLookupByLibrary.simpleMessage("غير جاهز"),
+    "waitingForOtherPlayers": MessageLookupByLibrary.simpleMessage(
+      "في انتظار اللاعبين الآخرين",
+    ),
     "yesDeleteAccount": MessageLookupByLibrary.simpleMessage("نعم، حذف الحساب"),
+    "yesLeave": MessageLookupByLibrary.simpleMessage("مغادرة"),
     "yesLogout": MessageLookupByLibrary.simpleMessage("نعم، تسجيل الخروج"),
   };
 }

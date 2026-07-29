@@ -49,7 +49,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       size: 26.sp,
                     ),
                   ),
-                  onPressed: () => Go.back(),
+                  onPressed: onTap ?? () => Go.back(),
                 )
               : null),
       actions: action != null ? [action!] : null,

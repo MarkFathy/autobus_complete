@@ -4,6 +4,7 @@ import 'package:autobus_complete/src/features/auth/presentation/screens/login_sc
 import 'package:autobus_complete/src/features/auth/presentation/screens/register_screen.dart';
 import 'package:autobus_complete/src/features/home/presentation/screens/home_screen.dart';
 import 'package:autobus_complete/src/features/profile/presentation/screens/profile_screen.dart';
+import 'package:autobus_complete/src/features/room/presentation/screens/room_lobby_screen.dart';
 import 'package:autobus_complete/src/features/settings/presentation/screens/settings_screen.dart';
 import 'package:autobus_complete/src/features/splash/presentation/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +81,13 @@ class RouterGenerator {
       //Profile Screen
       NamedRoutes.profile => _pageRouter.build(
         const ProfileScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+      //Room Screen
+        NamedRoutes.roomLobby => _pageRouter.build(
+        const RoomLobbyScreen(),
         settings: actualSettings,
         transition: transition,
         options: options,

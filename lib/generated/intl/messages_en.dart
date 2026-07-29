@@ -23,10 +23,13 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "aboutUs": MessageLookupByLibrary.simpleMessage("About Us"),
+    "animalCategory": MessageLookupByLibrary.simpleMessage("Animal"),
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("Bus Complete!"),
+    "boyCategory": MessageLookupByLibrary.simpleMessage("Boy"),
     "camera": MessageLookupByLibrary.simpleMessage("Camera"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "categories": MessageLookupByLibrary.simpleMessage("Categories"),
     "changePassword": MessageLookupByLibrary.simpleMessage("Change Password"),
     "changePasswordInfo": MessageLookupByLibrary.simpleMessage(
       "Send password reset link to email",
@@ -36,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "contactUs": MessageLookupByLibrary.simpleMessage("Contact Us"),
+    "copyRoomCode": MessageLookupByLibrary.simpleMessage("Copy Room Code"),
+    "countryCategory": MessageLookupByLibrary.simpleMessage("Country"),
     "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete Account"),
     "deleteAccountConfirmation": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to delete your account? This action cannot be undone.",
@@ -50,6 +55,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "english": MessageLookupByLibrary.simpleMessage("English"),
     "enterEmailToResetPassword": MessageLookupByLibrary.simpleMessage(
       "Enter your registered email address to receive a password reset link.\n(Note: Please check your Spam / Junk folder if you don\'t see it in your Inbox)",
+    ),
+    "enterRoomCode": MessageLookupByLibrary.simpleMessage(
+      "Enter 6-digit room code",
     ),
     "firebaseAuthError": MessageLookupByLibrary.simpleMessage(
       "Authentication error occurred",
@@ -99,6 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "firebaseWrongPassword": MessageLookupByLibrary.simpleMessage(
       "Incorrect password",
     ),
+    "foodCategory": MessageLookupByLibrary.simpleMessage("Food"),
     "forgotPassword": MessageLookupByLibrary.simpleMessage(
       "Forgot your password?",
     ),
@@ -113,6 +122,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Full name is required",
     ),
     "gallery": MessageLookupByLibrary.simpleMessage("Gallery"),
+    "girlCategory": MessageLookupByLibrary.simpleMessage("Girl"),
+    "host": MessageLookupByLibrary.simpleMessage("Host"),
     "hostGame": MessageLookupByLibrary.simpleMessage("Host Game"),
     "hostGameSubtitle": MessageLookupByLibrary.simpleMessage(
       "Create a new game with your friends",
@@ -120,11 +131,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidEmail": MessageLookupByLibrary.simpleMessage(
       "Please enter a valid email address",
     ),
+    "join": MessageLookupByLibrary.simpleMessage("Join"),
     "joinGame": MessageLookupByLibrary.simpleMessage("Join Game"),
     "joinGameSubtitle": MessageLookupByLibrary.simpleMessage(
       "Join an existing game room",
     ),
+    "kickPlayer": MessageLookupByLibrary.simpleMessage("Kick Player"),
+    "kickedByHost": MessageLookupByLibrary.simpleMessage(
+      "The host has removed you from the room",
+    ),
     "language": MessageLookupByLibrary.simpleMessage("Language"),
+    "leaveRoom": MessageLookupByLibrary.simpleMessage("Leave Room"),
+    "leaveRoomConfirmation": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to leave the room?",
+    ),
+    "lobby": MessageLookupByLibrary.simpleMessage("Lobby"),
     "login": MessageLookupByLibrary.simpleMessage("Login"),
     "loginSuccess": MessageLookupByLibrary.simpleMessage(
       "Logged in successfully!",
@@ -139,7 +160,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "logoutSuccess": MessageLookupByLibrary.simpleMessage(
       "Logged out successfully!",
     ),
+    "makeHost": MessageLookupByLibrary.simpleMessage("Make Host"),
     "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
+    "numberOfRounds": MessageLookupByLibrary.simpleMessage("Number of Rounds"),
+    "objectCategory": MessageLookupByLibrary.simpleMessage("Object"),
     "operationCancelled": MessageLookupByLibrary.simpleMessage(
       "Operation was cancelled",
     ),
@@ -164,6 +188,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordsDoNotMatch": MessageLookupByLibrary.simpleMessage(
       "Passwords do not match",
     ),
+    "plantCategory": MessageLookupByLibrary.simpleMessage("Plant"),
+    "players": MessageLookupByLibrary.simpleMessage("Players"),
     "pleaseFillAllFields": MessageLookupByLibrary.simpleMessage(
       "Please fill in all required fields",
     ),
@@ -171,17 +197,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileUpdatedSuccess": MessageLookupByLibrary.simpleMessage(
       "Profile updated successfully!",
     ),
+    "ready": MessageLookupByLibrary.simpleMessage("Ready"),
     "register": MessageLookupByLibrary.simpleMessage("Register"),
     "registerSuccess": MessageLookupByLibrary.simpleMessage(
       "Account created successfully!",
     ),
     "registerTitle": MessageLookupByLibrary.simpleMessage("Register"),
+    "roomCode": MessageLookupByLibrary.simpleMessage("Room Code"),
+    "roomCodeCopied": MessageLookupByLibrary.simpleMessage(
+      "Room code copied successfully!",
+    ),
+    "roomSettings": MessageLookupByLibrary.simpleMessage("Room Settings"),
+    "rounds": MessageLookupByLibrary.simpleMessage("Rounds"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save Changes"),
+    "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
+      "Select at least 4 categories",
+    ),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("Send Reset Link"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "startGame": MessageLookupByLibrary.simpleMessage("Start Game"),
+    "unReady": MessageLookupByLibrary.simpleMessage("Not Ready"),
+    "waitingForOtherPlayers": MessageLookupByLibrary.simpleMessage(
+      "Waiting for other players",
+    ),
     "yesDeleteAccount": MessageLookupByLibrary.simpleMessage(
       "Yes, Delete Account",
     ),
+    "yesLeave": MessageLookupByLibrary.simpleMessage("Leave"),
     "yesLogout": MessageLookupByLibrary.simpleMessage("Yes, Logout"),
   };
 }

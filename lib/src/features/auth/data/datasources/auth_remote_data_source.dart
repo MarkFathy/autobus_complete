@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/services/session_manager.dart';
@@ -58,24 +59,47 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       password: password,
     );
     if (userCredential.user != null) {
-      if (!userCredential.user!.emailVerified) {
+      final user = userCredential.user!;
+      if (!user.emailVerified) {
         await firebaseAuth.signOut();
         throw Exception(S.current.firebaseEmailNotVerified);
       }
-      final token = await userCredential.user!.getIdToken();
+
+      await user.reload();
+      final refreshedUser = firebaseAuth.currentUser ?? user;
+
+      final token = await refreshedUser.getIdToken();
       if (token != null) {
         await authLocalDataSource.saveToken(token);
       }
       await authLocalDataSource.saveUserLoggedIn(true);
 
-      final userModel = UserModel.fromFirebaseUser(userCredential.user!);
-      await firestore.collection('users').doc(userCredential.user!.uid).set({
-        'email': userCredential.user!.email,
-        'name': userCredential.user!.displayName,
-        'photoUrl': userCredential.user!.photoURL,
-        'emailVerified': userCredential.user!.emailVerified,
+      final docSnapshot =
+          await firestore.collection('users').doc(refreshedUser.uid).get();
+      final existingData = docSnapshot.data();
+
+      final String resolvedName =
+          (existingData?['name'] as String?)?.isNotEmpty == true
+              ? existingData!['name'] as String
+              : (refreshedUser.displayName ?? '');
+
+      final String? resolvedPhotoUrl =
+          existingData?['photoUrl'] as String? ?? refreshedUser.photoURL;
+
+      await firestore.collection('users').doc(refreshedUser.uid).set({
+        'email': refreshedUser.email,
+        if (resolvedName.isNotEmpty) 'name': resolvedName,
+        if (resolvedPhotoUrl != null) 'photoUrl': resolvedPhotoUrl,
+        'emailVerified': refreshedUser.emailVerified,
         'provider': 'email',
       }, SetOptions(merge: true));
+
+      final userModel = UserModel(
+        id: refreshedUser.uid,
+        email: refreshedUser.email ?? email,
+        name: resolvedName,
+        photoUrl: resolvedPhotoUrl,
+      );
 
       return userModel;
     } else {
@@ -98,16 +122,43 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (userCredential.user != null) {
         final user = userCredential.user!;
 
-        // Upload profile image if provided
+        // Upload profile image if provided (with safe fallback)
         String? photoUrl;
         if (imageFile != null) {
-          final ref = storage.ref().child('user_photos/${user.uid}.jpg');
-          await ref.putFile(imageFile);
-          photoUrl = await ref.getDownloadURL();
+          try {
+            final ref = storage.ref().child('user_photos/${user.uid}.jpg');
+            await ref.putFile(imageFile);
+            photoUrl = await ref.getDownloadURL();
+          } catch (_) {
+            try {
+              final bytes = await imageFile.readAsBytes();
+              final base64String = base64Encode(bytes);
+              final generatedDataUrl = 'data:image/jpeg;base64,$base64String';
+              if (generatedDataUrl.length < 800000) {
+                photoUrl = generatedDataUrl;
+              }
+            } catch (_) {}
+          }
         }
 
-        await user.updateDisplayName(name);
-        if (photoUrl != null) await user.updatePhotoURL(photoUrl);
+        // Save user data to Firestore IMMEDIATELY!
+        await firestore.collection('users').doc(user.uid).set({
+          'email': email,
+          'name': name,
+          'photoUrl': photoUrl,
+          'emailVerified': false,
+          'provider': 'email',
+          'createdAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+
+        // Update Firebase Auth Display Name and Photo URL
+        try {
+          await user.updateDisplayName(name);
+          if (photoUrl != null && !photoUrl.startsWith('data:image')) {
+            await user.updatePhotoURL(photoUrl);
+          }
+        } catch (_) {}
+
         await user.sendEmailVerification();
         await firebaseAuth.signOut();
         throw Exception(S.current.firebaseEmailVerificationSent);

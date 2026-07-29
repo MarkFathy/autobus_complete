@@ -1,0 +1,15 @@
+import 'package:autobus_complete/src/core/error/failure.dart';
+import 'package:autobus_complete/src/core/usecases/usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/abstract_repository/room_repository.dart';
+import 'package:dartz/dartz.dart';
+
+class LeaveRoomUseCase implements BaseUseCase<void, String> {
+  final RoomRepository repository;
+
+  LeaveRoomUseCase(this.repository);
+
+  @override
+  Future<Either<Failure, void>> call(String roomCode) async {
+    return await repository.leaveRoom(roomCode: roomCode);
+  }
+}
