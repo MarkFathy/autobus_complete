@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class RoomRemoteDataSource {
+  Future<List<RoomCategoryModel>> getCategories();
   Future<String> createRoom({
     required int rounds,
     required List<RoomCategoryEntity> categories,
@@ -43,6 +44,41 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     final random = Random();
     final code = random.nextInt(900000) + 100000;
     return code.toString();
+  }
+
+  @override
+  Future<List<RoomCategoryModel>> getCategories() async {
+    try {
+      final snapshot = await firestore.collection('categories').get();
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs
+            .map((doc) => RoomCategoryModel.fromJson({'id': doc.id, ...doc.data()}))
+            .toList();
+      }
+    } catch (_) {}
+
+    // Seed defaults into Firestore on first run
+    const defaultCategories = [
+      RoomCategoryModel(id: 'boy',     nameAr: 'ولد',   nameEn: 'Boy',     icon: '👦'),
+      RoomCategoryModel(id: 'girl',    nameAr: 'بنت',   nameEn: 'Girl',    icon: '👧'),
+      RoomCategoryModel(id: 'object',  nameAr: 'جماد',  nameEn: 'Object',  icon: '📦'),
+      RoomCategoryModel(id: 'plant',   nameAr: 'نبات',  nameEn: 'Plant',   icon: '🌿'),
+      RoomCategoryModel(id: 'food',    nameAr: 'أكلة',  nameEn: 'Food',    icon: '🍔'),
+      RoomCategoryModel(id: 'animal',  nameAr: 'حيوان', nameEn: 'Animal',  icon: '🦁'),
+      RoomCategoryModel(id: 'country', nameAr: 'بلد',   nameEn: 'Country', icon: '🚩'),
+    ];
+
+    try {
+      for (final c in defaultCategories) {
+        await firestore.collection('categories').doc(c.id).set({
+          'nameAr': c.nameAr,
+          'nameEn': c.nameEn,
+          'icon': c.icon,
+        });
+      }
+    } catch (_) {}
+
+    return defaultCategories;
   }
 
   @override
@@ -253,8 +289,17 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
 
   @override
   Future<void> startGame({required String roomCode}) async {
+    final arabicLetters = [
+      'أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش',
+      'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'
+    ];
+    final randomLetter = (List<String>.from(arabicLetters)..shuffle()).first;
+
     await firestore.collection('rooms').doc(roomCode).update({
       'status': 'playing',
+      'currentRound': 1,
+      'currentLetter': randomLetter,
+      'usedLetters': [randomLetter],
     });
   }
 

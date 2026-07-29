@@ -15,11 +15,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
               message: S.of(context).roomCodeCopied,
             );
           } else if (state is RoomGameStarted) {
-            CustomSnackBar.showSuccess(
-              context,
-              message: "Game Starting!",
-            );
-            // Navigate to Game Screen when implemented
+            Go.offNamed(NamedRoutes.countdown);
           } else if (state is RoomLeftSuccess) {
             Go.back();
           } else if (state is RoomKickedByHost) {
@@ -189,6 +185,9 @@ class RoomLobbyScreenBody extends StatelessWidget {
                     RoomSettingsCard(
                       initialRounds: room.rounds,
                       initialCategories: selectedCategoryIds,
+                      availableCategories: roomCubit.availableCategories.isNotEmpty
+                          ? roomCubit.availableCategories
+                          : room.categories,
                       onRoundsChanged: (rounds) {
                         if (isHost) {
                           roomCubit.updateRoomSettings(
@@ -199,24 +198,12 @@ class RoomLobbyScreenBody extends StatelessWidget {
                       },
                       onCategoriesChanged: (updatedCategoryIds) {
                         if (isHost) {
-                          final allCategoryEntities = [
-                            const RoomCategoryEntity(
-                                id: 'boy', name: 'ولد', icon: '👦'),
-                            const RoomCategoryEntity(
-                                id: 'girl', name: 'بنت', icon: '👧'),
-                            const RoomCategoryEntity(
-                                id: 'object', name: 'جماد', icon: '📦'),
-                            const RoomCategoryEntity(
-                                id: 'plant', name: 'نبات', icon: '🌿'),
-                            const RoomCategoryEntity(
-                                id: 'food', name: 'أكلة', icon: '🍔'),
-                            const RoomCategoryEntity(
-                                id: 'animal', name: 'حيوان', icon: '🦁'),
-                            const RoomCategoryEntity(
-                                id: 'country', name: 'بلد', icon: '🚩'),
-                          ];
+                          final availableCategories =
+                              roomCubit.availableCategories.isNotEmpty
+                                  ? roomCubit.availableCategories
+                                  : room.categories;
 
-                          final selectedEntities = allCategoryEntities
+                          final selectedEntities = availableCategories
                               .where((c) => updatedCategoryIds.contains(c.id))
                               .toList();
 

@@ -11,7 +11,6 @@ import 'package:autobus_complete/src/core/widgets/buttons/custom_button.dart';
 import 'package:autobus_complete/src/core/widgets/custom_app_bar.dart';
 import 'package:autobus_complete/src/core/widgets/custom_snack_bar.dart';
 import 'package:autobus_complete/src/features/room/data/models/room_model.dart';
-import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_cubit.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_state.dart';
 import 'package:autobus_complete/src/features/room/presentation/widgets/leave_room_bottom_sheet.dart';

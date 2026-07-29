@@ -3,6 +3,7 @@ import 'package:autobus_complete/src/features/room/domain/entities/room_entity.d
 import 'package:dartz/dartz.dart';
 
 abstract class RoomRepository {
+  Future<Either<Failure, List<RoomCategoryEntity>>> getCategories();
   Future<Either<Failure, String>> createRoom({
     required int rounds,
     required List<RoomCategoryEntity> categories,

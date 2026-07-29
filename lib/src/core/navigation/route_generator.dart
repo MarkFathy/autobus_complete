@@ -2,6 +2,8 @@ import 'package:autobus_complete/src/core/navigation/constants/imports_constants
 import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/register_screen.dart';
+import 'package:autobus_complete/src/features/game/presentation/screens/game_board_screen.dart';
+import 'package:autobus_complete/src/features/game/presentation/screens/game_countdown_screen.dart';
 import 'package:autobus_complete/src/features/home/presentation/screens/home_screen.dart';
 import 'package:autobus_complete/src/features/profile/presentation/screens/profile_screen.dart';
 import 'package:autobus_complete/src/features/room/presentation/screens/room_lobby_screen.dart';
@@ -86,8 +88,24 @@ class RouterGenerator {
         options: options,
       ),
       //Room Screen
-        NamedRoutes.roomLobby => _pageRouter.build(
+      NamedRoutes.roomLobby => _pageRouter.build(
         const RoomLobbyScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+
+      //Countdown Screen
+      NamedRoutes.countdown => _pageRouter.build(
+        const GameCountdownScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+
+      //GameBoard Screen
+      NamedRoutes.gameBoard => _pageRouter.build(
+        const GameBoardScreen(),
         settings: actualSettings,
         transition: transition,
         options: options,

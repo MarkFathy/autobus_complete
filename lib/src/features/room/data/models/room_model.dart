@@ -4,30 +4,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class RoomCategoryModel extends RoomCategoryEntity {
   const RoomCategoryModel({
     required super.id,
-    required super.name,
+    required super.nameAr,
+    required super.nameEn,
     required super.icon,
   });
 
   factory RoomCategoryModel.fromJson(Map<String, dynamic> json) {
     return RoomCategoryModel(
-      id: json['id'] ?? '',
-      name: json['name'] ?? '',
-      icon: json['icon'] ?? '',
+      id: json['id']?.toString() ?? '',
+      nameAr: json['nameAr'] as String? ?? json['name'] as String? ?? '',
+      nameEn: json['nameEn'] as String? ?? json['name'] as String? ?? '',
+      icon: json['icon'] as String? ?? '',
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'icon': icon,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'nameAr': nameAr,
+        'nameEn': nameEn,
+        'icon': icon,
+      };
 
   factory RoomCategoryModel.fromEntity(RoomCategoryEntity entity) {
     return RoomCategoryModel(
       id: entity.id,
-      name: entity.name,
+      nameAr: entity.nameAr,
+      nameEn: entity.nameEn,
       icon: entity.icon,
     );
   }
@@ -54,16 +56,14 @@ class RoomPlayerModel extends RoomPlayerEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'photoUrl': photoUrl,
-      'isHost': isHost,
-      'isReady': isReady,
-      'score': score,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'photoUrl': photoUrl,
+        'isHost': isHost,
+        'isReady': isReady,
+        'score': score,
+      };
 
   factory RoomPlayerModel.fromEntity(RoomPlayerEntity entity) {
     return RoomPlayerModel(
@@ -84,6 +84,8 @@ class RoomModel extends RoomEntity {
     required super.status,
     required super.rounds,
     required super.currentRound,
+    super.currentLetter,
+    super.usedLetters = const [],
     required super.categories,
     required super.players,
   });
@@ -95,6 +97,11 @@ class RoomModel extends RoomEntity {
       status: json['status'] ?? 'waiting',
       rounds: json['rounds'] ?? 5,
       currentRound: json['currentRound'] ?? 1,
+      currentLetter: json['currentLetter'],
+      usedLetters: (json['usedLetters'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       categories: (json['categories'] as List<dynamic>?)
               ?.map((c) => RoomCategoryModel.fromJson(c as Map<String, dynamic>))
               .toList() ??
@@ -106,24 +113,24 @@ class RoomModel extends RoomEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'roomCode': roomCode,
-      'hostId': hostId,
-      'status': status,
-      'rounds': rounds,
-      'currentRound': currentRound,
-      'categories': categories
-          .map((c) => RoomCategoryModel.fromEntity(c).toJson())
-          .toList(),
-      'players': players
-          .map((p) => RoomPlayerModel.fromEntity(p).toJson())
-          .toList(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'roomCode': roomCode,
+        'hostId': hostId,
+        'status': status,
+        'rounds': rounds,
+        'currentRound': currentRound,
+        if (currentLetter != null) 'currentLetter': currentLetter,
+        'usedLetters': usedLetters,
+        'categories': categories
+            .map((c) => RoomCategoryModel.fromEntity(c).toJson())
+            .toList(),
+        'players': players
+            .map((p) => RoomPlayerModel.fromEntity(p).toJson())
+            .toList(),
+      };
 
-  factory RoomModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    final data = snapshot.data() ?? {};
-    return RoomModel.fromJson(data);
-  }
+  factory RoomModel.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+  ) =>
+      RoomModel.fromJson(snapshot.data() ?? {});
 }

@@ -121,5 +121,15 @@
     "firebaseGoogleSignCancel": "Google sign-in was cancelled",
     "firebaseFailedToCreateUser": "Failed to create user account",
     "firebaseFailedToSignInGoogle": "Failed to sign in with Google",
-    "firebaseEmailAlreadyRegistered": "This email is already registered. Please login"
+    "firebaseEmailAlreadyRegistered": "This email is already registered. Please login",
+    "gameStartsIn": "Game starts in",
+    "getReady": "Get Ready!",
+    "round": "Round",
+    "currentLetter": "Letter",
+    "submitAnswers": "Submit Answers",
+    "noAnswerGiven": "No answer given",
+    "scoringTitle": "Round Evaluation",
+    "roundTotal": "Total",
+    "nextRound": "Next Round",
+    "finalResults": "Final Leaderboard"
 }

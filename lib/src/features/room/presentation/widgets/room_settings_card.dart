@@ -3,6 +3,7 @@ import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
 import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
+import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/widgets/categories_selector_section.dart';
 import 'package:autobus_complete/src/features/room/presentation/widgets/rounds_selector_row.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class RoomSettingsCard extends StatefulWidget {
   final int initialRounds;
   final Set<String>? initialCategories;
+  final List<RoomCategoryEntity> availableCategories;
   final ValueChanged<int>? onRoundsChanged;
   final ValueChanged<Set<String>>? onCategoriesChanged;
 
@@ -18,6 +20,7 @@ class RoomSettingsCard extends StatefulWidget {
     super.key,
     this.initialRounds = 2,
     this.initialCategories,
+    this.availableCategories = const [],
     this.onRoundsChanged,
     this.onCategoriesChanged,
   });
@@ -94,6 +97,7 @@ class _RoomSettingsCardState extends State<RoomSettingsCard> {
           // ── Row 2: Categories Selector ───────────────────────────────
           CategoriesSelectorSection(
             selectedCategories: _selectedCategories,
+            availableCategories: widget.availableCategories,
             onCategoriesChanged: (updatedCategories) {
               setState(() => _selectedCategories = updatedCategories);
               widget.onCategoriesChanged?.call(updatedCategories);

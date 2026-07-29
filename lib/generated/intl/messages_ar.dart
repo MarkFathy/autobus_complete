@@ -25,7 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "aboutUs": MessageLookupByLibrary.simpleMessage("عن اللعبة"),
     "animalCategory": MessageLookupByLibrary.simpleMessage("حيوان"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
-    "autobusComplete": MessageLookupByLibrary.simpleMessage("أتوبيس كومبليت!"),
+    "autobusComplete": MessageLookupByLibrary.simpleMessage("أوتوبيس كومبليت!"),
     "boyCategory": MessageLookupByLibrary.simpleMessage("ولد"),
     "camera": MessageLookupByLibrary.simpleMessage("الكاميرا"),
     "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
@@ -41,6 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "contactUs": MessageLookupByLibrary.simpleMessage("تواصل معنا"),
     "copyRoomCode": MessageLookupByLibrary.simpleMessage("نسخ رمز الغرفة"),
     "countryCategory": MessageLookupByLibrary.simpleMessage("بلد"),
+    "currentLetter": MessageLookupByLibrary.simpleMessage("الحرف"),
     "deleteAccount": MessageLookupByLibrary.simpleMessage("حذف الحساب"),
     "deleteAccountConfirmation": MessageLookupByLibrary.simpleMessage(
       "هل أنت تأكد من حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
@@ -118,6 +119,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "الاسم الكامل مطلوب",
     ),
     "gallery": MessageLookupByLibrary.simpleMessage("المعرض"),
+    "gameStartsIn": MessageLookupByLibrary.simpleMessage("ستبدأ اللعبة خلال"),
+    "getReady": MessageLookupByLibrary.simpleMessage("استعد!"),
     "girlCategory": MessageLookupByLibrary.simpleMessage("بنت"),
     "host": MessageLookupByLibrary.simpleMessage("المنشئ"),
     "hostGame": MessageLookupByLibrary.simpleMessage("إنشاء لعبة"),
@@ -206,6 +209,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم نسخ رمز الغرفة بنجاح!",
     ),
     "roomSettings": MessageLookupByLibrary.simpleMessage("إعدادات الغرفة"),
+    "round": MessageLookupByLibrary.simpleMessage("الجولة"),
     "rounds": MessageLookupByLibrary.simpleMessage("جولات"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("حفظ التغييرات"),
     "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
@@ -214,6 +218,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "sendResetLink": MessageLookupByLibrary.simpleMessage("إرسال الرابط"),
     "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "startGame": MessageLookupByLibrary.simpleMessage("ابدأ اللعبة"),
+    "stopBus": MessageLookupByLibrary.simpleMessage("أوتوبيس كومبليت!"),
+    "submitAnswers": MessageLookupByLibrary.simpleMessage("إرسال الإجابات"),
     "unReady": MessageLookupByLibrary.simpleMessage("غير جاهز"),
     "waitingForOtherPlayers": MessageLookupByLibrary.simpleMessage(
       "في انتظار اللاعبين الآخرين",

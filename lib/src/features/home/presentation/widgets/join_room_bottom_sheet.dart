@@ -51,25 +51,42 @@ class _JoinRoomBottomSheetState extends State<JoinRoomBottomSheet> {
 
   @override
   void dispose() {
-    for (var c in _controllers) {
-      c.dispose();
-    }
-    for (var f in _focusNodes) {
-      f.dispose();
-    }
+    for (final c in _controllers) c.dispose();
+    for (final f in _focusNodes) f.dispose();
     super.dispose();
+  }
+
+  /// Distributes a 6-digit code string across all fields.
+  void _fillFromPaste(String digits) {
+    final cleaned = digits.replaceAll(RegExp(r'\D'), '');
+    if (cleaned.length != 6) return;
+
+    for (int i = 0; i < 6; i++) {
+      _controllers[i].text = cleaned[i];
+    }
+    setState(() {});
+    _focusNodes[5].requestFocus();
+  }
+
+  void _onFieldChanged(String value, int index) {
+    setState(() {});
+    if (value.isNotEmpty && index < 5) {
+      _focusNodes[index + 1].requestFocus();
+    } else if (value.isEmpty && index > 0) {
+      _focusNodes[index - 1].requestFocus();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 380.h, // Increased comfortable height for the bottom sheet
+      height: 380.h,
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          //Drag Handle Pill
+          // ── Drag Handle ─────────────────────────────────────────────
           Container(
             width: 45.w,
             height: 4.h,
@@ -80,7 +97,7 @@ class _JoinRoomBottomSheetState extends State<JoinRoomBottomSheet> {
           ),
           24.szH,
 
-          //Title & Subtitle
+          // ── Title & Subtitle ─────────────────────────────────────────
           Text(
             S.of(context).joinGame,
             style: getTextStyle().s22.w700.whiteColor,
@@ -92,7 +109,7 @@ class _JoinRoomBottomSheetState extends State<JoinRoomBottomSheet> {
           ),
           60.szH,
 
-          //6 Digit PIN Fields
+          // ── 6-Digit PIN Fields ────────────────────────────────────────
           Directionality(
             textDirection: TextDirection.ltr,
             child: Row(
@@ -130,21 +147,33 @@ class _JoinRoomBottomSheetState extends State<JoinRoomBottomSheet> {
                         ),
                       ),
                     ),
-                    onChanged: (value) {
-                      setState(() {});
-                      if (value.isNotEmpty && index < 5) {
-                        _focusNodes[index + 1].requestFocus();
-                      } else if (value.isEmpty && index > 0) {
-                        _focusNodes[index - 1].requestFocus();
-                      }
+                    // Intercept the native "Paste" button to fill all 6 fields
+                    contextMenuBuilder: (ctx, editableTextState) {
+                      return AdaptiveTextSelectionToolbar.buttonItems(
+                        anchors: editableTextState.contextMenuAnchors,
+                        buttonItems: [
+                          ContextMenuButtonItem(
+                            label: 'Paste',
+                            onPressed: () async {
+                              ContextMenuController.removeAny();
+                              final data = await Clipboard.getData(
+                                Clipboard.kTextPlain,
+                              );
+                              _fillFromPaste(data?.text ?? '');
+                            },
+                          ),
+                        ],
+                      );
                     },
+                    onChanged: (value) => _onFieldChanged(value, index),
                   ),
                 );
               }),
             ),
           ),
-Spacer(),
-          //Join Button
+          const Spacer(),
+
+          // ── Join Button ──────────────────────────────────────────────
           CustomButton(
             text: S.of(context).join,
             onPressed: _isCodeComplete

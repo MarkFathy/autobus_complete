@@ -903,6 +903,51 @@ class S {
       args: [],
     );
   }
+
+  /// `Game starts in`
+  String get gameStartsIn {
+    return Intl.message(
+      'Game starts in',
+      name: 'gameStartsIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get Ready!`
+  String get getReady {
+    return Intl.message('Get Ready!', name: 'getReady', desc: '', args: []);
+  }
+
+  /// `Round`
+  String get round {
+    return Intl.message('Round', name: 'round', desc: '', args: []);
+  }
+
+  /// `Letter`
+  String get currentLetter {
+    return Intl.message('Letter', name: 'currentLetter', desc: '', args: []);
+  }
+
+  /// `AUTOBUS COMPLETE! (STOP)`
+  String get stopBus {
+    return Intl.message(
+      'AUTOBUS COMPLETE! (STOP)',
+      name: 'stopBus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit Answers`
+  String get submitAnswers {
+    return Intl.message(
+      'Submit Answers',
+      name: 'submitAnswers',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

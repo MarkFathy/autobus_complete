@@ -41,6 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "contactUs": MessageLookupByLibrary.simpleMessage("Contact Us"),
     "copyRoomCode": MessageLookupByLibrary.simpleMessage("Copy Room Code"),
     "countryCategory": MessageLookupByLibrary.simpleMessage("Country"),
+    "currentLetter": MessageLookupByLibrary.simpleMessage("Letter"),
     "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete Account"),
     "deleteAccountConfirmation": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to delete your account? This action cannot be undone.",
@@ -122,6 +123,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Full name is required",
     ),
     "gallery": MessageLookupByLibrary.simpleMessage("Gallery"),
+    "gameStartsIn": MessageLookupByLibrary.simpleMessage("Game starts in"),
+    "getReady": MessageLookupByLibrary.simpleMessage("Get Ready!"),
     "girlCategory": MessageLookupByLibrary.simpleMessage("Girl"),
     "host": MessageLookupByLibrary.simpleMessage("Host"),
     "hostGame": MessageLookupByLibrary.simpleMessage("Host Game"),
@@ -208,6 +211,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Room code copied successfully!",
     ),
     "roomSettings": MessageLookupByLibrary.simpleMessage("Room Settings"),
+    "round": MessageLookupByLibrary.simpleMessage("Round"),
     "rounds": MessageLookupByLibrary.simpleMessage("Rounds"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save Changes"),
     "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
@@ -216,6 +220,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "sendResetLink": MessageLookupByLibrary.simpleMessage("Send Reset Link"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "startGame": MessageLookupByLibrary.simpleMessage("Start Game"),
+    "stopBus": MessageLookupByLibrary.simpleMessage("AUTOBUS COMPLETE! (STOP)"),
+    "submitAnswers": MessageLookupByLibrary.simpleMessage("Submit Answers"),
     "unReady": MessageLookupByLibrary.simpleMessage("Not Ready"),
     "waitingForOtherPlayers": MessageLookupByLibrary.simpleMessage(
       "Waiting for other players",

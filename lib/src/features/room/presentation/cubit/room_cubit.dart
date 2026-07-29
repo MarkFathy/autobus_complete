@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:autobus_complete/src/core/usecases/usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/create_room_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/get_categories_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/join_room_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/kick_player_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/leave_room_usecase.dart';
@@ -15,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RoomCubit extends Cubit<RoomState> {
+  final GetCategoriesUseCase getCategoriesUseCase;
   final CreateRoomUseCase createRoomUseCase;
   final JoinRoomUseCase joinRoomUseCase;
   final ListenToRoomUseCase listenToRoomUseCase;
@@ -27,8 +30,10 @@ class RoomCubit extends Cubit<RoomState> {
 
   StreamSubscription? _roomSubscription;
   RoomEntity? currentRoom;
+  List<RoomCategoryEntity> availableCategories = [];
 
   RoomCubit({
+    required this.getCategoriesUseCase,
     required this.createRoomUseCase,
     required this.joinRoomUseCase,
     required this.listenToRoomUseCase,
@@ -40,24 +45,29 @@ class RoomCubit extends Cubit<RoomState> {
     required this.kickPlayerUseCase,
   }) : super(RoomInitial());
 
+  Future<List<RoomCategoryEntity>> fetchCategories() async {
+    final result = await getCategoriesUseCase(NoParams());
+    return result.fold(
+      (failure) => [],
+      (categories) {
+        availableCategories = categories;
+        return categories;
+      },
+    );
+  }
+
   Future<void> createRoom({
     int rounds = 5,
     List<RoomCategoryEntity>? categories,
   }) async {
     emit(RoomLoading());
-    final defaultCategories = categories ??
-        const [
-          RoomCategoryEntity(id: 'boy', name: 'ولد', icon: '👦'),
-          RoomCategoryEntity(id: 'girl', name: 'بنت', icon: '👧'),
-          RoomCategoryEntity(id: 'object', name: 'جماد', icon: '📦'),
-          RoomCategoryEntity(id: 'plant', name: 'نبات', icon: '🌿'),
-          RoomCategoryEntity(id: 'food', name: 'أكلة', icon: '🍔'),
-          RoomCategoryEntity(id: 'animal', name: 'حيوان', icon: '🦁'),
-          RoomCategoryEntity(id: 'country', name: 'بلد', icon: '🚩'),
-        ];
+    List<RoomCategoryEntity> selectedCategories = categories ?? [];
+    if (selectedCategories.isEmpty) {
+      selectedCategories = await fetchCategories();
+    }
 
     final result = await createRoomUseCase(
-      CreateRoomParams(rounds: rounds, categories: defaultCategories),
+      CreateRoomParams(rounds: rounds, categories: selectedCategories),
     );
 
     await result.fold(

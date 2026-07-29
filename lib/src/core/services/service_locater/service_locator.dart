@@ -21,6 +21,7 @@ import 'package:autobus_complete/src/features/room/data/datasources/room_remote_
 import 'package:autobus_complete/src/features/room/data/repositories/room_repository_impl.dart';
 import 'package:autobus_complete/src/features/room/domain/abstract_repository/room_repository.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/create_room_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/get_categories_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/join_room_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/kick_player_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/leave_room_usecase.dart';
@@ -122,6 +123,7 @@ Future<void> setupServiceLocator() async {
   // Cubit
   sl.registerLazySingleton(
     () => RoomCubit(
+      getCategoriesUseCase: sl(),
       createRoomUseCase: sl(),
       joinRoomUseCase: sl(),
       listenToRoomUseCase: sl(),
@@ -135,6 +137,7 @@ Future<void> setupServiceLocator() async {
   );
 
   // Use cases
+  sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
   sl.registerLazySingleton(() => CreateRoomUseCase(sl()));
   sl.registerLazySingleton(() => JoinRoomUseCase(sl()));
   sl.registerLazySingleton(() => ListenToRoomUseCase(sl()));

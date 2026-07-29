@@ -3,53 +3,49 @@ import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
 import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
+import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/widgets/category_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-class CategoryItem {
-  final String id;
-  final String emoji;
-  final String name;
-
-  const CategoryItem({
-    required this.id,
-    required this.emoji,
-    required this.name,
-  });
-}
 
 class CategoriesSelectorSection extends StatelessWidget {
   final Set<String> selectedCategories;
   final ValueChanged<Set<String>> onCategoriesChanged;
 
+  /// Dynamic categories fetched from Firestore via RoomCubit.
+  /// Falls back to localized defaults if empty.
+  final List<RoomCategoryEntity> availableCategories;
+
   const CategoriesSelectorSection({
     super.key,
     required this.selectedCategories,
     required this.onCategoriesChanged,
+    this.availableCategories = const [],
   });
 
-  List<CategoryItem> _getCategories(BuildContext context) {
-    return [
-      CategoryItem(id: 'boy', emoji: '👦', name: S.of(context).boyCategory),
-      CategoryItem(id: 'girl', emoji: '👧', name: S.of(context).girlCategory),
-      CategoryItem(id: 'object', emoji: '📦', name: S.of(context).objectCategory),
-      CategoryItem(id: 'plant', emoji: '🌿', name: S.of(context).plantCategory),
-      CategoryItem(id: 'food', emoji: '🍔', name: S.of(context).foodCategory),
-      CategoryItem(id: 'animal', emoji: '🦁', name: S.of(context).animalCategory),
-      CategoryItem(id: 'country', emoji: '🚩', name: S.of(context).countryCategory),
-    ];
-  }
+  List<RoomCategoryEntity> _fallbackCategories(BuildContext context) => [
+        RoomCategoryEntity(id: 'boy',     nameAr: 'ولد',   nameEn: 'Boy',     icon: '👦'),
+        RoomCategoryEntity(id: 'girl',    nameAr: 'بنت',   nameEn: 'Girl',    icon: '👧'),
+        RoomCategoryEntity(id: 'object',  nameAr: 'جماد',  nameEn: 'Object',  icon: '📦'),
+        RoomCategoryEntity(id: 'plant',   nameAr: 'نبات',  nameEn: 'Plant',   icon: '🌿'),
+        RoomCategoryEntity(id: 'food',    nameAr: 'أكلة',  nameEn: 'Food',    icon: '🍔'),
+        RoomCategoryEntity(id: 'animal',  nameAr: 'حيوان', nameEn: 'Animal',  icon: '🦁'),
+        RoomCategoryEntity(id: 'country', nameAr: 'بلد',   nameEn: 'Country', icon: '🚩'),
+      ];
 
   @override
   Widget build(BuildContext context) {
-    final categories = _getCategories(context);
-    final isAtLeastFour = selectedCategories.length >= 4;
+    final categories = availableCategories.isNotEmpty
+        ? availableCategories
+        : _fallbackCategories(context);
+
+    final total = categories.length;
+    final isValid = selectedCategories.length >= 4;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Categories Header ──────────────────────────────────────────
+        // ── Header ────────────────────────────────────────────────────
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -60,20 +56,18 @@ class CategoriesSelectorSection extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
               decoration: BoxDecoration(
-                color: isAtLeastFour
+                color: isValid
                     ? AppColors.yellowColor.withValues(alpha: 0.15)
                     : AppColors.redColor.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
-                  color: isAtLeastFour
-                      ? AppColors.yellowColor
-                      : AppColors.redColor,
+                  color: isValid ? AppColors.yellowColor : AppColors.redColor,
                   width: 1.w,
                 ),
               ),
               child: Text(
-                '${selectedCategories.length}/7',
-                style: isAtLeastFour
+                '${selectedCategories.length}/$total',
+                style: isValid
                     ? getTextStyle().s12.w700.yellowColor
                     : getTextStyle().s12.w700.redColor,
               ),
@@ -87,7 +81,7 @@ class CategoriesSelectorSection extends StatelessWidget {
         ),
         14.szH,
 
-        // ── Interactive Categories Selection Wrap ────────────────────
+        // ── Category Chips ────────────────────────────────────────────
         Wrap(
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -96,24 +90,20 @@ class CategoriesSelectorSection extends StatelessWidget {
           children: categories.map((cat) {
             final isSelected = selectedCategories.contains(cat.id);
             return CategoryChip(
-              emoji: cat.emoji,
-              name: cat.name,
+              emoji: cat.icon,
+              name: cat.getLocalizedName(context),
               isSelected: isSelected,
               onTap: () {
-                final updatedSet = Set<String>.from(selectedCategories);
-                if (isSelected) {
-                  updatedSet.remove(cat.id);
-                } else {
-                  updatedSet.add(cat.id);
-                }
-                onCategoriesChanged(updatedSet);
+                final updated = Set<String>.from(selectedCategories);
+                isSelected ? updated.remove(cat.id) : updated.add(cat.id);
+                onCategoriesChanged(updated);
               },
             );
           }).toList(),
         ),
 
-        // Validation Warning Banner
-        if (!isAtLeastFour) ...[
+        // ── Validation Banner ─────────────────────────────────────────
+        if (!isValid) ...[
           14.szH,
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
@@ -127,11 +117,7 @@ class CategoriesSelectorSection extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.warning_amber_rounded,
-                  color: AppColors.redColor,
-                  size: 18.sp,
-                ),
+                Icon(Icons.warning_amber_rounded, color: AppColors.redColor, size: 18.sp),
                 8.szW,
                 Expanded(
                   child: Text(

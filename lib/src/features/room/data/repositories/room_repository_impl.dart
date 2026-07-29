@@ -11,6 +11,17 @@ class RoomRepositoryImpl implements RoomRepository {
   RoomRepositoryImpl({required this.remoteDataSource});
 
   @override
+  Future<Either<Failure, List<RoomCategoryEntity>>> getCategories() async {
+    try {
+      final categories = await remoteDataSource.getCategories();
+      return Right(categories);
+    } catch (e) {
+      final msg = e.toString().replaceAll('Exception: ', '');
+      return Left(Failure(ServerException(0, false, msg, null)));
+    }
+  }
+
+  @override
   Future<Either<Failure, String>> createRoom({
     required int rounds,
     required List<RoomCategoryEntity> categories,
