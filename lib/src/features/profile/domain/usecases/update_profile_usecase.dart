@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:autobus_complete/src/core/error/failure.dart';
 import 'package:autobus_complete/src/core/usecases/usecase.dart';
-import 'package:autobus_complete/src/features/auth/domain/entities/user_entity.dart';
-import 'package:autobus_complete/src/features/profile/domain/abstract_repository/profile_repository.dart';
+import 'package:autobus_complete/src/features/profile/domain/repository/profile_repository.dart';
+import 'package:autobus_complete/src/features/profile/domain/entities/profile_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
@@ -23,13 +23,13 @@ class UpdateProfileParams extends Equatable {
   List<Object?> get props => [name, email, imageFile, removeImage];
 }
 
-class UpdateProfileUseCase implements BaseUseCase<UserEntity, UpdateProfileParams> {
+class UpdateProfileUseCase implements BaseUseCase<ProfileEntity, UpdateProfileParams> {
   final ProfileRepository repository;
 
   UpdateProfileUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserEntity>> call(UpdateProfileParams params) async {
+  Future<Either<Failure, ProfileEntity>> call(UpdateProfileParams params) async {
     return await repository.updateProfile(
       name: params.name,
       email: params.email,

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/usecases/usecase.dart';
-import 'package:autobus_complete/src/features/auth/domain/entities/user_entity.dart';
+import 'package:autobus_complete/src/features/profile/domain/entities/profile_entity.dart';
 import 'package:autobus_complete/src/features/profile/domain/usecases/delete_account_usecase.dart';
 import 'package:autobus_complete/src/features/profile/domain/usecases/get_user_profile_usecase.dart';
 import 'package:autobus_complete/src/features/profile/domain/usecases/send_password_reset_usecase.dart';
@@ -18,7 +18,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   File? selectedImage;
   bool isImageRemoved = false;
-  UserEntity? currentUser;
+  ProfileEntity? currentUser;
 
   ProfileCubit({
     required this.getUserProfileUseCase,
@@ -43,7 +43,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     final picker = ImagePicker();
     final picked = await picker.pickImage(
       source: source,
-      imageQuality: 80,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 60,
     );
     if (picked != null) {
       selectedImage = File(picked.path);

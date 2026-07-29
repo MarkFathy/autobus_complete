@@ -77,7 +77,9 @@ class AuthCubit extends Cubit<AuthState> {
     final picker = ImagePicker();
     final picked = await picker.pickImage(
       source: source,
-      imageQuality: 80,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 60,
     );
     if (picked != null) {
       selectedImage = File(picked.path);

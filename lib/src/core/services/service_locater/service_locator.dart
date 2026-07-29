@@ -13,7 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:autobus_complete/src/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:autobus_complete/src/features/profile/data/repositories/profile_repository_impl.dart';
-import 'package:autobus_complete/src/features/profile/domain/abstract_repository/profile_repository.dart';
+import 'package:autobus_complete/src/features/profile/domain/repository/profile_repository.dart';
 import 'package:autobus_complete/src/features/profile/domain/usecases/delete_account_usecase.dart';
 import 'package:autobus_complete/src/features/profile/domain/usecases/get_user_profile_usecase.dart';
 import 'package:autobus_complete/src/features/profile/domain/usecases/send_password_reset_usecase.dart';
@@ -73,7 +73,7 @@ Future<void> init() async {
   
   // Features - Profile
   // Cubit
-  sl.registerFactory(
+  sl.registerLazySingleton(
     () => ProfileCubit(
       getUserProfileUseCase: sl(),
       updateProfileUseCase: sl(),

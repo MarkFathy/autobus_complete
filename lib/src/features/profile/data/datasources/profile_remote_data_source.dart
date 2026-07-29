@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/services/session_manager.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_data_source.dart';
-import 'package:autobus_complete/src/features/auth/data/models/user_model.dart';
+import 'package:autobus_complete/src/features/profile/data/models/profile_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 abstract class ProfileRemoteDataSource {
-  Future<UserModel> getUserProfile();
-  Future<UserModel> updateProfile({
+  Future<ProfileModel> getUserProfile();
+  Future<ProfileModel> updateProfile({
     required String name,
     required String email,
     File? imageFile,
@@ -34,7 +34,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   });
 
   @override
-  Future<UserModel> getUserProfile() async {
+  Future<ProfileModel> getUserProfile() async {
     final user = firebaseAuth.currentUser;
     if (user == null) {
       throw Exception(S.current.firebaseUserNotFound);
@@ -43,7 +43,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     final docSnapshot = await firestore.collection('users').doc(user.uid).get();
     if (docSnapshot.exists && docSnapshot.data() != null) {
       final data = docSnapshot.data()!;
-      return UserModel(
+      return ProfileModel(
         id: user.uid,
         name: data['name'] ?? user.displayName ?? '',
         email: data['email'] ?? user.email ?? '',
@@ -51,11 +51,11 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       );
     }
 
-    return UserModel.fromFirebaseUser(user);
+    return ProfileModel.fromFirebaseUser(user);
   }
 
   @override
-  Future<UserModel> updateProfile({
+  Future<ProfileModel> updateProfile({
     required String name,
     required String email,
     File? imageFile,
@@ -80,11 +80,15 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         await ref.putFile(imageFile);
         photoUrl = await ref.getDownloadURL();
       } catch (e) {
-        // Fallback to Base64 data URL if Firebase Storage fails (e.g. Storage security rules locked)
         try {
           final bytes = await imageFile.readAsBytes();
           final base64String = base64Encode(bytes);
-          photoUrl = 'data:image/jpeg;base64,$base64String';
+          final generatedDataUrl = 'data:image/jpeg;base64,$base64String';
+          if (generatedDataUrl.length < 800000) {
+            photoUrl = generatedDataUrl;
+          } else {
+            photoUrl = user.photoURL;
+          }
         } catch (_) {
           photoUrl = user.photoURL;
         }
@@ -115,7 +119,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         .doc(user.uid)
         .set(updatedData, SetOptions(merge: true));
 
-    return UserModel(
+    return ProfileModel(
       id: user.uid,
       name: name,
       email: email,

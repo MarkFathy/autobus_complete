@@ -1,6 +1,6 @@
 import 'package:autobus_complete/src/core/error/failure.dart';
 import 'package:autobus_complete/src/core/usecases/usecase.dart';
-import 'package:autobus_complete/src/features/profile/domain/abstract_repository/profile_repository.dart';
+import 'package:autobus_complete/src/features/profile/domain/repository/profile_repository.dart';
 import 'package:dartz/dartz.dart';
 
 class DeleteAccountUseCase implements BaseUseCase<void, NoParams> {

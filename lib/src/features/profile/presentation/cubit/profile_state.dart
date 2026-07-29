@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:autobus_complete/src/features/auth/domain/entities/user_entity.dart';
+import 'package:autobus_complete/src/features/profile/domain/entities/profile_entity.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class ProfileState extends Equatable {
@@ -14,7 +14,7 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  final UserEntity user;
+  final ProfileEntity user;
 
   const ProfileLoaded(this.user);
 
@@ -23,7 +23,7 @@ class ProfileLoaded extends ProfileState {
 }
 
 class ProfileUpdateSuccess extends ProfileState {
-  final UserEntity user;
+  final ProfileEntity user;
 
   const ProfileUpdateSuccess(this.user);
 

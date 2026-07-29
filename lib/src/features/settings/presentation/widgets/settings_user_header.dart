@@ -14,55 +14,65 @@ class SettingsUserHeader extends StatelessWidget {
 
   const SettingsUserHeader({
     super.key,
-    this.name = 'Mark Fathy',
-    this.email = 'mark@example.com',
+    required this.name,
+    required this.email,
     this.imageUrl,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(16.r),
-        decoration: BoxDecoration(
-          color: AppColors.textFieldFillColor,
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(
-            color: AppColors.yellowColor.withValues(alpha: 0.3),
-            width: 1.w,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20.r),
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          decoration: BoxDecoration(
+            color: AppColors.textFieldFillColor,
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: AppColors.yellowColor.withValues(alpha: 0.3),
+              width: 1.w,
+            ),
           ),
-        ),
-        child: Row(
-          children: [
-            UserProfileAvatar(
-              radius: 32,
-              imageUrl: imageUrl,
-            ),
-            16.szW,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: getTextStyle().s18.w700.whiteColor,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  4.szH,
-                  Text(
-                    email,
-                    style: getTextStyle().s14.w400.greyColor,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+          child: Row(
+            children: [
+              // Avatar
+              UserProfileAvatar(
+                radius: 30,
+                imageUrl: imageUrl,
               ),
-            ),
-          ],
+              14.szW,
+
+              // Name and Email (Safely wrapped against long text)
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: getTextStyle().s16.w700.whiteColor.ellipsis,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    4.szH,
+                    Text(
+                      email,
+                      style: getTextStyle().s14.w400.greyColor.ellipsis,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+
+          
+            ],
+          ),
         ),
       ),
     );

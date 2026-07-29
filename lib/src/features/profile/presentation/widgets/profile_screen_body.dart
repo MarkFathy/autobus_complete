@@ -42,6 +42,7 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
               context,
               message: S.of(context).profileUpdatedSuccess,
             );
+            Go.back();
           } else if (state is ProfilePasswordResetSent) {
             CustomSnackBar.showSuccess(
               context,

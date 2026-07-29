@@ -16,44 +16,46 @@ class HomeScreenBody extends StatelessWidget {
             transition: TransitionType.slide,
           ),
         ),
-        title: Assets.pngs.logo.image(height: 45.h, width: 45.w),
         action: Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
-          child: UserProfileAvatar(
-            radius: 18.r,
-            onTap: () => Go.toNamed(
-              NamedRoutes.profile,
-              transition: TransitionType.slide,
-            ),
-          ),
+          child: Assets.pngs.logo.image(height: 45.h, width: 45.w),
+          // child: UserProfileAvatar(
+          //   radius: 18.r,
+          //   onTap: () => Go.toNamed(
+          //     NamedRoutes.profile,
+          //     transition: TransitionType.slide,
+          //   ),
+          // ),
         ),
       ),
-      body: Column(
-        children: [
-          60.szH,
-          HomeCard(
-            icon: Icons.people_outline_outlined,
-            title: S.of(context).hostGame,
-            subtitle: S.of(context).hostGameSubtitle,
-            onTap: () {
-              // Host Game action
-            },
-          ),
-          16.szH,
-          HomeCard(
-            icon: Icons.login_rounded,
-            title: S.of(context).joinGame,
-            subtitle: S.of(context).joinGameSubtitle,
-            onTap: () {
-              // Join Game action
-            },
-          ),
-
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 50.h),
-            child: Assets.lotties.busHome.lottie(width: 350.w, height: 200.h),
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            60.szH,
+            HomeCard(
+              icon: Icons.people_outline_outlined,
+              title: S.of(context).hostGame,
+              subtitle: S.of(context).hostGameSubtitle,
+              onTap: () {
+                // Host Game action
+              },
+            ),
+            16.szH,
+            HomeCard(
+              icon: Icons.login_rounded,
+              title: S.of(context).joinGame,
+              subtitle: S.of(context).joinGameSubtitle,
+              onTap: () {
+                // Join Game action
+              },
+            ),
+        
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 50.h),
+              child: Assets.lotties.busHome.lottie(width: 350.w, height: 200.h),
+            ),
+          ],
+        ),
       ),
     );
   }

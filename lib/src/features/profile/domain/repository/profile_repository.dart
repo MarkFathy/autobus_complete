@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:autobus_complete/src/core/error/failure.dart';
-import 'package:autobus_complete/src/features/auth/domain/entities/user_entity.dart';
+import 'package:autobus_complete/src/features/profile/domain/entities/profile_entity.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class ProfileRepository {
-  Future<Either<Failure, UserEntity>> getUserProfile();
-  Future<Either<Failure, UserEntity>> updateProfile({
+  Future<Either<Failure, ProfileEntity>> getUserProfile();
+  Future<Either<Failure, ProfileEntity>> updateProfile({
     required String name,
     required String email,
     File? imageFile,
