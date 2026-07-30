@@ -19,7 +19,7 @@
     "loginWith": "تسجيل الدخول ب",
     "loginWithGoogle": "تسجيل الدخول بواسطة ",
     "or": "أو",
-    "autobusComplete": "أوتوبيس كومبليت!",
+    "autobusComplete": "أتوبيس كومبليت!",
 
     "@_REGISTER_SCREEN": {},
     "register": "إنشاء حساب",
@@ -125,7 +125,7 @@
     "getReady": "استعد!",
     "round": "الجولة",
     "currentLetter": "الحرف",
-    "stopBus": "أوتوبيس كومبليت!",
+    "stopBus": "أتوبيس كومبليت!",
     "submitAnswers": "إرسال الإجابات",
     "noAnswerGiven": "لم يتم إدخال إجابة",
     "scoringTitle": "تقييم الجولة",

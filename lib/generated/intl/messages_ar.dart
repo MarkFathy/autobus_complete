@@ -25,7 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "aboutUs": MessageLookupByLibrary.simpleMessage("عن اللعبة"),
     "animalCategory": MessageLookupByLibrary.simpleMessage("حيوان"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
-    "autobusComplete": MessageLookupByLibrary.simpleMessage("أوتوبيس كومبليت!"),
+    "autobusComplete": MessageLookupByLibrary.simpleMessage("أتوبيس كومبليت!"),
     "backToHome": MessageLookupByLibrary.simpleMessage("العودة للرئيسية"),
     "boyCategory": MessageLookupByLibrary.simpleMessage("ولد"),
     "camera": MessageLookupByLibrary.simpleMessage("الكاميرا"),
