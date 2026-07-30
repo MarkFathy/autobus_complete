@@ -11,10 +11,12 @@ class AppStatusBarAndOrientationsTheme {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
+        //For android light icons
+        statusBarIconBrightness: Brightness.light,
+        //For ios light icons
         statusBarBrightness: Brightness.light,
         systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
     );
   }

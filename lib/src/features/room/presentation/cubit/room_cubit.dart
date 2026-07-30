@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
 import 'package:autobus_complete/src/core/usecases/usecase.dart';
-import 'package:autobus_complete/src/features/room/data/datasources/room_remote_data_source.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/create_room_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/end_game_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/get_categories_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/join_room_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/kick_player_usecase.dart';
@@ -12,7 +11,10 @@ import 'package:autobus_complete/src/features/room/domain/usecases/listen_to_roo
 import 'package:autobus_complete/src/features/room/domain/usecases/make_host_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/play_again_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/start_game_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/start_next_round_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/submit_round_answers_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/toggle_ready_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/update_category_score_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/update_room_settings_usecase.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +33,10 @@ class RoomCubit extends Cubit<RoomState> {
   final LeaveRoomUseCase leaveRoomUseCase;
   final MakeHostUseCase makeHostUseCase;
   final KickPlayerUseCase kickPlayerUseCase;
+  final StartNextRoundUseCase startNextRoundUseCase;
+  final SubmitRoundAnswersUseCase submitRoundAnswersUseCase;
+  final UpdateCategoryScoreUseCase updateCategoryScoreUseCase;
+  final EndGameUseCase endGameUseCase;
 
   StreamSubscription? _roomSubscription;
   RoomEntity? currentRoom;
@@ -48,6 +54,10 @@ class RoomCubit extends Cubit<RoomState> {
     required this.leaveRoomUseCase,
     required this.makeHostUseCase,
     required this.kickPlayerUseCase,
+    required this.startNextRoundUseCase,
+    required this.submitRoundAnswersUseCase,
+    required this.updateCategoryScoreUseCase,
+    required this.endGameUseCase,
   }) : super(RoomInitial());
 
   Future<List<RoomCategoryEntity>> fetchCategories() async {
@@ -235,21 +245,25 @@ class RoomCubit extends Cubit<RoomState> {
 
   Future<void> startNextRound() async {
     if (currentRoom == null) return;
-    try {
-      await sl<RoomRemoteDataSource>().startNextRound(
-        roomCode: currentRoom!.roomCode,
-      );
-    } catch (_) {}
+    final result = await startNextRoundUseCase(currentRoom!.roomCode);
+    result.fold(
+      (failure) => emit(RoomError(failure.serverException.message)),
+      (_) {},
+    );
   }
 
   Future<void> submitRoundAnswers(Map<String, String> answers) async {
     if (currentRoom == null) return;
-    try {
-      await sl<RoomRemoteDataSource>().submitRoundAnswers(
+    final result = await submitRoundAnswersUseCase(
+      SubmitRoundAnswersParams(
         roomCode: currentRoom!.roomCode,
         answers: answers,
-      );
-    } catch (_) {}
+      ),
+    );
+    result.fold(
+      (failure) => emit(RoomError(failure.serverException.message)),
+      (_) {},
+    );
   }
 
   Future<void> updateCategoryScore({
@@ -258,23 +272,27 @@ class RoomCubit extends Cubit<RoomState> {
     required int score,
   }) async {
     if (currentRoom == null) return;
-    try {
-      await sl<RoomRemoteDataSource>().updateCategoryScore(
+    final result = await updateCategoryScoreUseCase(
+      UpdateCategoryScoreParams(
         roomCode: currentRoom!.roomCode,
         playerId: playerId,
         categoryId: categoryId,
         score: score,
-      );
-    } catch (_) {}
+      ),
+    );
+    result.fold(
+      (failure) => emit(RoomError(failure.serverException.message)),
+      (_) {},
+    );
   }
 
   Future<void> endGame() async {
     if (currentRoom == null) return;
-    try {
-      await sl<RoomRemoteDataSource>().endGame(
-        roomCode: currentRoom!.roomCode,
-      );
-    } catch (_) {}
+    final result = await endGameUseCase(currentRoom!.roomCode);
+    result.fold(
+      (failure) => emit(RoomError(failure.serverException.message)),
+      (_) {},
+    );
   }
 
   Future<void> copyRoomCodeToClipboard(String roomCode) async {

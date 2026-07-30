@@ -4,11 +4,17 @@ import 'package:autobus_complete/src/features/room/data/datasources/room_remote_
 import 'package:autobus_complete/src/features/room/domain/abstract_repository/room_repository.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 
 class RoomRepositoryImpl implements RoomRepository {
   final RoomRemoteDataSource remoteDataSource;
 
   RoomRepositoryImpl({required this.remoteDataSource});
+
+  Failure _failure(String tag, Object e) {
+    debugPrint('[$tag]: $e');
+    return Failure(ServerException(0, false, 'Something went wrong', null));
+  }
 
   @override
   Future<Either<Failure, List<RoomCategoryEntity>>> getCategories() async {
@@ -16,8 +22,7 @@ class RoomRepositoryImpl implements RoomRepository {
       final categories = await remoteDataSource.getCategories();
       return Right(categories);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.getCategories', e));
     }
   }
 
@@ -33,8 +38,7 @@ class RoomRepositoryImpl implements RoomRepository {
       );
       return Right(roomCode);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.createRoom', e));
     }
   }
 
@@ -44,8 +48,7 @@ class RoomRepositoryImpl implements RoomRepository {
       await remoteDataSource.joinRoom(roomCode: roomCode);
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.joinRoom', e));
     }
   }
 
@@ -55,14 +58,14 @@ class RoomRepositoryImpl implements RoomRepository {
         .listenToRoom(roomCode: roomCode)
         .map<Either<Failure, RoomEntity>>((roomModel) {
           if (roomModel == null) {
-            return Left(Failure(ServerException(0, false, "Room was closed", null)));
+            return Left(Failure(ServerException(0, false, 'Room was closed', null)));
           }
           return Right(roomModel);
         })
         .handleError((error) {
-          final msg = error.toString().replaceAll('Exception: ', '');
+          debugPrint('[RoomRepository.listenToRoom]: $error');
           return Left<Failure, RoomEntity>(
-            Failure(ServerException(0, false, msg, null)),
+            Failure(ServerException(0, false, 'Something went wrong', null)),
           );
         });
   }
@@ -73,8 +76,7 @@ class RoomRepositoryImpl implements RoomRepository {
       await remoteDataSource.toggleReadyStatus(roomCode: roomCode);
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.toggleReadyStatus', e));
     }
   }
 
@@ -92,8 +94,7 @@ class RoomRepositoryImpl implements RoomRepository {
       );
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.updateRoomSettings', e));
     }
   }
 
@@ -103,8 +104,7 @@ class RoomRepositoryImpl implements RoomRepository {
       await remoteDataSource.startGame(roomCode: roomCode);
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.startGame', e));
     }
   }
 
@@ -114,8 +114,7 @@ class RoomRepositoryImpl implements RoomRepository {
       await remoteDataSource.playAgain(roomCode: roomCode);
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.playAgain', e));
     }
   }
 
@@ -125,8 +124,7 @@ class RoomRepositoryImpl implements RoomRepository {
       await remoteDataSource.leaveRoom(roomCode: roomCode);
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.leaveRoom', e));
     }
   }
 
@@ -142,8 +140,7 @@ class RoomRepositoryImpl implements RoomRepository {
       );
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.makeHost', e));
     }
   }
 
@@ -159,8 +156,65 @@ class RoomRepositoryImpl implements RoomRepository {
       );
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      return Left(_failure('RoomRepository.kickPlayer', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> startNextRound({
+    required String roomCode,
+  }) async {
+    try {
+      await remoteDataSource.startNextRound(roomCode: roomCode);
+      return const Right(null);
+    } catch (e) {
+      return Left(_failure('RoomRepository.startNextRound', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> submitRoundAnswers({
+    required String roomCode,
+    required Map<String, String> answers,
+  }) async {
+    try {
+      await remoteDataSource.submitRoundAnswers(
+        roomCode: roomCode,
+        answers: answers,
+      );
+      return const Right(null);
+    } catch (e) {
+      return Left(_failure('RoomRepository.submitRoundAnswers', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateCategoryScore({
+    required String roomCode,
+    required String playerId,
+    required String categoryId,
+    required int score,
+  }) async {
+    try {
+      await remoteDataSource.updateCategoryScore(
+        roomCode: roomCode,
+        playerId: playerId,
+        categoryId: categoryId,
+        score: score,
+      );
+      return const Right(null);
+    } catch (e) {
+      return Left(_failure('RoomRepository.updateCategoryScore', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> endGame({required String roomCode}) async {
+    try {
+      await remoteDataSource.endGame(roomCode: roomCode);
+      return const Right(null);
+    } catch (e) {
+      return Left(_failure('RoomRepository.endGame', e));
     }
   }
 }

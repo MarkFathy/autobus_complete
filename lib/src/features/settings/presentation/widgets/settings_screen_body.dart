@@ -172,7 +172,7 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                                   color: AppColors.greyColor,
                                 ),
                                 onTap: () {
-                                  // About Us action
+                                  Go.toNamed(NamedRoutes.aboutGame);
                                 },
                               ),
                               Divider(
@@ -183,17 +183,17 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                                 color: AppColors.greyColor.withValues(alpha: 0.2),
                               ),
 
-                              // Contact Us Tile
+                              // Privacy Policy Tile
                               SettingsTileItem(
-                                icon: Icons.headset_mic_outlined,
-                                title: S.of(context).contactUs,
+                                icon: Icons.privacy_tip_outlined,
+                                title: S.of(context).privacyPolicy,
                                 trailing: Icon(
                                   Icons.arrow_forward_ios_rounded,
                                   size: 16.sp,
                                   color: AppColors.greyColor,
                                 ),
                                 onTap: () {
-                                  // Contact Us action
+                                  Go.toNamed(NamedRoutes.privacyPolicy);
                                 },
                               ),
                             ],

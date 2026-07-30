@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
+import 'package:autobus_complete/src/core/helpers/app_letters.dart';
 import 'package:autobus_complete/src/core/navigation/named_routes.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
@@ -37,20 +38,11 @@ class GameBoardScreen extends StatefulWidget {
 class _GameBoardScreenState extends State<GameBoardScreen> {
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, FocusNode> _focusNodes = {};
+  late Listenable _allControllers;
 
   String _currentLetter = '؟';
   bool _isShuffling = true;
   Timer? _shuffleTimer;
-
-  static const List<String> _arabicLetters = [
-    'أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش',
-    'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'
-  ];
-
-  static const List<String> _englishLetters = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-  ];
 
   @override
   void initState() {
@@ -60,6 +52,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       _controllers[cat.id] = TextEditingController();
       _focusNodes[cat.id] = FocusNode();
     }
+    _allControllers = Listenable.merge(_controllers.values.toList());
 
     // Start shuffle animation after frame renders
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -68,14 +61,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   }
 
   List<RoomCategoryEntity> _getActiveCategories() {
-    if (widget.categories != null && widget.categories!.isNotEmpty) {
-      return widget.categories!;
-    }
-    final room = sl<RoomCubit>().currentRoom;
-    if (room != null && room.categories.isNotEmpty) {
-      return room.categories;
-    }
-    return _defaultCategories;
+    final raw = widget.categories ?? sl<RoomCubit>().currentRoom?.categories;
+    return RoomCategoryEntity.getOrderedCategories(raw);
   }
 
   String? _getBackendTargetLetter() {
@@ -99,23 +86,21 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   }
 
   void _startLetterShuffle() {
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final letters = isArabic ? _arabicLetters : _englishLetters;
+    final letters = Localizations.localeOf(context).languageCode == 'ar'
+        ? AppLetters.arabicLetters
+        : AppLetters.englishLetters;
     final random = Random();
-    final backendTargetLetter = _getBackendTargetLetter();
 
     int tickCount = 0;
-    const maxTicks = 30; // ~2.4 seconds of shuffle (30 * 80ms)
-
-    _shuffleTimer = Timer.periodic(const Duration(milliseconds: 80), (timer) {
+    _shuffleTimer = Timer.periodic(const Duration(milliseconds: 60), (timer) {
       tickCount++;
-      if (tickCount < maxTicks) {
+      if (tickCount < 18) {
         setState(() {
           _currentLetter = letters[random.nextInt(letters.length)];
         });
       } else {
-        timer.cancel();
-        // Land on exact target letter from Firebase Backend across all devices
+        _shuffleTimer?.cancel();
+        final backendTargetLetter = _getBackendTargetLetter();
         final finalLetter = (backendTargetLetter != null && backendTargetLetter.isNotEmpty)
             ? backendTargetLetter
             : letters[random.nextInt(letters.length)];
@@ -132,16 +117,6 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     if (_controllers.isEmpty) return false;
     return _controllers.values.every((c) => c.text.trim().isNotEmpty);
   }
-
-  List<RoomCategoryEntity> get _defaultCategories => [
-        const RoomCategoryEntity(id: 'boy',     nameAr: 'ولد',   nameEn: 'Boy',     icon: '👦'),
-        const RoomCategoryEntity(id: 'girl',    nameAr: 'بنت',   nameEn: 'Girl',    icon: '👧'),
-        const RoomCategoryEntity(id: 'object',  nameAr: 'جماد',  nameEn: 'Object',  icon: '📦'),
-        const RoomCategoryEntity(id: 'plant',   nameAr: 'نبات',  nameEn: 'Plant',   icon: '🌿'),
-        const RoomCategoryEntity(id: 'food',    nameAr: 'أكلة',  nameEn: 'Food',    icon: '🍔'),
-        const RoomCategoryEntity(id: 'animal',  nameAr: 'حيوان', nameEn: 'Animal',  icon: '🦁'),
-        const RoomCategoryEntity(id: 'country', nameAr: 'بلد',   nameEn: 'Country', icon: '🚩'),
-      ];
 
   @override
   void dispose() {
@@ -176,7 +151,6 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   @override
   Widget build(BuildContext context) {
     final activeCategories = _getActiveCategories();
-    final isButtonEnabled = !_isShuffling && _areAllFieldsFilled;
 
     return BlocProvider.value(
       value: sl<RoomCubit>(),
@@ -212,24 +186,31 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                         itemCount: activeCategories.length,
                         itemBuilder: (context, index) {
                           final cat = activeCategories[index];
+                          final isLast = index == activeCategories.length - 1;
                           return CategoryInputCard(
                             emoji: cat.icon,
                             categoryName: cat.getLocalizedName(context),
                             controller: _controllers[cat.id] ?? TextEditingController(),
                             focusNode: _focusNodes[cat.id],
-                            onChanged: (value) {
-                              setState(() {});
-                            },
+                            textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
                           );
                         },
                       ),
                     ),
                     12.szH,
 
-                    // STOP / AUTOBUS COMPLETE Button
-                    CustomButton(
-                      text: S.of(context).autobusComplete,
-                      onPressed: isButtonEnabled ? _onAutobusCompletePressed : null,
+                    // STOP / AUTOBUS COMPLETE Button — rebuilds only when text changes
+                    ListenableBuilder(
+                      listenable: _allControllers,
+                      builder: (context, _) {
+                        final isButtonEnabled = !_isShuffling &&
+                            _controllers.isNotEmpty &&
+                            _controllers.values.every((c) => c.text.trim().isNotEmpty);
+                        return CustomButton(
+                          text: S.of(context).autobusComplete,
+                          onPressed: isButtonEnabled ? _onAutobusCompletePressed : null,
+                        );
+                      },
                     ),
                     12.szH,
                   ],

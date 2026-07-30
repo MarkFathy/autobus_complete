@@ -11,6 +11,7 @@ class CategoryInputCard extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
+  final TextInputAction? textInputAction;
 
   const CategoryInputCard({
     super.key,
@@ -19,6 +20,7 @@ class CategoryInputCard extends StatelessWidget {
     required this.controller,
     this.focusNode,
     this.onChanged,
+    this.textInputAction,
   });
 
   @override
@@ -55,6 +57,7 @@ class CategoryInputCard extends StatelessWidget {
             controller: controller,
             focusNode: focusNode,
             onChanged: onChanged,
+            textInputAction: textInputAction ?? TextInputAction.next,
             style: getTextStyle().s14.w600.whiteColor,
             decoration: InputDecoration(
               filled: true,

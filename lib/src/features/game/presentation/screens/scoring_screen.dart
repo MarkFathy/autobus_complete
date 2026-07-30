@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
@@ -10,6 +9,9 @@ import 'package:autobus_complete/src/core/services/service_locater/service_locat
 import 'package:autobus_complete/src/core/widgets/app_scaffold.dart';
 import 'package:autobus_complete/src/core/widgets/buttons/custom_button.dart';
 import 'package:autobus_complete/src/core/widgets/custom_app_bar.dart';
+import 'package:autobus_complete/src/core/widgets/user_profile_avatar.dart';
+import 'package:autobus_complete/src/features/game/presentation/widgets/non_host_waiting_banner.dart';
+import 'package:autobus_complete/src/features/game/presentation/widgets/score_badge.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_cubit.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_state.dart';
@@ -86,9 +88,8 @@ class _ScoringScreenState extends State<ScoringScreen> {
         builder: (context, state) {
           final roomCubit = context.read<RoomCubit>();
           final activeRoom = widget.room ?? roomCubit.currentRoom;
-
           final isHost = activeRoom?.hostId == currentUserId;
-          final categories = activeRoom?.categories ?? _defaultCategories;
+          final categories = RoomCategoryEntity.getOrderedCategories(activeRoom?.categories);
           final players = activeRoom?.players ?? _defaultPlayers;
           final currentRound = activeRoom?.currentRound ?? 1;
           final totalRounds = activeRoom?.rounds ?? 5;
@@ -160,20 +161,10 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                 // Player Header Row (Cumulative Total Score Across All Rounds)
                                 Row(
                                   children: [
-                                    CircleAvatar(
-                                      radius: 18.r,
-                                      backgroundColor: AppColors.yellowColor.withValues(alpha: 0.2),
-                                      backgroundImage: (player.photoUrl != null && player.photoUrl!.isNotEmpty)
-                                          ? (player.photoUrl!.startsWith('data:image')
-                                              ? MemoryImage(base64Decode(player.photoUrl!.split(',').last))
-                                              : NetworkImage(player.photoUrl!) as ImageProvider)
-                                          : null,
-                                      child: (player.photoUrl == null || player.photoUrl!.isEmpty)
-                                          ? Text(
-                                              player.name.isNotEmpty ? player.name[0].toUpperCase() : '?',
-                                              style: getTextStyle().s14.bold.yellowColor,
-                                            )
-                                          : null,
+                                    UserProfileAvatar(
+                                      radius: 16,
+                                      imageUrl: player.photoUrl,
+                                      borderColor: AppColors.yellowColor,
                                     ),
                                     10.szW,
                                     Expanded(
@@ -185,17 +176,8 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                       ),
                                     ),
                                     // Total Cumulative Game Score Badge (Previous Rounds + Current Round)
-                                    Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.cyanColor.withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(12.r),
-                                        border: Border.all(color: AppColors.cyanColor),
-                                      ),
-                                      child: Text(
-                                        '${S.of(context).roundTotal}: ${player.score + playerTotal}',
-                                        style: getTextStyle().s12.bold.cyanColor,
-                                      ),
+                                    ScoreBadge(
+                                      label: '${S.of(context).roundTotal}: ${player.score + playerTotal}',
                                     ),
                                   ],
                                 ),
@@ -360,18 +342,8 @@ class _ScoringScreenState extends State<ScoringScreen> {
                         },
                       )
                     else
-                      Container(
-                        padding: EdgeInsets.all(12.r),
-                        decoration: BoxDecoration(
-                          color: AppColors.textFieldFillColor,
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Center(
-                          child: Text(
-                            S.of(context).waitingForOtherPlayers,
-                            style: getTextStyle().s14.w600.yellowColor,
-                          ),
-                        ),
+                      NonHostWaitingBanner(
+                        text: S.of(context).waitingForOtherPlayers,
                       ),
                     12.szH,
                   ],
@@ -384,14 +356,6 @@ class _ScoringScreenState extends State<ScoringScreen> {
       ),
     );
   }
-
-  List<RoomCategoryEntity> get _defaultCategories => [
-        const RoomCategoryEntity(id: 'boy', nameAr: 'ولد', nameEn: 'Boy', icon: '👦'),
-        const RoomCategoryEntity(id: 'girl', nameAr: 'بنت', nameEn: 'Girl', icon: '👧'),
-        const RoomCategoryEntity(id: 'object', nameAr: 'جماد', nameEn: 'Object', icon: '📦'),
-        const RoomCategoryEntity(id: 'plant', nameAr: 'نبات', nameEn: 'Plant', icon: '🌿'),
-        const RoomCategoryEntity(id: 'food', nameAr: 'أكلة', nameEn: 'Food', icon: '🍔'),
-      ];
 
   List<RoomPlayerEntity> get _defaultPlayers => [
         const RoomPlayerEntity(id: '1', name: 'Player 1', isHost: true),

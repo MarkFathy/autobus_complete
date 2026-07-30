@@ -9,6 +9,8 @@ import 'package:autobus_complete/src/features/game/presentation/screens/scoring_
 import 'package:autobus_complete/src/features/home/presentation/screens/home_screen.dart';
 import 'package:autobus_complete/src/features/profile/presentation/screens/profile_screen.dart';
 import 'package:autobus_complete/src/features/room/presentation/screens/room_lobby_screen.dart';
+import 'package:autobus_complete/src/features/settings/presentation/screens/about_game_screen.dart';
+import 'package:autobus_complete/src/features/settings/presentation/screens/privacy_policy_screen.dart';
 import 'package:autobus_complete/src/features/settings/presentation/screens/settings_screen.dart';
 import 'package:autobus_complete/src/features/splash/presentation/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -127,6 +129,22 @@ class RouterGenerator {
       //Leaderboard Screen
       NamedRoutes.leaderboard => _pageRouter.build(
         const LeaderboardScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+
+      //Privacy Policy Screen
+      NamedRoutes.privacyPolicy => _pageRouter.build(
+        const PrivacyPolicyScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+
+      //About Game Screen
+      NamedRoutes.aboutGame => _pageRouter.build(
+        const AboutGameScreen(),
         settings: actualSettings,
         transition: transition,
         options: options,

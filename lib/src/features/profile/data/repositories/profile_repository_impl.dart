@@ -5,6 +5,7 @@ import 'package:autobus_complete/src/features/profile/data/datasources/profile_r
 import 'package:autobus_complete/src/features/profile/domain/repository/profile_repository.dart';
 import 'package:autobus_complete/src/features/profile/domain/entities/profile_entity.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDataSource remoteDataSource;
@@ -17,8 +18,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
       final profileModel = await remoteDataSource.getUserProfile();
       return Right(profileModel);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      debugPrint('[ProfileRepository.getUserProfile]: $e');
+      return Left(Failure(ServerException(0, false, 'Failed to load profile', null)));
     }
   }
 
@@ -38,8 +39,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
       );
       return Right(profileModel);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      debugPrint('[ProfileRepository.updateProfile]: $e');
+      return Left(Failure(ServerException(0, false, 'Failed to update profile', null)));
     }
   }
 
@@ -49,8 +50,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
       await remoteDataSource.sendPasswordResetEmail();
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      debugPrint('[ProfileRepository.sendPasswordResetEmail]: $e');
+      return Left(Failure(ServerException(0, false, 'Failed to send reset email', null)));
     }
   }
 
@@ -60,8 +61,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
       await remoteDataSource.deleteAccount();
       return const Right(null);
     } catch (e) {
-      final msg = e.toString().replaceAll('Exception: ', '');
-      return Left(Failure(ServerException(0, false, msg, null)));
+      debugPrint('[ProfileRepository.deleteAccount]: $e');
+      return Left(Failure(ServerException(0, false, 'Failed to delete account', null)));
     }
   }
 }

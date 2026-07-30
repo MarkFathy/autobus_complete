@@ -9,7 +9,9 @@ enum NamedRoutes {
   scoring('/scoring'),
   leaderboard('/leaderboard'),
   settings('/settings'),
-  profile('/profile');
+  profile('/profile'),
+  privacyPolicy('/privacyPolicy'),
+  aboutGame('/aboutGame');
   
   final String routeName;
 

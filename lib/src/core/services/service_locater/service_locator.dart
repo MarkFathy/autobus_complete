@@ -21,6 +21,7 @@ import 'package:autobus_complete/src/features/room/data/datasources/room_remote_
 import 'package:autobus_complete/src/features/room/data/repositories/room_repository_impl.dart';
 import 'package:autobus_complete/src/features/room/domain/abstract_repository/room_repository.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/create_room_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/end_game_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/get_categories_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/join_room_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/kick_player_usecase.dart';
@@ -29,9 +30,18 @@ import 'package:autobus_complete/src/features/room/domain/usecases/listen_to_roo
 import 'package:autobus_complete/src/features/room/domain/usecases/make_host_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/play_again_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/start_game_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/start_next_round_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/submit_round_answers_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/toggle_ready_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/update_category_score_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/update_room_settings_usecase.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_cubit.dart';
+import 'package:autobus_complete/src/features/settings/data/datasources/app_info_remote_data_source.dart';
+import 'package:autobus_complete/src/features/settings/data/repositories/app_info_repository_impl.dart';
+import 'package:autobus_complete/src/features/settings/domain/abstract_repository/app_info_repository.dart';
+import 'package:autobus_complete/src/features/settings/domain/usecases/get_about_game_usecase.dart';
+import 'package:autobus_complete/src/features/settings/domain/usecases/get_privacy_policy_usecase.dart';
+import 'package:autobus_complete/src/features/settings/presentation/cubit/app_info_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -135,6 +145,10 @@ Future<void> setupServiceLocator() async {
       leaveRoomUseCase: sl(),
       makeHostUseCase: sl(),
       kickPlayerUseCase: sl(),
+      startNextRoundUseCase: sl(),
+      submitRoundAnswersUseCase: sl(),
+      updateCategoryScoreUseCase: sl(),
+      endGameUseCase: sl(),
     ),
   );
 
@@ -150,6 +164,10 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => LeaveRoomUseCase(sl()));
   sl.registerLazySingleton(() => MakeHostUseCase(sl()));
   sl.registerLazySingleton(() => KickPlayerUseCase(sl()));
+  sl.registerLazySingleton(() => StartNextRoundUseCase(sl()));
+  sl.registerLazySingleton(() => SubmitRoundAnswersUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateCategoryScoreUseCase(sl()));
+  sl.registerLazySingleton(() => EndGameUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<RoomRepository>(
@@ -162,6 +180,22 @@ Future<void> setupServiceLocator() async {
       firestore: sl(),
       firebaseAuth: sl(),
     ),
+  );
+
+  // AppInfo / Settings Feature
+  sl.registerFactory(
+    () => AppInfoCubit(
+      getPrivacyPolicyUseCase: sl(),
+      getAboutGameUseCase: sl(),
+    ),
+  );
+  sl.registerLazySingleton(() => GetPrivacyPolicyUseCase(sl()));
+  sl.registerLazySingleton(() => GetAboutGameUseCase(sl()));
+  sl.registerLazySingleton<AppInfoRepository>(
+    () => AppInfoRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<AppInfoRemoteDataSource>(
+    () => AppInfoRemoteDataSourceImpl(firestore: sl()),
   );
 
   // External

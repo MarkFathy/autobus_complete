@@ -27,4 +27,16 @@ abstract class RoomRepository {
     required String roomCode,
     required String playerId,
   });
+  Future<Either<Failure, void>> startNextRound({required String roomCode});
+  Future<Either<Failure, void>> submitRoundAnswers({
+    required String roomCode,
+    required Map<String, String> answers,
+  });
+  Future<Either<Failure, void>> updateCategoryScore({
+    required String roomCode,
+    required String playerId,
+    required String categoryId,
+    required int score,
+  });
+  Future<Either<Failure, void>> endGame({required String roomCode});
 }

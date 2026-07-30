@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:autobus_complete/gen/assets.gen.dart';
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
@@ -11,6 +10,9 @@ import 'package:autobus_complete/src/core/services/service_locater/service_locat
 import 'package:autobus_complete/src/core/widgets/app_scaffold.dart';
 import 'package:autobus_complete/src/core/widgets/buttons/custom_button.dart';
 import 'package:autobus_complete/src/core/widgets/custom_app_bar.dart';
+import 'package:autobus_complete/src/core/widgets/user_profile_avatar.dart';
+import 'package:autobus_complete/src/features/game/presentation/widgets/non_host_waiting_banner.dart';
+import 'package:autobus_complete/src/features/game/presentation/widgets/score_badge.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_cubit.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_state.dart';
@@ -98,10 +100,9 @@ class LeaderboardScreen extends StatelessWidget {
                                   2.szH,
 
                                   // Winner Avatar
-                                  _PlayerAvatar(
-                                    photoUrl: winner.photoUrl,
-                                    name: winner.name,
-                                    radius: 34.r,
+                                  UserProfileAvatar(
+                                    imageUrl: winner.photoUrl,
+                                    radius: 34,
                                     borderColor: AppColors.yellowColor,
                                   ),
                                   6.szH,
@@ -220,10 +221,9 @@ class LeaderboardScreen extends StatelessWidget {
                                         12.szW,
 
                                         // Player Avatar
-                                        _PlayerAvatar(
-                                          photoUrl: player.photoUrl,
-                                          name: player.name,
-                                          radius: 16.r,
+                                        UserProfileAvatar(
+                                          imageUrl: player.photoUrl,
+                                          radius: 16,
                                           borderColor: _getRankColor(rank),
                                         ),
                                         10.szW,
@@ -241,18 +241,7 @@ class LeaderboardScreen extends StatelessWidget {
                                         ),
 
                                         // Total Score Badge
-                                        Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.cyanColor.withValues(alpha: 0.15),
-                                            borderRadius: BorderRadius.circular(12.r),
-                                            border: Border.all(color: AppColors.cyanColor),
-                                          ),
-                                          child: Text(
-                                            '${player.score} pts',
-                                            style: getTextStyle().s12.bold.cyanColor,
-                                          ),
-                                        ),
+                                        ScoreBadge(label: '${player.score} pts'),
                                       ],
                                     ),
                                   );
@@ -274,23 +263,10 @@ class LeaderboardScreen extends StatelessWidget {
                         },
                       )
                     else
-                      Container(
-                        padding: EdgeInsets.all(12.r),
-                        decoration: BoxDecoration(
-                          color: AppColors.textFieldFillColor,
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: AppColors.yellowColor.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            isArabic
-                                ? 'بانتظار الهوست لبدء اللعبة من جديد...'
-                                : 'Waiting for Host to play again...',
-                            style: getTextStyle().s14.w600.yellowColor,
-                          ),
-                        ),
+                      NonHostWaitingBanner(
+                        text: isArabic
+                            ? 'بانتظار الهوست لبدء اللعبة من جديد...'
+                            : 'Waiting for Host to play again...',
                       ),
                     12.szH,
                   ],
@@ -322,50 +298,4 @@ class LeaderboardScreen extends StatelessWidget {
         RoomPlayerEntity(id: '2', name: 'Player 2', score: 110, isHost: false),
         RoomPlayerEntity(id: '3', name: 'Player 3', score: 85, isHost: false),
       ];
-}
-
-class _PlayerAvatar extends StatelessWidget {
-  final String? photoUrl;
-  final String name;
-  final double radius;
-  final Color borderColor;
-
-  const _PlayerAvatar({
-    required this.photoUrl,
-    required this.name,
-    required this.radius,
-    required this.borderColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final hasPhoto = photoUrl != null && photoUrl!.isNotEmpty;
-
-    return Container(
-      padding: EdgeInsets.all(2.r),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: borderColor, width: 2.w),
-      ),
-      child: CircleAvatar(
-        radius: radius,
-        backgroundColor: borderColor.withValues(alpha: 0.2),
-        backgroundImage: hasPhoto
-            ? (photoUrl!.startsWith('data:image')
-                ? MemoryImage(base64Decode(photoUrl!.split(',').last))
-                : NetworkImage(photoUrl!) as ImageProvider)
-            : null,
-        child: !hasPhoto
-            ? Text(
-                name.isNotEmpty ? name[0].toUpperCase() : '?',
-                style: TextStyle(
-                  fontSize: (radius * 0.8).sp,
-                  fontWeight: FontWeight.bold,
-                  color: borderColor,
-                ),
-              )
-            : null,
-      ),
-    );
-  }
 }

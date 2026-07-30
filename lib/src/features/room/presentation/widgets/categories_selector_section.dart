@@ -23,21 +23,9 @@ class CategoriesSelectorSection extends StatelessWidget {
     this.availableCategories = const [],
   });
 
-  List<RoomCategoryEntity> _fallbackCategories(BuildContext context) => [
-        RoomCategoryEntity(id: 'boy',     nameAr: 'ولد',   nameEn: 'Boy',     icon: '👦'),
-        RoomCategoryEntity(id: 'girl',    nameAr: 'بنت',   nameEn: 'Girl',    icon: '👧'),
-        RoomCategoryEntity(id: 'object',  nameAr: 'جماد',  nameEn: 'Object',  icon: '📦'),
-        RoomCategoryEntity(id: 'plant',   nameAr: 'نبات',  nameEn: 'Plant',   icon: '🌿'),
-        RoomCategoryEntity(id: 'food',    nameAr: 'أكلة',  nameEn: 'Food',    icon: '🍔'),
-        RoomCategoryEntity(id: 'animal',  nameAr: 'حيوان', nameEn: 'Animal',  icon: '🦁'),
-        RoomCategoryEntity(id: 'country', nameAr: 'بلد',   nameEn: 'Country', icon: '🚩'),
-      ];
-
   @override
   Widget build(BuildContext context) {
-    final categories = availableCategories.isNotEmpty
-        ? availableCategories
-        : _fallbackCategories(context);
+    final categories = RoomCategoryEntity.getOrderedCategories(availableCategories);
 
     final total = categories.length;
     final isValid = selectedCategories.length >= 4;

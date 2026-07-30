@@ -200,6 +200,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseFillAllFields": MessageLookupByLibrary.simpleMessage(
       "يرجى ملء جميع الحقول المطلوبة",
     ),
+    "privacyPolicy": MessageLookupByLibrary.simpleMessage("سياسة الخصوصية"),
     "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
     "profileUpdatedSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تحديث الملف الشخصي بنجاح!",

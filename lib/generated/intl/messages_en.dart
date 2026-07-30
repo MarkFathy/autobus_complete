@@ -202,6 +202,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseFillAllFields": MessageLookupByLibrary.simpleMessage(
       "Please fill in all required fields",
     ),
+    "privacyPolicy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
     "profile": MessageLookupByLibrary.simpleMessage("Profile"),
     "profileUpdatedSuccess": MessageLookupByLibrary.simpleMessage(
       "Profile updated successfully!",

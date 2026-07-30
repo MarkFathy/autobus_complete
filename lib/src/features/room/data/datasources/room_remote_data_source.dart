@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:autobus_complete/generated/l10n.dart';
+import 'package:autobus_complete/src/core/helpers/app_letters.dart';
 import 'package:autobus_complete/src/features/room/data/models/room_model.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -64,22 +65,19 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     try {
       final snapshot = await firestore.collection('categories').get();
       if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs
+        final list = snapshot.docs
             .map((doc) => RoomCategoryModel.fromJson({'id': doc.id, ...doc.data()}))
+            .toList();
+        final ordered = RoomCategoryEntity.getOrderedCategories(list);
+        return ordered
+            .map((e) => RoomCategoryModel(id: e.id, nameAr: e.nameAr, nameEn: e.nameEn, icon: e.icon))
             .toList();
       }
     } catch (_) {}
 
-    // Seed defaults into Firestore on first run
-    const defaultCategories = [
-      RoomCategoryModel(id: 'boy',     nameAr: 'ولد',   nameEn: 'Boy',     icon: '👦'),
-      RoomCategoryModel(id: 'girl',    nameAr: 'بنت',   nameEn: 'Girl',    icon: '👧'),
-      RoomCategoryModel(id: 'object',  nameAr: 'جماد',  nameEn: 'Object',  icon: '📦'),
-      RoomCategoryModel(id: 'plant',   nameAr: 'نبات',  nameEn: 'Plant',   icon: '🌿'),
-      RoomCategoryModel(id: 'food',    nameAr: 'أكلة',  nameEn: 'Food',    icon: '🍔'),
-      RoomCategoryModel(id: 'animal',  nameAr: 'حيوان', nameEn: 'Animal',  icon: '🦁'),
-      RoomCategoryModel(id: 'country', nameAr: 'بلد',   nameEn: 'Country', icon: '🚩'),
-    ];
+    final defaultCategories = RoomCategoryEntity.defaultCategories
+        .map((e) => RoomCategoryModel(id: e.id, nameAr: e.nameAr, nameEn: e.nameEn, icon: e.icon))
+        .toList();
 
     try {
       for (final c in defaultCategories) {
@@ -372,15 +370,10 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       );
     }).toList();
 
-    final arabicLetters = [
-      'أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش',
-      'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'
-    ];
-
-    final available = arabicLetters.where((l) => !used.contains(l)).toList();
+    final available = AppLetters.arabicLetters.where((l) => !used.contains(l)).toList();
     final nextLetter = available.isNotEmpty
         ? (List<String>.from(available)..shuffle()).first
-        : (List<String>.from(arabicLetters)..shuffle()).first;
+        : (List<String>.from(AppLetters.arabicLetters)..shuffle()).first;
 
     final updatedUsed = List<String>.from(used)..add(nextLetter);
 
