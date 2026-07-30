@@ -20,6 +20,19 @@ abstract class RoomRemoteDataSource {
     required List<RoomCategoryEntity> categories,
   });
   Future<void> startGame({required String roomCode});
+  Future<void> startNextRound({required String roomCode});
+  Future<void> submitRoundAnswers({
+    required String roomCode,
+    required Map<String, String> answers,
+  });
+  Future<void> updateCategoryScore({
+    required String roomCode,
+    required String playerId,
+    required String categoryId,
+    required int score,
+  });
+  Future<void> endGame({required String roomCode});
+  Future<void> playAgain({required String roomCode});
   Future<void> leaveRoom({required String roomCode});
   Future<void> makeHost({
     required String roomCode,
@@ -192,8 +205,8 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       return;
     }
 
-    if (room.players.length >= 6) {
-      throw Exception("Room is full");
+    if (room.players.length >= 12) {
+      throw Exception(S.current.roomIsFull);
     }
 
     final newPlayer = RoomPlayerModel(
@@ -300,6 +313,205 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       'currentRound': 1,
       'currentLetter': randomLetter,
       'usedLetters': [randomLetter],
+    });
+  }
+
+  @override
+  Future<void> startNextRound({required String roomCode}) async {
+    final docRef = firestore.collection('rooms').doc(roomCode);
+    final snapshot = await docRef.get();
+    if (!snapshot.exists) return;
+
+    final data = snapshot.data() ?? {};
+    final currentRound = (data['currentRound'] as int? ?? 1) + 1;
+    final used = (data['usedLetters'] as List<dynamic>?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        [];
+
+    final rawPlayers = (data['players'] as List<dynamic>?)
+            ?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>))
+            .toList() ??
+        [];
+
+    final rawAnswers = data['roundAnswers'] as Map<String, dynamic>? ?? {};
+    final rawScores = data['roundScores'] as Map<String, dynamic>? ?? {};
+    final categoriesList = (data['categories'] as List<dynamic>?) ?? [];
+
+    // Accumulate points earned in the finished round to cumulative score
+    final updatedPlayers = rawPlayers.map((player) {
+      int roundEarned = 0;
+      final playerAnswersMap = rawAnswers[player.id] as Map<String, dynamic>? ?? {};
+      final playerScoresMap = rawScores[player.id] as Map<String, dynamic>? ?? {};
+
+      for (final cat in categoriesList) {
+        final catId = (cat is Map<String, dynamic>)
+            ? cat['id'] as String?
+            : (cat is RoomCategoryModel ? cat.id : cat.toString());
+        if (catId == null) continue;
+
+        final answer = (playerAnswersMap[catId] as String?) ?? '';
+        if (answer.trim().isEmpty) {
+          continue;
+        }
+
+        if (playerScoresMap.containsKey(catId)) {
+          roundEarned += (playerScoresMap[catId] as num?)?.toInt() ?? 0;
+        } else {
+          roundEarned += 10;
+        }
+      }
+
+      return RoomPlayerModel(
+        id: player.id,
+        name: player.name,
+        photoUrl: player.photoUrl,
+        isHost: player.isHost,
+        isReady: player.isReady,
+        score: player.score + roundEarned,
+      );
+    }).toList();
+
+    final arabicLetters = [
+      'أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش',
+      'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'
+    ];
+
+    final available = arabicLetters.where((l) => !used.contains(l)).toList();
+    final nextLetter = available.isNotEmpty
+        ? (List<String>.from(available)..shuffle()).first
+        : (List<String>.from(arabicLetters)..shuffle()).first;
+
+    final updatedUsed = List<String>.from(used)..add(nextLetter);
+
+    await docRef.update({
+      'status': 'playing',
+      'currentRound': currentRound,
+      'currentLetter': nextLetter,
+      'usedLetters': updatedUsed,
+      'players': updatedPlayers.map((p) => p.toJson()).toList(),
+      'roundAnswers': {},
+      'roundScores': {},
+    });
+  }
+
+  @override
+  Future<void> submitRoundAnswers({
+    required String roomCode,
+    required Map<String, String> answers,
+  }) async {
+    final user = firebaseAuth.currentUser;
+    if (user == null) return;
+
+    final docRef = firestore.collection('rooms').doc(roomCode);
+    await docRef.update({
+      'roundAnswers.${user.uid}': answers,
+      'status': 'scoring',
+    });
+  }
+
+  @override
+  Future<void> updateCategoryScore({
+    required String roomCode,
+    required String playerId,
+    required String categoryId,
+    required int score,
+  }) async {
+    final docRef = firestore.collection('rooms').doc(roomCode);
+    await docRef.update({
+      'roundScores.$playerId.$categoryId': score,
+    });
+  }
+
+  @override
+  Future<void> endGame({required String roomCode}) async {
+    final docRef = firestore.collection('rooms').doc(roomCode);
+    final snapshot = await docRef.get();
+    if (!snapshot.exists) return;
+
+    final data = snapshot.data() ?? {};
+    final rawPlayers = (data['players'] as List<dynamic>?)
+            ?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>))
+            .toList() ??
+        [];
+
+    final rawAnswers = data['roundAnswers'] as Map<String, dynamic>? ?? {};
+    final rawScores = data['roundScores'] as Map<String, dynamic>? ?? {};
+    final categoriesList = (data['categories'] as List<dynamic>?) ?? [];
+
+    // Accumulate final round's scores to total cumulative score for each player
+    final updatedPlayers = rawPlayers.map((player) {
+      int roundEarned = 0;
+      final playerAnswersMap = rawAnswers[player.id] as Map<String, dynamic>? ?? {};
+      final playerScoresMap = rawScores[player.id] as Map<String, dynamic>? ?? {};
+
+      for (final cat in categoriesList) {
+        final catId = (cat is Map<String, dynamic>)
+            ? cat['id'] as String?
+            : (cat is RoomCategoryModel ? cat.id : cat.toString());
+        if (catId == null) continue;
+
+        final answer = (playerAnswersMap[catId] as String?) ?? '';
+        if (answer.trim().isEmpty) {
+          continue;
+        }
+
+        if (playerScoresMap.containsKey(catId)) {
+          roundEarned += (playerScoresMap[catId] as num?)?.toInt() ?? 0;
+        } else {
+          roundEarned += 10;
+        }
+      }
+
+      return RoomPlayerModel(
+        id: player.id,
+        name: player.name,
+        photoUrl: player.photoUrl,
+        isHost: player.isHost,
+        isReady: player.isReady,
+        score: player.score + roundEarned,
+      );
+    }).toList();
+
+    await docRef.update({
+      'status': 'finished',
+      'players': updatedPlayers.map((p) => p.toJson()).toList(),
+      'roundAnswers': {},
+      'roundScores': {},
+    });
+  }
+
+  @override
+  Future<void> playAgain({required String roomCode}) async {
+    final docRef = firestore.collection('rooms').doc(roomCode);
+    final snapshot = await docRef.get();
+    if (!snapshot.exists) return;
+
+    final data = snapshot.data() ?? {};
+    final rawPlayers = (data['players'] as List<dynamic>?)
+            ?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>))
+            .toList() ??
+        [];
+
+    final resetPlayers = rawPlayers.map((player) {
+      return RoomPlayerModel(
+        id: player.id,
+        name: player.name,
+        photoUrl: player.photoUrl,
+        isHost: player.isHost,
+        isReady: player.isHost,
+        score: 0,
+      );
+    }).toList();
+
+    await docRef.update({
+      'status': 'waiting',
+      'currentRound': 1,
+      'currentLetter': 'أ',
+      'usedLetters': [],
+      'players': resetPlayers.map((p) => p.toJson()).toList(),
+      'roundAnswers': {},
+      'roundScores': {},
     });
   }
 

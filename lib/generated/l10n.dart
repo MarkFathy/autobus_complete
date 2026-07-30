@@ -534,10 +534,10 @@ class S {
     );
   }
 
-  /// `Waiting for other players`
+  /// `Waiting for host to calculate scores`
   String get waitingForOtherPlayers {
     return Intl.message(
-      'Waiting for other players',
+      'Waiting for host to calculate scores',
       name: 'waitingForOtherPlayers',
       desc: '',
       args: [],
@@ -929,16 +929,6 @@ class S {
     return Intl.message('Letter', name: 'currentLetter', desc: '', args: []);
   }
 
-  /// `AUTOBUS COMPLETE! (STOP)`
-  String get stopBus {
-    return Intl.message(
-      'AUTOBUS COMPLETE! (STOP)',
-      name: 'stopBus',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Submit Answers`
   String get submitAnswers {
     return Intl.message(
@@ -947,6 +937,81 @@ class S {
       desc: '',
       args: [],
     );
+  }
+
+  /// `No answer given`
+  String get noAnswerGiven {
+    return Intl.message(
+      'No answer given',
+      name: 'noAnswerGiven',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Round Evaluation`
+  String get scoringTitle {
+    return Intl.message(
+      'Round Evaluation',
+      name: 'scoringTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total`
+  String get roundTotal {
+    return Intl.message('Total', name: 'roundTotal', desc: '', args: []);
+  }
+
+  /// `Next Round`
+  String get nextRound {
+    return Intl.message('Next Round', name: 'nextRound', desc: '', args: []);
+  }
+
+  /// `Final Leaderboard`
+  String get finalResults {
+    return Intl.message(
+      'Final Leaderboard',
+      name: 'finalResults',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End Game`
+  String get endGame {
+    return Intl.message('End Game', name: 'endGame', desc: '', args: []);
+  }
+
+  /// `Round`
+  String get roundScore {
+    return Intl.message('Round', name: 'roundScore', desc: '', args: []);
+  }
+
+  /// `Total Score`
+  String get totalScore {
+    return Intl.message('Total Score', name: 'totalScore', desc: '', args: []);
+  }
+
+  /// `Back to Home`
+  String get backToHome {
+    return Intl.message('Back to Home', name: 'backToHome', desc: '', args: []);
+  }
+
+  /// `The room is full`
+  String get roomIsFull {
+    return Intl.message(
+      'The room is full',
+      name: 'roomIsFull',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Play Again`
+  String get playAgain {
+    return Intl.message('Play Again', name: 'playAgain', desc: '', args: []);
   }
 }
 

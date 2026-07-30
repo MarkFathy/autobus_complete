@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "animalCategory": MessageLookupByLibrary.simpleMessage("Animal"),
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("Bus Complete!"),
+    "backToHome": MessageLookupByLibrary.simpleMessage("Back to Home"),
     "boyCategory": MessageLookupByLibrary.simpleMessage("Boy"),
     "camera": MessageLookupByLibrary.simpleMessage("Camera"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -53,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "emailHint": MessageLookupByLibrary.simpleMessage("Enter your email"),
     "emailRequired": MessageLookupByLibrary.simpleMessage("Email is required"),
+    "endGame": MessageLookupByLibrary.simpleMessage("End Game"),
     "english": MessageLookupByLibrary.simpleMessage("English"),
     "enterEmailToResetPassword": MessageLookupByLibrary.simpleMessage(
       "Enter your registered email address to receive a password reset link.\n(Note: Please check your Spam / Junk folder if you don\'t see it in your Inbox)",
@@ -60,6 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "enterRoomCode": MessageLookupByLibrary.simpleMessage(
       "Enter 6-digit room code",
     ),
+    "finalResults": MessageLookupByLibrary.simpleMessage("Final Leaderboard"),
     "firebaseAuthError": MessageLookupByLibrary.simpleMessage(
       "Authentication error occurred",
     ),
@@ -164,6 +167,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Logged out successfully!",
     ),
     "makeHost": MessageLookupByLibrary.simpleMessage("Make Host"),
+    "nextRound": MessageLookupByLibrary.simpleMessage("Next Round"),
+    "noAnswerGiven": MessageLookupByLibrary.simpleMessage("No answer given"),
     "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
     "numberOfRounds": MessageLookupByLibrary.simpleMessage("Number of Rounds"),
     "objectCategory": MessageLookupByLibrary.simpleMessage("Object"),
@@ -192,6 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Passwords do not match",
     ),
     "plantCategory": MessageLookupByLibrary.simpleMessage("Plant"),
+    "playAgain": MessageLookupByLibrary.simpleMessage("Play Again"),
     "players": MessageLookupByLibrary.simpleMessage("Players"),
     "pleaseFillAllFields": MessageLookupByLibrary.simpleMessage(
       "Please fill in all required fields",
@@ -210,21 +216,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "roomCodeCopied": MessageLookupByLibrary.simpleMessage(
       "Room code copied successfully!",
     ),
+    "roomIsFull": MessageLookupByLibrary.simpleMessage("The room is full"),
     "roomSettings": MessageLookupByLibrary.simpleMessage("Room Settings"),
     "round": MessageLookupByLibrary.simpleMessage("Round"),
+    "roundScore": MessageLookupByLibrary.simpleMessage("Round"),
+    "roundTotal": MessageLookupByLibrary.simpleMessage("Total"),
     "rounds": MessageLookupByLibrary.simpleMessage("Rounds"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save Changes"),
+    "scoringTitle": MessageLookupByLibrary.simpleMessage("Round Evaluation"),
     "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
       "Select at least 4 categories",
     ),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("Send Reset Link"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "startGame": MessageLookupByLibrary.simpleMessage("Start Game"),
-    "stopBus": MessageLookupByLibrary.simpleMessage("AUTOBUS COMPLETE! (STOP)"),
     "submitAnswers": MessageLookupByLibrary.simpleMessage("Submit Answers"),
+    "totalScore": MessageLookupByLibrary.simpleMessage("Total Score"),
     "unReady": MessageLookupByLibrary.simpleMessage("Not Ready"),
     "waitingForOtherPlayers": MessageLookupByLibrary.simpleMessage(
-      "Waiting for other players",
+      "Waiting for host to calculate scores",
     ),
     "yesDeleteAccount": MessageLookupByLibrary.simpleMessage(
       "Yes, Delete Account",

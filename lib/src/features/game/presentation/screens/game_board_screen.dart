@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
+import 'package:autobus_complete/src/core/navigation/named_routes.dart';
+import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
 import 'package:autobus_complete/src/core/widgets/app_scaffold.dart';
 import 'package:autobus_complete/src/core/widgets/buttons/custom_button.dart';
@@ -9,7 +11,9 @@ import 'package:autobus_complete/src/features/game/presentation/widgets/category
 import 'package:autobus_complete/src/features/game/presentation/widgets/game_top_bar.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_cubit.dart';
+import 'package:autobus_complete/src/features/room/presentation/cubit/room_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GameBoardScreen extends StatefulWidget {
@@ -151,58 +155,87 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     super.dispose();
   }
 
+  bool _hasSubmitted = false;
+
+  void _submitCurrentAnswers() {
+    if (_hasSubmitted) return;
+    _hasSubmitted = true;
+
+    final Map<String, String> answers = {};
+    _controllers.forEach((catId, controller) {
+      answers[catId] = controller.text.trim();
+    });
+    sl<RoomCubit>().submitRoundAnswers(answers);
+  }
+
+  void _onAutobusCompletePressed() {
+    _submitCurrentAnswers();
+    Go.offNamed(NamedRoutes.scoring);
+  }
+
   @override
   Widget build(BuildContext context) {
     final activeCategories = _getActiveCategories();
     final isButtonEnabled = !_isShuffling && _areAllFieldsFilled;
 
-    return AppScaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          child: Column(
-            children: [
-              // Top Bar with Rounds & Letter Shuffle (Synced from Firebase)
-              GameTopBar(
-                currentRound: _getCurrentRound(),
-                totalRounds: _getTotalRounds(),
-                letter: _currentLetter,
-                isShuffling: _isShuffling,
-              ),
-              16.szH,
+    return BlocProvider.value(
+      value: sl<RoomCubit>(),
+      child: BlocListener<RoomCubit, RoomState>(
+        listener: (context, state) {
+          final room = sl<RoomCubit>().currentRoom;
+          if (room?.status == 'scoring') {
+            _submitCurrentAnswers();
+            Go.offNamed(NamedRoutes.scoring);
+          }
+        },
+        child: PopScope(
+          canPop: false,
+          child: AppScaffold(
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                child: Column(
+                  children: [
+                    // Top Bar with Rounds & Letter Shuffle (Synced from Firebase)
+                    GameTopBar(
+                      currentRound: _getCurrentRound(),
+                      totalRounds: _getTotalRounds(),
+                      letter: _currentLetter,
+                      isShuffling: _isShuffling,
+                    ),
+                    16.szH,
 
-              // Host-Selected Category Input Cards
-              Expanded(
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: activeCategories.length,
-                  itemBuilder: (context, index) {
-                    final cat = activeCategories[index];
-                    return CategoryInputCard(
-                      emoji: cat.icon,
-                      categoryName: cat.getLocalizedName(context),
-                      controller: _controllers[cat.id] ?? TextEditingController(),
-                      focusNode: _focusNodes[cat.id],
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                    );
-                  },
+                    // Host-Selected Category Input Cards
+                    Expanded(
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: activeCategories.length,
+                        itemBuilder: (context, index) {
+                          final cat = activeCategories[index];
+                          return CategoryInputCard(
+                            emoji: cat.icon,
+                            categoryName: cat.getLocalizedName(context),
+                            controller: _controllers[cat.id] ?? TextEditingController(),
+                            focusNode: _focusNodes[cat.id],
+                            onChanged: (value) {
+                              setState(() {});
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    12.szH,
+
+                    // STOP / AUTOBUS COMPLETE Button
+                    CustomButton(
+                      text: S.of(context).autobusComplete,
+                      onPressed: isButtonEnabled ? _onAutobusCompletePressed : null,
+                    ),
+                    12.szH,
+                  ],
                 ),
               ),
-              12.szH,
-
-              // STOP / AUTOBUS COMPLETE Button
-              CustomButton(
-                text: S.of(context).autobusComplete,
-                onPressed: isButtonEnabled
-                    ? () {
-                        // Submit Answers action
-                      }
-                    : null,
-              ),
-              12.szH,
-            ],
+            ),
           ),
         ),
       ),

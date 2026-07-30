@@ -17,7 +17,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
           } else if (state is RoomGameStarted) {
             Go.offNamed(NamedRoutes.countdown);
           } else if (state is RoomLeftSuccess) {
-            Go.back();
+            Go.offAllNamed(NamedRoutes.home);
           } else if (state is RoomKickedByHost) {
             CustomSnackBar.showError(
               context,
@@ -219,7 +219,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
 
                   // ── Room Joined Players Card ────────────────────────────
                   RoomPlayersCard(
-                    maxPlayers: 6,
+                    maxPlayers: 12,
                     players: playersList,
                     onPlayerLongPress: (targetPlayer) {
                       if (isHost && targetPlayer.id != currentUserId) {

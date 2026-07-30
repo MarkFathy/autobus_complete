@@ -109,6 +109,17 @@ class RoomRepositoryImpl implements RoomRepository {
   }
 
   @override
+  Future<Either<Failure, void>> playAgain({required String roomCode}) async {
+    try {
+      await remoteDataSource.playAgain(roomCode: roomCode);
+      return const Right(null);
+    } catch (e) {
+      final msg = e.toString().replaceAll('Exception: ', '');
+      return Left(Failure(ServerException(0, false, msg, null)));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> leaveRoom({required String roomCode}) async {
     try {
       await remoteDataSource.leaveRoom(roomCode: roomCode);

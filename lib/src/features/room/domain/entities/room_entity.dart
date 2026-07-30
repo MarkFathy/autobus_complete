@@ -61,6 +61,8 @@ class RoomEntity extends Equatable {
   final int currentRound;
   final String? currentLetter;
   final List<String> usedLetters;
+  final Map<String, Map<String, String>> roundAnswers;
+  final Map<String, Map<String, int>> roundScores;
   final List<RoomCategoryEntity> categories;
   final List<RoomPlayerEntity> players;
 
@@ -72,6 +74,8 @@ class RoomEntity extends Equatable {
     required this.currentRound,
     this.currentLetter,
     this.usedLetters = const [],
+    this.roundAnswers = const {},
+    this.roundScores = const {},
     required this.categories,
     required this.players,
   });
@@ -85,6 +89,8 @@ class RoomEntity extends Equatable {
         currentRound,
         currentLetter,
         usedLetters,
+        roundAnswers,
+        roundScores,
         categories,
         players,
       ];

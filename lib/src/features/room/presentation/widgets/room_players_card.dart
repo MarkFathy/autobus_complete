@@ -31,7 +31,7 @@ class RoomPlayersCard extends StatelessWidget {
   const RoomPlayersCard({
     super.key,
     required this.players,
-    this.maxPlayers = 6,
+    this.maxPlayers = 12,
     this.onPlayerLongPress,
   });
 
@@ -267,6 +267,13 @@ class _InteractivePlayerNameState extends State<InteractivePlayerName> {
   final ScrollController _scrollController = ScrollController();
   bool _isScrolling = false;
 
+  bool get _isArabicName {
+    if (widget.name.trim().isEmpty) return false;
+    final clean = widget.name.trimLeft();
+    final code = clean.codeUnitAt(0);
+    return code >= 0x0600 && code <= 0x06FF;
+  }
+
   void _triggerMarqueeScroll() async {
     if (!_scrollController.hasClients) return;
     if (_isScrolling) return;
@@ -278,19 +285,21 @@ class _InteractivePlayerNameState extends State<InteractivePlayerName> {
       _isScrolling = true;
     });
 
+    _scrollController.jumpTo(0.0);
+
     await _scrollController.animateTo(
       maxScroll,
       duration: Duration(
-        milliseconds: (maxScroll * 30).clamp(1200, 3500).toInt(),
+        milliseconds: (maxScroll * 35).clamp(1500, 4000).toInt(),
       ),
       curve: Curves.easeInOut,
     );
 
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 700));
 
     if (_scrollController.hasClients) {
       await _scrollController.animateTo(
-        0,
+        0.0,
         duration: const Duration(milliseconds: 800),
         curve: Curves.easeInOut,
       );
@@ -311,18 +320,21 @@ class _InteractivePlayerNameState extends State<InteractivePlayerName> {
 
   @override
   Widget build(BuildContext context) {
+    final textDirection = _isArabicName ? TextDirection.rtl : TextDirection.ltr;
+
     return GestureDetector(
       onTap: _triggerMarqueeScroll,
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        scrollDirection: Axis.horizontal,
-        physics: const ClampingScrollPhysics(),
-        child: Text(
-          widget.name,
-          style: getTextStyle().s14.w700.whiteColor.ellipsis,
-          maxLines: 1,
-          overflow:
-              _isScrolling ? TextOverflow.visible : TextOverflow.ellipsis,
+      child: Directionality(
+        textDirection: textDirection,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          scrollDirection: Axis.horizontal,
+          physics: const ClampingScrollPhysics(),
+          child: Text(
+            widget.name,
+            style: getTextStyle().s14.w700.whiteColor,
+            maxLines: 1,
+          ),
         ),
       ),
     );

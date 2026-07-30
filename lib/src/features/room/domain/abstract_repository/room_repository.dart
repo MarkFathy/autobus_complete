@@ -17,6 +17,7 @@ abstract class RoomRepository {
     required List<RoomCategoryEntity> categories,
   });
   Future<Either<Failure, void>> startGame({required String roomCode});
+  Future<Either<Failure, void>> playAgain({required String roomCode});
   Future<Either<Failure, void>> leaveRoom({required String roomCode});
   Future<Either<Failure, void>> makeHost({
     required String roomCode,

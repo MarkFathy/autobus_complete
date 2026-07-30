@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "animalCategory": MessageLookupByLibrary.simpleMessage("حيوان"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("أوتوبيس كومبليت!"),
+    "backToHome": MessageLookupByLibrary.simpleMessage("العودة للرئيسية"),
     "boyCategory": MessageLookupByLibrary.simpleMessage("ولد"),
     "camera": MessageLookupByLibrary.simpleMessage("الكاميرا"),
     "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
@@ -53,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "emailRequired": MessageLookupByLibrary.simpleMessage(
       "البريد الإلكتروني مطلوب",
     ),
+    "endGame": MessageLookupByLibrary.simpleMessage("إنهاء اللعبة"),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
     "enterEmailToResetPassword": MessageLookupByLibrary.simpleMessage(
       "أدخل بريدك الإلكتروني المسجل لاستلام رابط إعادة تعيين كلمة المرور.\n(تنويه: يرجى مراجعة مجلد الرسائل غير المرغوب فيها Spam إذا لم يظهر الإيميل)",
@@ -60,6 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "enterRoomCode": MessageLookupByLibrary.simpleMessage(
       "أدخل رمز الغرفة المكون من 6 أرقام",
     ),
+    "finalResults": MessageLookupByLibrary.simpleMessage("النتائج النهائية"),
     "firebaseAuthError": MessageLookupByLibrary.simpleMessage(
       "حدث خطأ في عملية المصادقة",
     ),
@@ -162,6 +165,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم تسجيل الخروج بنجاح!",
     ),
     "makeHost": MessageLookupByLibrary.simpleMessage("تعيين كمنشئ الغرفة"),
+    "nextRound": MessageLookupByLibrary.simpleMessage("الجولة التالية"),
+    "noAnswerGiven": MessageLookupByLibrary.simpleMessage("لم يتم إدخال إجابة"),
     "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
     "numberOfRounds": MessageLookupByLibrary.simpleMessage("عدد الجولات"),
     "objectCategory": MessageLookupByLibrary.simpleMessage("جماد"),
@@ -190,6 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "كلمتا المرور غير متطابقتين",
     ),
     "plantCategory": MessageLookupByLibrary.simpleMessage("نبات"),
+    "playAgain": MessageLookupByLibrary.simpleMessage("إعادة اللعب"),
     "players": MessageLookupByLibrary.simpleMessage("اللاعبون"),
     "pleaseFillAllFields": MessageLookupByLibrary.simpleMessage(
       "يرجى ملء جميع الحقول المطلوبة",
@@ -208,21 +214,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "roomCodeCopied": MessageLookupByLibrary.simpleMessage(
       "تم نسخ رمز الغرفة بنجاح!",
     ),
+    "roomIsFull": MessageLookupByLibrary.simpleMessage("الغرفة ممتلئة بالكامل"),
     "roomSettings": MessageLookupByLibrary.simpleMessage("إعدادات الغرفة"),
     "round": MessageLookupByLibrary.simpleMessage("الجولة"),
+    "roundScore": MessageLookupByLibrary.simpleMessage("الجولة"),
+    "roundTotal": MessageLookupByLibrary.simpleMessage("المجموع"),
     "rounds": MessageLookupByLibrary.simpleMessage("جولات"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("حفظ التغييرات"),
+    "scoringTitle": MessageLookupByLibrary.simpleMessage("تقييم الجولة"),
     "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
       "اختر 4 فئات على الأقل",
     ),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("إرسال الرابط"),
     "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "startGame": MessageLookupByLibrary.simpleMessage("ابدأ اللعبة"),
-    "stopBus": MessageLookupByLibrary.simpleMessage("أوتوبيس كومبليت!"),
     "submitAnswers": MessageLookupByLibrary.simpleMessage("إرسال الإجابات"),
+    "totalScore": MessageLookupByLibrary.simpleMessage("المجموع الكلي"),
     "unReady": MessageLookupByLibrary.simpleMessage("غير جاهز"),
     "waitingForOtherPlayers": MessageLookupByLibrary.simpleMessage(
-      "في انتظار اللاعبين الآخرين",
+      "في انتظار الهوست لحساب النقاط",
     ),
     "yesDeleteAccount": MessageLookupByLibrary.simpleMessage("نعم، حذف الحساب"),
     "yesLeave": MessageLookupByLibrary.simpleMessage("مغادرة"),

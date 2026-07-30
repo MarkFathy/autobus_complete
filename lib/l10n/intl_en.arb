@@ -72,7 +72,7 @@
     "copyRoomCode": "Copy Room Code",
     "roomCode": "Room Code",
     "roomCodeCopied": "Room code copied successfully!",
-    "waitingForOtherPlayers": "Waiting for other players",
+    "waitingForOtherPlayers": "Waiting for host to calculate scores",
     "ready": "Ready",
     "unReady": "Not Ready",
     "leaveRoom": "Leave Room",
@@ -131,5 +131,11 @@
     "scoringTitle": "Round Evaluation",
     "roundTotal": "Total",
     "nextRound": "Next Round",
-    "finalResults": "Final Leaderboard"
+    "finalResults": "Final Leaderboard",
+    "endGame": "End Game",
+    "roundScore": "Round",
+    "totalScore": "Total Score",
+    "backToHome": "Back to Home",
+    "roomIsFull": "The room is full",
+    "playAgain": "Play Again"
 }

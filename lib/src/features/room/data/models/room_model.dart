@@ -86,11 +86,37 @@ class RoomModel extends RoomEntity {
     required super.currentRound,
     super.currentLetter,
     super.usedLetters = const [],
+    super.roundAnswers = const {},
+    super.roundScores = const {},
     required super.categories,
     required super.players,
   });
 
   factory RoomModel.fromJson(Map<String, dynamic> json) {
+    final Map<String, Map<String, String>> parsedAnswers = {};
+    if (json['roundAnswers'] != null && json['roundAnswers'] is Map) {
+      (json['roundAnswers'] as Map<String, dynamic>).forEach((playerKey, val) {
+        if (val is Map) {
+          parsedAnswers[playerKey] = {};
+          (val as Map<String, dynamic>).forEach((catKey, answerVal) {
+            parsedAnswers[playerKey]![catKey] = answerVal.toString();
+          });
+        }
+      });
+    }
+
+    final Map<String, Map<String, int>> parsedScores = {};
+    if (json['roundScores'] != null && json['roundScores'] is Map) {
+      (json['roundScores'] as Map<String, dynamic>).forEach((playerKey, val) {
+        if (val is Map) {
+          parsedScores[playerKey] = {};
+          (val as Map<String, dynamic>).forEach((catKey, scoreVal) {
+            parsedScores[playerKey]![catKey] = (scoreVal as num?)?.toInt() ?? 0;
+          });
+        }
+      });
+    }
+
     return RoomModel(
       roomCode: json['roomCode'] ?? '',
       hostId: json['hostId'] ?? '',
@@ -102,6 +128,8 @@ class RoomModel extends RoomEntity {
               ?.map((e) => e.toString())
               .toList() ??
           [],
+      roundAnswers: parsedAnswers,
+      roundScores: parsedScores,
       categories: (json['categories'] as List<dynamic>?)
               ?.map((c) => RoomCategoryModel.fromJson(c as Map<String, dynamic>))
               .toList() ??
@@ -121,6 +149,8 @@ class RoomModel extends RoomEntity {
         'currentRound': currentRound,
         if (currentLetter != null) 'currentLetter': currentLetter,
         'usedLetters': usedLetters,
+        'roundAnswers': roundAnswers,
+        'roundScores': roundScores,
         'categories': categories
             .map((c) => RoomCategoryModel.fromEntity(c).toJson())
             .toList(),

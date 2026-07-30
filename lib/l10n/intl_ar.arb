@@ -71,7 +71,7 @@
     "copyRoomCode": "نسخ رمز الغرفة",
     "roomCode": "رمز الغرفة",
     "roomCodeCopied": "تم نسخ رمز الغرفة بنجاح!",
-    "waitingForOtherPlayers": "في انتظار اللاعبين الآخرين",
+    "waitingForOtherPlayers": "في انتظار الهوست لحساب النقاط",
     "ready": "جاهز",
     "unReady": "غير جاهز",
     "leaveRoom": "مغادرة الغرفة",
@@ -127,9 +127,15 @@
     "currentLetter": "الحرف",
     "stopBus": "أوتوبيس كومبليت!",
     "submitAnswers": "إرسال الإجابات",
-    "noAnswerGiven": "لم يتم كتابة إجابة",
-    "scoringTitle": "تقييم الإجابات",
+    "noAnswerGiven": "لم يتم إدخال إجابة",
+    "scoringTitle": "تقييم الجولة",
     "roundTotal": "المجموع",
     "nextRound": "الجولة التالية",
-    "finalResults": "الترتيب النهائي"
+    "finalResults": "النتائج النهائية",
+    "endGame": "إنهاء اللعبة",
+    "roundScore": "الجولة",
+    "totalScore": "المجموع الكلي",
+    "backToHome": "العودة للرئيسية",
+    "roomIsFull": "الغرفة ممتلئة بالكامل",
+    "playAgain": "إعادة اللعب"
 }

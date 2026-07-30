@@ -4,6 +4,8 @@ import 'package:autobus_complete/src/features/auth/presentation/screens/login_sc
 import 'package:autobus_complete/src/features/auth/presentation/screens/register_screen.dart';
 import 'package:autobus_complete/src/features/game/presentation/screens/game_board_screen.dart';
 import 'package:autobus_complete/src/features/game/presentation/screens/game_countdown_screen.dart';
+import 'package:autobus_complete/src/features/game/presentation/screens/leaderboard_screen.dart';
+import 'package:autobus_complete/src/features/game/presentation/screens/scoring_screen.dart';
 import 'package:autobus_complete/src/features/home/presentation/screens/home_screen.dart';
 import 'package:autobus_complete/src/features/profile/presentation/screens/profile_screen.dart';
 import 'package:autobus_complete/src/features/room/presentation/screens/room_lobby_screen.dart';
@@ -35,9 +37,12 @@ class RouterGenerator {
 
     debugPrint('RouterGenerator: getRoute called for name: ${settings.name}, arguments: $realArguments');
 
-    final namedRoute = NamedRoutes.values.firstWhere(
-      (e) => e.routeName == actualSettings.name,
+    final namedRoute = NamedRoutes.values.cast<NamedRoutes?>().firstWhere(
+      (e) => e?.routeName == actualSettings.name,
+      orElse: () => null,
     );
+
+    if (namedRoute == null) return undefineRoute();
 
     //Splash Screen
     return switch (namedRoute) {
@@ -111,8 +116,21 @@ class RouterGenerator {
         options: options,
       ),
 
+      //Scoring Screen
+      NamedRoutes.scoring => _pageRouter.build(
+        const ScoringScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
 
-    _ => undefineRoute(),
+      //Leaderboard Screen
+      NamedRoutes.leaderboard => _pageRouter.build(
+        const LeaderboardScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
     };
   }
 

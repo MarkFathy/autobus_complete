@@ -27,6 +27,7 @@ import 'package:autobus_complete/src/features/room/domain/usecases/kick_player_u
 import 'package:autobus_complete/src/features/room/domain/usecases/leave_room_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/listen_to_room_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/make_host_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/play_again_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/start_game_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/toggle_ready_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/update_room_settings_usecase.dart';
@@ -130,6 +131,7 @@ Future<void> setupServiceLocator() async {
       toggleReadyUseCase: sl(),
       updateRoomSettingsUseCase: sl(),
       startGameUseCase: sl(),
+      playAgainUseCase: sl(),
       leaveRoomUseCase: sl(),
       makeHostUseCase: sl(),
       kickPlayerUseCase: sl(),
@@ -144,6 +146,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => ToggleReadyUseCase(sl()));
   sl.registerLazySingleton(() => UpdateRoomSettingsUseCase(sl()));
   sl.registerLazySingleton(() => StartGameUseCase(sl()));
+  sl.registerLazySingleton(() => PlayAgainUseCase(sl()));
   sl.registerLazySingleton(() => LeaveRoomUseCase(sl()));
   sl.registerLazySingleton(() => MakeHostUseCase(sl()));
   sl.registerLazySingleton(() => KickPlayerUseCase(sl()));

@@ -25,12 +25,19 @@ class $AssetsLottiesGen {
   LottieGenImage get busHome =>
       const LottieGenImage('assets/lotties/bus_home.json');
 
+  /// File path: assets/lotties/crown.json
+  LottieGenImage get crown => const LottieGenImage('assets/lotties/crown.json');
+
   /// File path: assets/lotties/loading.json
   LottieGenImage get loading =>
       const LottieGenImage('assets/lotties/loading.json');
 
+  /// File path: assets/lotties/winner.json
+  LottieGenImage get winner =>
+      const LottieGenImage('assets/lotties/winner.json');
+
   /// List of all assets
-  List<LottieGenImage> get values => [bus, busHome, loading];
+  List<LottieGenImage> get values => [bus, busHome, crown, loading, winner];
 }
 
 class $AssetsPngsGen {
@@ -38,6 +45,10 @@ class $AssetsPngsGen {
 
   /// File path: assets/pngs/bus.png
   AssetGenImage get bus => const AssetGenImage('assets/pngs/bus.png');
+
+  /// File path: assets/pngs/leaderboard_trophy.png
+  AssetGenImage get leaderboardTrophy =>
+      const AssetGenImage('assets/pngs/leaderboard_trophy.png');
 
   /// File path: assets/pngs/login_image.png
   AssetGenImage get loginImage =>
@@ -51,7 +62,13 @@ class $AssetsPngsGen {
       const AssetGenImage('assets/pngs/userimage.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [bus, loginImage, logo, userimage];
+  List<AssetGenImage> get values => [
+    bus,
+    leaderboardTrophy,
+    loginImage,
+    logo,
+    userimage,
+  ];
 }
 
 class $AssetsSvgsGen {
