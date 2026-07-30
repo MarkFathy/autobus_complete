@@ -14,19 +14,37 @@ class AppInfoCubit extends Cubit<AppInfoState> {
   }) : super(AppInfoInitial());
 
   Future<void> loadPrivacyPolicy() async {
-    emit(AppInfoLoading());
+    final cached = getPrivacyPolicyUseCase.repository.getCachedPrivacyPolicy();
+    if (cached != null) {
+      emit(AppInfoLoaded(cached));
+    } else {
+      emit(AppInfoLoading());
+    }
     final result = await getPrivacyPolicyUseCase(NoParams());
     result.fold(
-      (failure) => emit(AppInfoError(failure.serverException.message)),
+      (failure) {
+        if (state is! AppInfoLoaded) {
+          emit(AppInfoError(failure.serverException.message));
+        }
+      },
       (info) => emit(AppInfoLoaded(info)),
     );
   }
 
   Future<void> loadAboutGame() async {
-    emit(AppInfoLoading());
+    final cached = getAboutGameUseCase.repository.getCachedAboutGame();
+    if (cached != null) {
+      emit(AppInfoLoaded(cached));
+    } else {
+      emit(AppInfoLoading());
+    }
     final result = await getAboutGameUseCase(NoParams());
     result.fold(
-      (failure) => emit(AppInfoError(failure.serverException.message)),
+      (failure) {
+        if (state is! AppInfoLoaded) {
+          emit(AppInfoError(failure.serverException.message));
+        }
+      },
       (info) => emit(AppInfoLoaded(info)),
     );
   }

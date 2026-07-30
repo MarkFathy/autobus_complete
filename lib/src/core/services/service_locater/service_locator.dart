@@ -42,6 +42,7 @@ import 'package:autobus_complete/src/features/settings/domain/abstract_repositor
 import 'package:autobus_complete/src/features/settings/domain/usecases/get_about_game_usecase.dart';
 import 'package:autobus_complete/src/features/settings/domain/usecases/get_privacy_policy_usecase.dart';
 import 'package:autobus_complete/src/features/settings/presentation/cubit/app_info_cubit.dart';
+import 'package:autobus_complete/src/core/services/notification_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -197,6 +198,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<AppInfoRemoteDataSource>(
     () => AppInfoRemoteDataSourceImpl(firestore: sl()),
   );
+
+  // Services
+  sl.registerLazySingleton(() => NotificationService());
 
   // External
   sl.registerLazySingleton(() => FirebaseAuth.instance);

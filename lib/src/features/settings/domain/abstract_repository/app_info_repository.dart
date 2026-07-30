@@ -5,4 +5,6 @@ import 'package:dartz/dartz.dart';
 abstract class AppInfoRepository {
   Future<Either<Failure, AppInfoEntity>> getPrivacyPolicy();
   Future<Either<Failure, AppInfoEntity>> getAboutGame();
+  AppInfoEntity? getCachedPrivacyPolicy();
+  AppInfoEntity? getCachedAboutGame();
 }

@@ -8,7 +8,13 @@ class SettingsScreenBody extends StatefulWidget {
 }
 
 class _SettingsScreenBodyState extends State<SettingsScreenBody> {
-  bool _isNotificationEnabled = true;
+  late bool _isNotificationEnabled;
+
+  @override
+  void initState() {
+    super.initState();
+    _isNotificationEnabled = sl<NotificationService>().isNotificationsEnabled();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,10 +153,12 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                                   inactiveThumbColor: AppColors.greyColor,
                                   inactiveTrackColor:
                                       AppColors.scaffoldBackgroundColor,
-                                  onChanged: (value) {
+                                  onChanged: (value) async {
                                     setState(() {
                                       _isNotificationEnabled = value;
                                     });
+                                    await sl<NotificationService>()
+                                        .setNotificationsEnabled(value);
                                   },
                                 ),
                               ),

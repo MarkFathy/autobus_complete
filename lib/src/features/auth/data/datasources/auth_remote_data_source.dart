@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:autobus_complete/generated/l10n.dart';
+import 'package:autobus_complete/src/core/services/notification_service.dart';
+import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
 import 'package:autobus_complete/src/core/services/session_manager.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:autobus_complete/src/features/auth/data/models/user_model.dart';
@@ -100,6 +102,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         name: resolvedName,
         photoUrl: resolvedPhotoUrl,
       );
+
+      try {
+        await sl<NotificationService>().updateFcmTokenInFirestore();
+      } catch (_) {}
 
       return userModel;
     } else {
@@ -226,14 +232,33 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
       await authLocalDataSource.saveUserLoggedIn(true);
 
-      final userModel = UserModel.fromFirebaseUser(user);
+      final docSnapshot = await firestore.collection('users').doc(user.uid).get();
+      final existingData = docSnapshot.data();
+
+      final String resolvedName = (existingData?['name'] as String?)?.isNotEmpty == true
+          ? existingData!['name'] as String
+          : (user.displayName ?? '');
+
+      final String? resolvedPhotoUrl = existingData?['photoUrl'] as String? ?? user.photoURL;
+
       await firestore.collection('users').doc(user.uid).set({
         'email': user.email,
-        'name': user.displayName,
-        'photoUrl': user.photoURL,
+        if (resolvedName.isNotEmpty) 'name': resolvedName,
+        if (resolvedPhotoUrl != null) 'photoUrl': resolvedPhotoUrl,
         'emailVerified': user.emailVerified,
         'provider': 'google',
       }, SetOptions(merge: true));
+
+      final userModel = UserModel(
+        id: user.uid,
+        email: user.email ?? '',
+        name: resolvedName,
+        photoUrl: resolvedPhotoUrl,
+      );
+
+      try {
+        await sl<NotificationService>().updateFcmTokenInFirestore();
+      } catch (_) {}
 
       return userModel;
     } catch (e) {

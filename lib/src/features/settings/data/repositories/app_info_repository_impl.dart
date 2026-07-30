@@ -12,6 +12,16 @@ class AppInfoRepositoryImpl implements AppInfoRepository {
   AppInfoRepositoryImpl({required this.remoteDataSource});
 
   @override
+  AppInfoEntity? getCachedPrivacyPolicy() {
+    return remoteDataSource.getCachedPrivacyPolicy();
+  }
+
+  @override
+  AppInfoEntity? getCachedAboutGame() {
+    return remoteDataSource.getCachedAboutGame();
+  }
+
+  @override
   Future<Either<Failure, AppInfoEntity>> getPrivacyPolicy() async {
     try {
       final result = await remoteDataSource.getPrivacyPolicy();

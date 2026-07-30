@@ -1004,11 +1004,6 @@ class S {
     return Intl.message('Total Score', name: 'totalScore', desc: '', args: []);
   }
 
-  /// `Back to Home`
-  String get backToHome {
-    return Intl.message('Back to Home', name: 'backToHome', desc: '', args: []);
-  }
-
   /// `The room is full`
   String get roomIsFull {
     return Intl.message(

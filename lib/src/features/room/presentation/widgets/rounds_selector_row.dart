@@ -15,6 +15,17 @@ class RoundsSelectorRow extends StatelessWidget {
     required this.onRoundsChanged,
   });
 
+  /// Returns the correct Arabic plural form for rounds count:
+  /// 1 → جولة | 2 → جولتين | 3+ → جولات
+  /// Falls back to the l10n "rounds" key for non-Arabic locales.
+  String _getRoundsLabel(BuildContext context, int count) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    if (!isArabic) return S.of(context).rounds;
+    if (count == 1) return 'جولة';
+    if (count == 2) return 'جولتين';
+    return 'جولات';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -47,7 +58,7 @@ class RoundsSelectorRow extends StatelessWidget {
               items: List.generate(10, (i) => i + 1).map((rounds) {
                 return DropdownMenuItem<int>(
                   value: rounds,
-                  child: Text('$rounds ${S.of(context).rounds}'),
+                  child: Text('$rounds ${_getRoundsLabel(context, rounds)}'),
                 );
               }).toList(),
               onChanged: (val) {

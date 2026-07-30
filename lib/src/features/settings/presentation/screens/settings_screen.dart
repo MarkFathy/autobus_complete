@@ -7,6 +7,7 @@ import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/navigation/constants/imports_constants.dart';
 import 'package:autobus_complete/src/core/navigation/named_routes.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
+import 'package:autobus_complete/src/core/services/notification_service.dart';
 import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
 import 'package:autobus_complete/src/core/widgets/app_loading_overlay.dart';
 import 'package:autobus_complete/src/core/widgets/app_scaffold.dart';

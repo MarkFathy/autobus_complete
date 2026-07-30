@@ -16,6 +16,7 @@ import 'package:autobus_complete/src/features/game/presentation/widgets/score_ba
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_cubit.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_state.dart';
+import 'package:autobus_complete/src/features/room/presentation/widgets/leave_room_bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -268,6 +269,23 @@ class LeaderboardScreen extends StatelessWidget {
                             ? 'بانتظار الهوست لبدء اللعبة من جديد...'
                             : 'Waiting for Host to play again...',
                       ),
+                    12.szH,
+
+                    // ── EXIT ROOM BUTTON ─────────────────────────────────────
+                    CustomButton(
+                      text: S.of(context).leaveRoom,
+                      backgroundColor: AppColors.redColor.withValues(alpha: 0.15),
+                      textStyle: getTextStyle().s18.w700.redColor,
+                      onPressed: () {
+                        LeaveRoomBottomSheet.show(
+                          context,
+                          onLeaveConfirmed: () {
+                            sl<RoomCubit>().leaveRoom();
+                            Go.offAllNamed(NamedRoutes.home);
+                          },
+                        );
+                      },
+                    ),
                     12.szH,
                   ],
                 ),

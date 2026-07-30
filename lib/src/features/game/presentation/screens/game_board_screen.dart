@@ -113,11 +113,6 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     });
   }
 
-  bool get _areAllFieldsFilled {
-    if (_controllers.isEmpty) return false;
-    return _controllers.values.every((c) => c.text.trim().isNotEmpty);
-  }
-
   @override
   void dispose() {
     _shuffleTimer?.cancel();

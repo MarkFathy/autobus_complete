@@ -26,7 +26,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "animalCategory": MessageLookupByLibrary.simpleMessage("حيوان"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("أتوبيس كومبليت!"),
-    "backToHome": MessageLookupByLibrary.simpleMessage("العودة للرئيسية"),
     "boyCategory": MessageLookupByLibrary.simpleMessage("ولد"),
     "camera": MessageLookupByLibrary.simpleMessage("الكاميرا"),
     "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
