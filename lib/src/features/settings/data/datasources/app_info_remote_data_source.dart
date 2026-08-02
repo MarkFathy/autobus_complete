@@ -57,7 +57,6 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
 
   @override
   Future<AppInfoModel> getPrivacyPolicy() async {
-    // 1. Check local CacheStorage first for instantaneous load
     final cachedData = CacheStorage.read(_privacyKey, isDecoded: true);
     AppInfoModel? cachedModel;
     if (cachedData != null && cachedData is Map<String, dynamic>) {
@@ -66,7 +65,6 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
       } on Object catch (_) {}
     }
 
-    // 2. Fetch fresh data from Firestore and update CacheStorage
     try {
       final doc = await firestore.collection('game_info').doc('privacy_policy').get();
       if (doc.exists && doc.data() != null) {
@@ -103,15 +101,12 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
       rethrow;
     }
 
-    if (cachedModel != null) {
-      return cachedModel;
-    }
+    if (cachedModel != null) return cachedModel;
     throw Exception('Privacy Policy document not found in game_info collection');
   }
 
   @override
   Future<AppInfoModel> getAboutGame() async {
-    // 1. Check local CacheStorage first for instantaneous load
     final cachedData = CacheStorage.read(_aboutKey, isDecoded: true);
     AppInfoModel? cachedModel;
     if (cachedData != null && cachedData is Map<String, dynamic>) {
@@ -120,7 +115,6 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
       } on Object catch (_) {}
     }
 
-    // 2. Fetch fresh data from Firestore and update CacheStorage
     try {
       final doc = await firestore.collection('game_info').doc('about_game').get();
       if (doc.exists && doc.data() != null) {
@@ -161,9 +155,7 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
       rethrow;
     }
 
-    if (cachedModel != null) {
-      return cachedModel;
-    }
+    if (cachedModel != null) return cachedModel;
     throw Exception('About Game document not found in game_info collection');
   }
 }

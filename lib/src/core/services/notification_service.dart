@@ -11,8 +11,16 @@ import 'package:flutter/material.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint('Handling background FCM message: ${message.messageId}');
-  _showAwesomeNotificationFromRemoteMessage(message);
+  // CRITICAL FIX: When an FCM message contains a 'notification' payload (from Firebase Console or API),
+  // the Android OS native FCM SDK automatically displays the notification in the status bar when the app is in background/closed.
+  // Calling Awesome Notifications here causes a 2nd DUPLICATE notification banner on Android.
+  // Therefore, only trigger Awesome Notifications in background for data-only messages (message.notification == null).
+  if (message.notification == null) {
+    _showAwesomeNotificationFromRemoteMessage(message);
+  }
 }
+
+final Set<String> _processedMessageIds = {};
 
 void _showAwesomeNotificationFromRemoteMessage(RemoteMessage message) {
   final notification = message.notification;
@@ -77,7 +85,25 @@ class NotificationService {
       _showAwesomeNotificationFromRemoteMessage(message);
     });
 
-    // 4. Save FCM token when user signs in or on token refresh
+    // App opened from notification (background → foreground)
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      debugPrint('Notification tapped (background): ${message.data}');
+    });
+
+    // App opened from terminated state via notification
+    final initialMessage = await _fcm.getInitialMessage();
+    if (initialMessage != null) {
+      debugPrint('App launched from notification: ${initialMessage.data}');
+    }
+
+    // 4. Subscribe to topic 'all' for dashboard broadcast notifications
+    await _fcm.subscribeToTopic('all');
+    debugPrint('[NotificationService] Subscribed to topic: all');
+
+    // 5. Listen to Firestore notifications_log for instant guaranteed delivery
+    _listenToFirestoreNotifications();
+
+    // 6. Save FCM token when user signs in or on token refresh
     await updateFcmTokenInFirestore();
     _fcm.onTokenRefresh.listen(_saveTokenToUserDocument);
   }
@@ -151,6 +177,38 @@ class NotificationService {
         await _fcm.deleteToken();
       } on Object catch (_) {}
     }
+  }
+
+  /// Listen to Firestore notifications_log collection for real-time guaranteed delivery
+  void _listenToFirestoreNotifications() {
+    final uid = _auth.currentUser?.uid;
+    final targets = <String>['all'];
+    if (uid != null && uid.isNotEmpty) {
+      targets.add(uid);
+    }
+    _firestore
+        .collection('notifications_log')
+        .where('target', whereIn: targets)
+        .limit(5)
+        .snapshots()
+        .listen((snapshot) {
+      if (!isNotificationsEnabled()) return;
+      for (final change in snapshot.docChanges) {
+        if (change.type == DocumentChangeType.added) {
+          final data = change.doc.data();
+          if (data != null && !_processedMessageIds.contains(change.doc.id)) {
+            _processedMessageIds.add(change.doc.id);
+            final title = (data['title'] as String?) ?? 'أتوبيس كومبليت';
+            final body = (data['body'] as String?) ?? '';
+            if (title.isNotEmpty || body.isNotEmpty) {
+              unawaited(showLocalNotification(title: title, body: body));
+            }
+          }
+        }
+      }
+    }, onError: (Object error) {
+      debugPrint('Firestore notification listener error: $error');
+    });
   }
 
   /// Trigger a local custom notification programmatically
