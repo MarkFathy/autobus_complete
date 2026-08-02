@@ -50,32 +50,11 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
     }
 
     try {
-      // 1. Check doc ID 'privacy_policy'
       final doc = await firestore.collection('game_info').doc('privacy_policy').get();
-      if (doc.exists && doc.data() != null && doc.data()!['contentAr'] != null) {
+      if (doc.exists && doc.data() != null) {
         final model = AppInfoModel.fromJson(doc.data()!, doc.id);
         await CacheStorage.write(_privacyKey, {...doc.data()!, 'id': doc.id});
         return model;
-      }
-
-      // 2. Check doc ID 'privacy'
-      final docPrivacy = await firestore.collection('game_info').doc('privacy').get();
-      if (docPrivacy.exists && docPrivacy.data() != null && docPrivacy.data()!['contentAr'] != null) {
-        final model = AppInfoModel.fromJson(docPrivacy.data()!, docPrivacy.id);
-        await CacheStorage.write(_privacyKey, {...docPrivacy.data()!, 'id': docPrivacy.id});
-        return model;
-      }
-
-      // 3. Query type or name containing privacy
-      final allDocs = await firestore.collection('game_info').get();
-      for (final d in allDocs.docs) {
-        final idLower = d.id.toLowerCase();
-        final typeLower = (d.data()['type']?.toString() ?? '').toLowerCase();
-        if (idLower.contains('privacy') || typeLower.contains('privacy')) {
-          final model = AppInfoModel.fromJson(d.data(), d.id);
-          await CacheStorage.write(_privacyKey, {...d.data(), 'id': d.id});
-          return model;
-        }
       }
     } catch (_) {
       if (cachedModel != null) return cachedModel;
@@ -97,32 +76,11 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
     }
 
     try {
-      // 1. Check doc ID 'about_game'
       final doc = await firestore.collection('game_info').doc('about_game').get();
-      if (doc.exists && doc.data() != null && doc.data()!['contentAr'] != null) {
+      if (doc.exists && doc.data() != null) {
         final model = AppInfoModel.fromJson(doc.data()!, doc.id);
         await CacheStorage.write(_aboutKey, {...doc.data()!, 'id': doc.id});
         return model;
-      }
-
-      // 2. Check doc ID 'about'
-      final docAbout = await firestore.collection('game_info').doc('about').get();
-      if (docAbout.exists && docAbout.data() != null && docAbout.data()!['contentAr'] != null) {
-        final model = AppInfoModel.fromJson(docAbout.data()!, docAbout.id);
-        await CacheStorage.write(_aboutKey, {...docAbout.data()!, 'id': docAbout.id});
-        return model;
-      }
-
-      // 3. Query type or name containing about
-      final allDocs = await firestore.collection('game_info').get();
-      for (final d in allDocs.docs) {
-        final idLower = d.id.toLowerCase();
-        final typeLower = (d.data()['type']?.toString() ?? '').toLowerCase();
-        if (idLower.contains('about') || typeLower.contains('about')) {
-          final model = AppInfoModel.fromJson(d.data(), d.id);
-          await CacheStorage.write(_aboutKey, {...d.data(), 'id': d.id});
-          return model;
-        }
       }
     } catch (_) {
       if (cachedModel != null) return cachedModel;
