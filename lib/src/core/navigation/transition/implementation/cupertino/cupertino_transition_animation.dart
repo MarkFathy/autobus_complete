@@ -1,7 +1,6 @@
+import 'package:autobus_complete/src/core/navigation/transition/factory/transition_creator.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/cupertino/Options/cupertino_animation_option.dart';
 import 'package:flutter/cupertino.dart';
-
-import '../../factory/transition_creator.dart';
-import 'Options/cupertino_animation_option.dart';
 
 class CupertinoTransitionAnimation implements TransitionCreator {
   final CupertinoAnimationOptions options;
@@ -13,8 +12,7 @@ class CupertinoTransitionAnimation implements TransitionCreator {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) {
-    return options.isFullscreenDialog
+  ) => options.isFullscreenDialog
         ? CupertinoFullscreenDialogTransition(
             primaryRouteAnimation: animation,
             secondaryRouteAnimation: secondaryAnimation,
@@ -27,5 +25,4 @@ class CupertinoTransitionAnimation implements TransitionCreator {
             linearTransition: options.isLinearTransition,
             child: child,
           );
-  }
 }

@@ -12,14 +12,12 @@ class RegisterUseCase implements BaseUseCase<UserEntity, RegisterParams> {
   RegisterUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserEntity>> call(RegisterParams params) async {
-    return await repository.register(
+  Future<Either<Failure, UserEntity>> call(RegisterParams params) async => repository.register(
       name: params.name,
       email: params.email,
       password: params.password,
       imageFile: params.imageFile,
     );
-  }
 }
 
 class RegisterParams extends Equatable {

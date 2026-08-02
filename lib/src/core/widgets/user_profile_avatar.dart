@@ -32,7 +32,7 @@ class UserProfileAvatar extends StatelessWidget {
         try {
           final base64Str = imageUrl!.split(',').last;
           return MemoryImage(base64Decode(base64Str));
-        } catch (_) {}
+        } on Object catch (_) {}
       }
       return NetworkImage(imageUrl!);
     }
@@ -40,8 +40,7 @@ class UserProfileAvatar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.all(2.r),
@@ -59,5 +58,4 @@ class UserProfileAvatar extends StatelessWidget {
         ),
       ),
     );
-  }
 }

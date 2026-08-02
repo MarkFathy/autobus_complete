@@ -23,10 +23,8 @@ class MakeHostUseCase implements BaseUseCase<void, MakeHostParams> {
   MakeHostUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(MakeHostParams params) async {
-    return await repository.makeHost(
+  Future<Either<Failure, void>> call(MakeHostParams params) async => repository.makeHost(
       roomCode: params.roomCode,
       newHostId: params.newHostId,
     );
-  }
 }

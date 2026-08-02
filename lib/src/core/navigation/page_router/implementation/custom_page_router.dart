@@ -24,22 +24,19 @@ class CustomPageRouterCreator implements PageRouterCreator {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       settings: settings,
-      maintainState: true,
       transitionDuration:
           options?.duration ?? RouterConstants.transitionDuration,
       reverseTransitionDuration:
           options?.reverseDuration ?? RouterConstants.reverseTransitionDuration,
-      transitionsBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child) {
-        return TransitionTypeBuilder.create(
+      transitionsBuilder: (context, animation,
+          secondaryAnimation, child) => TransitionTypeBuilder.create(
           type: transitionType,
           options: options,
         ).animate(
           animation,
           secondaryAnimation,
           child,
-        );
-      },
+        ),
     );
   }
 }

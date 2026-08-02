@@ -1,8 +1,7 @@
 import 'package:autobus_complete/src/config/res/color_manager.dart';
+import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../navigation/navigator.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
@@ -17,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   final bool isAvailable;
-  final Function()? onTap;
+  final void Function()? onTap;
   final Widget? leading;
   final Widget? title;
   final Widget? action;
@@ -25,8 +24,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showBackButton;
 
   @override
-  Widget build(BuildContext context) {
-    return AppBar(
+  Widget build(BuildContext context) => AppBar(
       automaticallyImplyLeading: false,
       elevation: 0,
       scrolledUnderElevation: 0,
@@ -43,7 +41,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     width: 35,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.whiteColor, width: 1),
+                      border: Border.all(color: AppColors.whiteColor),
 
                       color: AppColors.yellowColor,
                     ),
@@ -54,7 +52,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       size: 26.sp,
                     ),
                   ),
-                  onPressed: onTap ?? () => Go.back(),
+                  onPressed: onTap ?? Go.back,
                 )
               : null),
       actions: action != null ? [action!] : null,
@@ -65,7 +63,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
     );
-  }
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);

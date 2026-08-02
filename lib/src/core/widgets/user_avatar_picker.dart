@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:autobus_complete/gen/assets.gen.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/core/widgets/image_source_selection_bottom_sheet.dart';
@@ -16,12 +18,12 @@ class UserAvatarPicker extends StatelessWidget {
   final double radius;
 
   const UserAvatarPicker({
+    required this.onRemoveImage,
     super.key,
     this.selectedImage,
     this.imageUrl,
     this.onPickImage,
     this.onPickImageSource,
-    required this.onRemoveImage,
     this.radius = 72,
   });
 
@@ -34,7 +36,7 @@ class UserAvatarPicker extends StatelessWidget {
         try {
           final base64Str = imageUrl!.split(',').last;
           return MemoryImage(base64Decode(base64Str));
-        } catch (_) {}
+        } on Object catch (_) {}
       }
       return NetworkImage(imageUrl!);
     }
@@ -43,8 +45,7 @@ class UserAvatarPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage =
-        selectedImage != null || (imageUrl != null && imageUrl!.isNotEmpty);
+    final hasImage = selectedImage != null || (imageUrl != null && imageUrl!.isNotEmpty);
 
     return Center(
       child: Stack(
@@ -54,10 +55,7 @@ class UserAvatarPicker extends StatelessWidget {
             padding: EdgeInsets.all(3.r),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.yellowColor,
-                width: 2.5.w,
-              ),
+              border: Border.all(color: AppColors.yellowColor, width: 2.5.w),
             ),
             child: CircleAvatar(
               radius: radius.r,
@@ -74,16 +72,15 @@ class UserAvatarPicker extends StatelessWidget {
                   ? onRemoveImage
                   : () {
                       if (onPickImageSource != null) {
-                        ImageSourceSelectionBottomSheet.show(
-                          context,
-                          onSourceSelected: onPickImageSource!,
-                        );
+                        unawaited(ImageSourceSelectionBottomSheet.show(context, onSourceSelected: onPickImageSource!));
                       } else if (onPickImage != null) {
-                        ImageSourceSelectionBottomSheet.show(
-                          context,
-                          onSourceSelected: (source) {
-                            onPickImage!();
-                          },
+                        unawaited(
+                          ImageSourceSelectionBottomSheet.show(
+                            context,
+                            onSourceSelected: (source) {
+                              onPickImage!();
+                            },
+                          ),
                         );
                       }
                     },
@@ -91,19 +88,12 @@ class UserAvatarPicker extends StatelessWidget {
                 padding: EdgeInsets.all(2.r),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.yellowColor,
-                    width: 1.5.w,
-                  ),
+                  border: Border.all(color: AppColors.yellowColor, width: 1.5.w),
                 ),
                 child: CircleAvatar(
                   radius: 16.r,
                   backgroundColor: AppColors.textFieldFillColor,
-                  child: Icon(
-                    hasImage ? Icons.close : Icons.add,
-                    color: AppColors.whiteColor,
-                    size: 20.sp,
-                  ),
+                  child: Icon(hasImage ? Icons.close : Icons.add, color: AppColors.whiteColor, size: 20.sp),
                 ),
               ),
             ),

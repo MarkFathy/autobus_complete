@@ -3,10 +3,7 @@ import 'package:flutter/services.dart';
 
 class AppStatusBarAndOrientationsTheme {
   static Future<void> setStyle() async {
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(

@@ -39,10 +39,10 @@ void logDebug(String message, {Level level = Level.info}) {
 
   if (kDebugMode) {
     try {
-      final String logMessage =
+      final logMessage =
           '${level.color}${level.text}[$timeString] ${message.split('\n').map((e) => '${level.color}$e').join('\n')}${AnsiColors.resetColor}';
       debugPrint(logMessage);
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint(e.toString());
     }
   }
@@ -72,30 +72,25 @@ class LoggerInterceptor extends Interceptor {
     // Log request details
     logDebug(
         '\n\n\n\n.........................................................................');
-    logDebug('onRequest: ${options.method} request => $requestPath',
-        level: Level.info);
+    logDebug('onRequest: ${options.method} request => $requestPath');
     logDebug(
-        'onRequest: Request Headers => \n${options.headers.entries.map((e) => '${e.key}: ${e.value}').join('\n')}',
-        level: Level.info);
+        'onRequest: Request Headers => \n${options.headers.entries.map((e) => '${e.key}: ${e.value}').join('\n')}');
     if (options.data != null) {
-      logDebug('onRequest: Request Data => ${_prettyJsonEncode(options.data)}',
-          level: Level.info);
+      logDebug('onRequest: Request Data => ${_prettyJsonEncode(options.data)}');
 
       if (options.data is FormData) {
         final formData = options.data as FormData;
         logDebug(
-            'onRequest: Request FormData => ${formData.fields.map((e) => '${e.key}: ${e.value}').join('\n')}',
-            level: Level.info);
+            'onRequest: Request FormData => ${formData.fields.map((e) => '${e.key}: ${e.value}').join('\n')}');
         logDebug(
-            'onRequest: Request FormData => ${formData.files.map((e) => '${e.key}: ${e.value}').join('\n')}',
-            level: Level.info);
+            'onRequest: Request FormData => ${formData.files.map((e) => '${e.key}: ${e.value}').join('\n')}');
       }
     }
     return super.onRequest(options, handler);
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  void onResponse(Response<dynamic> response, ResponseInterceptorHandler handler) {
     final options = response.requestOptions;
 
     final requestPath = getRequestPath(options);
@@ -113,16 +108,14 @@ class LoggerInterceptor extends Interceptor {
     return super.onResponse(response, handler);
   }
 
-  String getRequestPath(RequestOptions options) {
-    return '${options.baseUrl}${options.path}${options.queryParameters.isEmpty ? '' : '?${options.queryParameters.entries.map((e) => '${e.key}=${e.value}').join('&')}'}';
-  }
+  String getRequestPath(RequestOptions options) => '${options.baseUrl}${options.path}${options.queryParameters.isEmpty ? '' : '?${options.queryParameters.entries.map((e) => '${e.key}=${e.value}').join('&')}'}';
 
   String _prettyJsonEncode(dynamic data) {
     try {
       const encoder = JsonEncoder.withIndent('  ');
       final jsonString = encoder.convert(data);
       return jsonString;
-    } catch (e) {
+    } on Object catch (_) {
       return data.toString();
     }
   }

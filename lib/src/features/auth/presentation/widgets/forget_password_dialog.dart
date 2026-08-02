@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
 import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
-import 'package:autobus_complete/src/core/helpers/validators%20copy.dart';
+import 'package:autobus_complete/src/core/helpers/validators.dart';
 import 'package:autobus_complete/src/core/widgets/buttons/custom_button.dart';
 import 'package:autobus_complete/src/core/widgets/custom_snack_bar.dart';
 import 'package:autobus_complete/src/core/widgets/text_fields/default_text_field.dart';
@@ -16,17 +18,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ForgetPasswordDialog extends StatefulWidget {
   final AuthCubit authCubit;
 
-  const ForgetPasswordDialog({super.key, required this.authCubit});
+  const ForgetPasswordDialog({required this.authCubit, super.key});
 
   static void show(BuildContext context, {required AuthCubit authCubit}) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.scaffoldBackgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+    unawaited(
+      showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: AppColors.scaffoldBackgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        builder: (_) => ForgetPasswordDialog(authCubit: authCubit),
       ),
-      builder: (_) => ForgetPasswordDialog(authCubit: authCubit),
     );
   }
 
@@ -123,7 +127,7 @@ class _ForgetPasswordDialogState extends State<ForgetPasswordDialog> {
                               return;
                             }
                             final email = _emailController.text.trim();
-                            widget.authCubit.sendPasswordResetEmail(email);
+                            unawaited(widget.authCubit.sendPasswordResetEmail(email));
                           },
                   ),
                 ],

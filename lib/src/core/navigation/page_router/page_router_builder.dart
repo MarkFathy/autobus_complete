@@ -33,14 +33,12 @@ class PageRouterBuilder {
     RouteSettings? settings,
     TransitionType? transition,
     AnimationOption? options,
-  }) {
-    return _creator.create<T>(
+  }) => _creator.create<T>(
       page,
       settings: settings,
       transition: transition,
       animationOptions: options,
     );
-  }
 }
 
 class PlatformConfig {

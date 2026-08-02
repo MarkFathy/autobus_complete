@@ -9,7 +9,5 @@ class DeleteAccountUseCase implements BaseUseCase<void, NoParams> {
   DeleteAccountUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(NoParams params) async {
-    return await repository.deleteAccount();
-  }
+  Future<Either<Failure, void>> call(NoParams params) async => repository.deleteAccount();
 }

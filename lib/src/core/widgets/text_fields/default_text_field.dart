@@ -1,12 +1,13 @@
+import 'dart:async';
 import 'package:autobus_complete/src/config/res/app_sizes.dart';
+import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/constants_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
 import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
-import 'package:autobus_complete/src/core/helpers/validators%20copy.dart';
+import 'package:autobus_complete/src/core/helpers/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../../config/res/color_manager.dart';
 
 class DefaultTextField extends StatefulWidget {
   final String? hint;
@@ -18,7 +19,7 @@ class DefaultTextField extends StatefulWidget {
   final TextStyle? labelStyle;
   final bool? isOptional;
   final bool? isPhone;
-  final Function(String?)? onSubmitted;
+  final void Function(String?)? onSubmitted;
   final Color? fillColor;
   final Widget? prefixIcon;
   final bool readOnly;
@@ -162,7 +163,7 @@ class DefaultTextFieldState extends State<DefaultTextField>
 
   void shake() {
     if (widget.enableShake && mounted) {
-      _shakeController.forward(from: 0);
+      unawaited(_shakeController.forward(from: 0));
     }
   }
 
@@ -205,8 +206,8 @@ class DefaultTextFieldState extends State<DefaultTextField>
             validator: widget.validator,
             onChanged: widget.onChanged ?? _validateInput,
             onTap: widget.onTap,
-            obscureText: widget.isPassword == true ? _isSecure : widget.secure,
-            keyboardType: widget.isPhone == true
+            obscureText: widget.isPassword ?? false ? _isSecure : widget.secure,
+            keyboardType: widget.isPhone ?? false
                 ? TextInputType.phone
                 : widget.inputType,
             maxLength: widget.maxLength,
@@ -238,7 +239,7 @@ class DefaultTextFieldState extends State<DefaultTextField>
               prefix: widget.prefixWidget,
 
               suffixText: widget.suffixText,
-              suffixIcon: widget.isPassword == true
+              suffixIcon: widget.isPassword ?? false
                   ? IconButton(
                       onPressed: () {
                         setState(() {
@@ -252,7 +253,7 @@ class DefaultTextFieldState extends State<DefaultTextField>
                         color: AppColors.greyColor,
                       ),
                     )
-                  : widget.isPhone == true
+                  : widget.isPhone ?? false
                   ? _suffixIconWhenPhoneType(context)
                   : widget.suffixIcon,
 
@@ -292,8 +293,7 @@ class DefaultTextFieldState extends State<DefaultTextField>
 }
 
 /// Phone suffix
-Widget _suffixIconWhenPhoneType(BuildContext context) {
-  return SizedBox(
+Widget _suffixIconWhenPhoneType(BuildContext context) => SizedBox(
     width: AppSize.sW90,
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -303,4 +303,3 @@ Widget _suffixIconWhenPhoneType(BuildContext context) {
       ],
     ),
   );
-}

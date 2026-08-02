@@ -9,7 +9,5 @@ class JoinRoomUseCase implements BaseUseCase<void, String> {
   JoinRoomUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(String roomCode) async {
-    return await repository.joinRoom(roomCode: roomCode);
-  }
+  Future<Either<Failure, void>> call(String roomCode) async => repository.joinRoom(roomCode: roomCode);
 }

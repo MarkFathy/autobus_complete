@@ -1,3 +1,4 @@
+import 'package:autobus_complete/src/config/res/app_sizes.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
 import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
@@ -5,7 +6,6 @@ import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/widgets/buttons/custom_animated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../config/res/app_sizes.dart';
 
 class LoadingButton extends StatelessWidget {
   final String title;
@@ -23,8 +23,7 @@ class LoadingButton extends StatelessWidget {
   final Widget? suffixIcon;
 
   const LoadingButton({
-    super.key,
-    required this.title,
+    required this.title, super.key,
     this.onTap,
     this.color,
     this.textColor,
@@ -40,8 +39,7 @@ class LoadingButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: margin ?? EdgeInsets.symmetric(vertical: AppMargin.mH16),
       child: CustomAnimatedButton(
         onTap: onTap ?? () async {},
@@ -58,7 +56,7 @@ class LoadingButton extends StatelessWidget {
         loader: SizedBox(
           width: AppSize.sH25,
           height: AppSize.sH25,
-          child: CircularProgressIndicator(color: AppColors.whiteColor),
+          child: const CircularProgressIndicator(color: AppColors.whiteColor),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -77,5 +75,4 @@ class LoadingButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

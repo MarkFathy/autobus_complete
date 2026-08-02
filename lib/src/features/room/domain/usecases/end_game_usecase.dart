@@ -9,7 +9,5 @@ class EndGameUseCase implements BaseUseCase<void, String> {
   EndGameUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(String roomCode) async {
-    return await repository.endGame(roomCode: roomCode);
-  }
+  Future<Either<Failure, void>> call(String roomCode) async => repository.endGame(roomCode: roomCode);
 }

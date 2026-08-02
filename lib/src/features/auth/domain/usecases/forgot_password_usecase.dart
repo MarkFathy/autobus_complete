@@ -9,7 +9,5 @@ class ForgotPasswordUseCase implements BaseUseCase<void, String> {
   ForgotPasswordUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(String email) async {
-    return await repository.sendPasswordResetEmail(email);
-  }
+  Future<Either<Failure, void>> call(String email) async => repository.sendPasswordResetEmail(email);
 }

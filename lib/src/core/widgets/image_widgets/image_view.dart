@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 
 class ImageView extends StatelessWidget {
   const ImageView({
-    super.key,
-    required this.child,
+    required this.child, super.key,
     this.minScale = 0.0,
     this.maxScale = 1.0,
   });
@@ -14,8 +13,7 @@ class ImageView extends StatelessWidget {
   final double maxScale;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       primary: false,
       body: SafeArea(
         child: Stack(
@@ -40,5 +38,4 @@ class ImageView extends StatelessWidget {
         ),
       ),
     );
-  }
 }

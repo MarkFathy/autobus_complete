@@ -1,8 +1,8 @@
 import 'package:autobus_complete/src/core/navigation/constants/imports_constants.dart';
 import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
+import 'package:autobus_complete/src/core/navigation/named_routes.dart';
+import 'package:autobus_complete/src/core/navigation/page_router/imports_page_router_builder.dart';
 import 'package:flutter/cupertino.dart';
-import 'named_routes.dart';
-import 'page_router/imports_page_router_builder.dart';
 
 class NamedRouteArgs {
   final Object? arguments;
@@ -33,11 +33,9 @@ class Go {
     Widget page, {
     TransitionType? transition,
     AnimationOption? options,
-  }) {
-    return _navigatorKey.currentState!.push<T>(
+  }) => _navigatorKey.currentState!.push<T>(
       _pageRouter.build(page, transition: transition, options: options),
     );
-  }
 
   //</editor-fold>
 
@@ -47,8 +45,7 @@ class Go {
     Object? arguments,
     TransitionType? transition,
    AnimationOption? options,
-  }) {
-    return _navigatorKey.currentState!.pushNamed<T>(
+  }) => _navigatorKey.currentState!.pushNamed<T>(
       namedRoute.routeName,
       arguments: NamedRouteArgs(
         arguments: arguments,
@@ -56,7 +53,6 @@ class Go {
         options: options,
       ),
     );
-  }
 
   //</editor-fold>
 
@@ -66,11 +62,9 @@ class Go {
     Widget page, {
     TransitionType? transition,
     AnimationOption? options,
-  }) {
-    return _navigatorKey.currentState!.pushReplacement<T, TO>(
+  }) => _navigatorKey.currentState!.pushReplacement<T, TO>(
       _pageRouter.build(page, transition: transition, options: options),
     );
-  }
 
   //</editor-fold>
 
@@ -82,8 +76,7 @@ class Go {
     TO? result,
     TransitionType? transition,
     AnimationOption? options,
-  }) {
-    return _navigatorKey.currentState!.pushReplacementNamed<T, TO>(
+  }) => _navigatorKey.currentState!.pushReplacementNamed<T, TO>(
       namedRoute.routeName,
       arguments: NamedRouteArgs(
         arguments: arguments,
@@ -92,7 +85,6 @@ class Go {
       ),
       result: result,
     );
-  }
 
   //</editor-fold>
 
@@ -102,12 +94,10 @@ class Go {
     Widget page, {
     TransitionType? transition,
     AnimationOption? options,
-  }) {
-    return _navigatorKey.currentState!.pushAndRemoveUntil<T>(
+  }) => _navigatorKey.currentState!.pushAndRemoveUntil<T>(
       _pageRouter.build(page, transition: transition, options: options),
       (route) => false,
     );
-  }
 
   //</editor-fold>
 
@@ -118,8 +108,7 @@ class Go {
     Object? arguments,
     TransitionType? transition,
     AnimationOption? options,
-  }) {
-    return _navigatorKey.currentState!.pushNamedAndRemoveUntil<T>(
+  }) => _navigatorKey.currentState!.pushNamedAndRemoveUntil<T>(
       namedRoute.routeName,
       (route) => false,
       arguments: NamedRouteArgs(
@@ -128,7 +117,6 @@ class Go {
         options: options,
       ),
     );
-  }
 
   //</editor-fold>
 

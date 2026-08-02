@@ -22,8 +22,7 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
+  Widget build(BuildContext context) => BlocProvider(
       create: (_) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
@@ -32,7 +31,7 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
               context,
               message: S.of(context).loginSuccess,
             );
-            Go.offAllNamed(NamedRoutes.home);
+            unawaited(Go.offAllNamed(NamedRoutes.home));
           } else if (state is AuthPasswordResetSent) {
             CustomSnackBar.showSuccess(context, message: state.message);
           } else if (state is AuthError) {
@@ -47,12 +46,10 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
             isLoading: isLoading,
             child: AppScaffold(
               safeTop: true,
-              safeBottom: true,
               body: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     10.szH,
                     Row(
@@ -92,7 +89,6 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                       isPassword: true,
                       validator: (value) => Validators.validatePassword(
                         value,
-                        minLength: 8,
                         emptyMessage: S.of(context).passwordRequired,
                         minLengthMessage: S.of(context).passwordMinLength,
                       ),
@@ -121,7 +117,6 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                                 }
                                 if (Validators.validatePassword(
                                       _passwordController.text,
-                                      minLength: 8,
                                     ) !=
                                     null) {
                                   _passwordKey.currentState?.shake();
@@ -129,9 +124,11 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                                 return;
                               }
 
-                              context.read<AuthCubit>().login(
-                                _emailController.text.trim(),
-                                _passwordController.text.trim(),
+                              unawaited(
+                                context.read<AuthCubit>().login(
+                                  _emailController.text.trim(),
+                                  _passwordController.text.trim(),
+                                ),
                               );
                             },
                     ),
@@ -146,9 +143,11 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                       5.szW,
                       GestureDetector(
                         onTap: () {
-                          Go.toNamed(
-                            NamedRoutes.register,
-                            transition: TransitionType.fade,
+                          unawaited(
+                            Go.toNamed(
+                              NamedRoutes.register,
+                              transition: TransitionType.fade,
+                            ),
                           );
                         },
                         child: Text(
@@ -159,7 +158,7 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                     ],
                   ),
                   18.szH,
-                   OrDivider(),
+                   const OrDivider(),
                   20.szH,
                   GoogleLoginButton(
                     onTap: isLoading
@@ -175,5 +174,4 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
     },
   ),
 );
-  }
 }

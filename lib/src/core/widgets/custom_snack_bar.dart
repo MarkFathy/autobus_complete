@@ -57,7 +57,6 @@ class CustomSnackBar {
     show(
       context,
       message: message,
-      type: SnackBarType.error,
       duration: duration,
     );
   }

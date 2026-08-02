@@ -9,7 +9,5 @@ class PlayAgainUseCase implements BaseUseCase<void, String> {
   PlayAgainUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(String roomCode) async {
-    return await repository.playAgain(roomCode: roomCode);
-  }
+  Future<Either<Failure, void>> call(String roomCode) async => repository.playAgain(roomCode: roomCode);
 }

@@ -1,4 +1,5 @@
 import 'package:autobus_complete/src/core/app_cubit/app_cubit.dart';
+import 'package:autobus_complete/src/core/services/notification_service.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:autobus_complete/src/features/auth/data/repositories/auth_repository_impl.dart';
@@ -42,7 +43,6 @@ import 'package:autobus_complete/src/features/settings/domain/abstract_repositor
 import 'package:autobus_complete/src/features/settings/domain/usecases/get_about_game_usecase.dart';
 import 'package:autobus_complete/src/features/settings/domain/usecases/get_privacy_policy_usecase.dart';
 import 'package:autobus_complete/src/features/settings/presentation/cubit/app_info_cubit.dart';
-import 'package:autobus_complete/src/core/services/notification_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -52,160 +52,116 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 final sl = GetIt.instance;
 
-Future<void> init() async => await setupServiceLocator();
+Future<void> init() async => setupServiceLocator();
 
 Future<void> setupServiceLocator() async {
   // App Cubit
-  sl.registerLazySingleton(() => AppCubit());
-
-  // Features - Auth
-  // Cubit
-  sl.registerFactory(
-    () => AuthCubit(
-      loginUseCase: sl(),
-      registerUseCase: sl(),
-      googleLoginUseCase: sl(),
-      forgotPasswordUseCase: sl(),
-      logoutUseCase: sl(),
-    ),
-  );
-
-  // Use cases
-  sl.registerLazySingleton(() => LoginUseCase(sl()));
-  sl.registerLazySingleton(() => RegisterUseCase(sl()));
-  sl.registerLazySingleton(() => GoogleLoginUseCase(sl()));
-  sl.registerLazySingleton(() => ForgotPasswordUseCase(sl()));
-  sl.registerLazySingleton(() => LogoutUseCase(sl()));
-
-  // Repository
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(
-      remoteDataSource: sl(),
-    ),
-  );
-
-  // Data sources
-  sl.registerLazySingleton<AuthLocalDataSource>(
-    () => AuthLocalDataSourceImpl(),
-  );
-
-  sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(
-      firebaseAuth: sl(),
-      googleSignIn: sl(),
-      authLocalDataSource: sl(),
-      firestore: sl(),
-      storage: sl(),
-    ),
-  );
-
-  // Features - Profile
-  // Cubit
-  sl.registerFactory(
-    () => ProfileCubit(
-      getUserProfileUseCase: sl(),
-      updateProfileUseCase: sl(),
-      sendPasswordResetUseCase: sl(),
-      deleteAccountUseCase: sl(),
-    ),
-  );
-
-  // Use cases
-  sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
-  sl.registerLazySingleton(() => SendPasswordResetUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
-
-  // Repository
-  sl.registerLazySingleton<ProfileRepository>(
-    () => ProfileRepositoryImpl(remoteDataSource: sl()),
-  );
-
-  // Data sources
-  sl.registerLazySingleton<ProfileRemoteDataSource>(
-    () => ProfileRemoteDataSourceImpl(
-      firebaseAuth: sl(),
-      firestore: sl(),
-      storage: sl(),
-      authLocalDataSource: sl(),
-    ),
-  );
-
-  // Features - Room
-  // Cubit
-  sl.registerLazySingleton(
-    () => RoomCubit(
-      getCategoriesUseCase: sl(),
-      createRoomUseCase: sl(),
-      joinRoomUseCase: sl(),
-      listenToRoomUseCase: sl(),
-      toggleReadyUseCase: sl(),
-      updateRoomSettingsUseCase: sl(),
-      startGameUseCase: sl(),
-      playAgainUseCase: sl(),
-      leaveRoomUseCase: sl(),
-      makeHostUseCase: sl(),
-      kickPlayerUseCase: sl(),
-      startNextRoundUseCase: sl(),
-      submitRoundAnswersUseCase: sl(),
-      updateCategoryScoreUseCase: sl(),
-      endGameUseCase: sl(),
-    ),
-  );
-
-  // Use cases
-  sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
-  sl.registerLazySingleton(() => CreateRoomUseCase(sl()));
-  sl.registerLazySingleton(() => JoinRoomUseCase(sl()));
-  sl.registerLazySingleton(() => ListenToRoomUseCase(sl()));
-  sl.registerLazySingleton(() => ToggleReadyUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateRoomSettingsUseCase(sl()));
-  sl.registerLazySingleton(() => StartGameUseCase(sl()));
-  sl.registerLazySingleton(() => PlayAgainUseCase(sl()));
-  sl.registerLazySingleton(() => LeaveRoomUseCase(sl()));
-  sl.registerLazySingleton(() => MakeHostUseCase(sl()));
-  sl.registerLazySingleton(() => KickPlayerUseCase(sl()));
-  sl.registerLazySingleton(() => StartNextRoundUseCase(sl()));
-  sl.registerLazySingleton(() => SubmitRoundAnswersUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateCategoryScoreUseCase(sl()));
-  sl.registerLazySingleton(() => EndGameUseCase(sl()));
-
-  // Repository
-  sl.registerLazySingleton<RoomRepository>(
-    () => RoomRepositoryImpl(remoteDataSource: sl()),
-  );
-
-  // Data sources
-  sl.registerLazySingleton<RoomRemoteDataSource>(
-    () => RoomRemoteDataSourceImpl(
-      firestore: sl(),
-      firebaseAuth: sl(),
-    ),
-  );
-
-  // AppInfo / Settings Feature
-  sl.registerFactory(
-    () => AppInfoCubit(
-      getPrivacyPolicyUseCase: sl(),
-      getAboutGameUseCase: sl(),
-    ),
-  );
-  sl.registerLazySingleton(() => GetPrivacyPolicyUseCase(sl()));
-  sl.registerLazySingleton(() => GetAboutGameUseCase(sl()));
-  sl.registerLazySingleton<AppInfoRepository>(
-    () => AppInfoRepositoryImpl(remoteDataSource: sl()),
-  );
-  sl.registerLazySingleton<AppInfoRemoteDataSource>(
-    () => AppInfoRemoteDataSourceImpl(firestore: sl()),
-  );
-
-  // Services
-  sl.registerLazySingleton(() => NotificationService());
-
-  // External
-  sl.registerLazySingleton(() => FirebaseAuth.instance);
-  sl.registerLazySingleton(() => FirebaseFirestore.instance);
-  sl.registerLazySingleton(() => FirebaseStorage.instance);
-  sl.registerLazySingleton(() => GoogleSignIn.instance);
-  sl.registerLazySingleton(() => const FlutterSecureStorage());
+  sl
+    ..registerLazySingleton(AppCubit.new)
+    // Features - Auth
+    // Cubit
+    ..registerFactory(
+      () => AuthCubit(
+        loginUseCase: sl(),
+        registerUseCase: sl(),
+        googleLoginUseCase: sl(),
+        forgotPasswordUseCase: sl(),
+        logoutUseCase: sl(),
+      ),
+    )
+    // Use cases
+    ..registerLazySingleton(() => LoginUseCase(sl()))
+    ..registerLazySingleton(() => RegisterUseCase(sl()))
+    ..registerLazySingleton(() => GoogleLoginUseCase(sl()))
+    ..registerLazySingleton(() => ForgotPasswordUseCase(sl()))
+    ..registerLazySingleton(() => LogoutUseCase(sl()))
+    // Repository
+    ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl()))
+    // Data sources
+    ..registerLazySingleton<AuthLocalDataSource>(AuthLocalDataSourceImpl.new)
+    ..registerLazySingleton<AuthRemoteDataSource>(
+      () => AuthRemoteDataSourceImpl(
+        firebaseAuth: sl(),
+        googleSignIn: sl(),
+        authLocalDataSource: sl(),
+        firestore: sl(),
+        storage: sl(),
+      ),
+    )
+    // Features - Profile
+    // Cubit
+    ..registerFactory(
+      () => ProfileCubit(
+        getUserProfileUseCase: sl(),
+        updateProfileUseCase: sl(),
+        sendPasswordResetUseCase: sl(),
+        deleteAccountUseCase: sl(),
+      ),
+    )
+    // Use cases
+    ..registerLazySingleton(() => GetUserProfileUseCase(sl()))
+    ..registerLazySingleton(() => UpdateProfileUseCase(sl()))
+    ..registerLazySingleton(() => SendPasswordResetUseCase(sl()))
+    ..registerLazySingleton(() => DeleteAccountUseCase(sl()))
+    // Repository
+    ..registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(remoteDataSource: sl()))
+    // Data sources
+    ..registerLazySingleton<ProfileRemoteDataSource>(
+      () => ProfileRemoteDataSourceImpl(firebaseAuth: sl(), firestore: sl(), storage: sl(), authLocalDataSource: sl()),
+    )
+    // Features - Room
+    // Cubit
+    ..registerLazySingleton(
+      () => RoomCubit(
+        getCategoriesUseCase: sl(),
+        createRoomUseCase: sl(),
+        joinRoomUseCase: sl(),
+        listenToRoomUseCase: sl(),
+        toggleReadyUseCase: sl(),
+        updateRoomSettingsUseCase: sl(),
+        startGameUseCase: sl(),
+        playAgainUseCase: sl(),
+        leaveRoomUseCase: sl(),
+        makeHostUseCase: sl(),
+        kickPlayerUseCase: sl(),
+        startNextRoundUseCase: sl(),
+        submitRoundAnswersUseCase: sl(),
+        updateCategoryScoreUseCase: sl(),
+        endGameUseCase: sl(),
+      ),
+    )
+    // Use cases
+    ..registerLazySingleton(() => GetCategoriesUseCase(sl()))
+    ..registerLazySingleton(() => CreateRoomUseCase(sl()))
+    ..registerLazySingleton(() => JoinRoomUseCase(sl()))
+    ..registerLazySingleton(() => ListenToRoomUseCase(sl()))
+    ..registerLazySingleton(() => ToggleReadyUseCase(sl()))
+    ..registerLazySingleton(() => UpdateRoomSettingsUseCase(sl()))
+    ..registerLazySingleton(() => StartGameUseCase(sl()))
+    ..registerLazySingleton(() => PlayAgainUseCase(sl()))
+    ..registerLazySingleton(() => LeaveRoomUseCase(sl()))
+    ..registerLazySingleton(() => MakeHostUseCase(sl()))
+    ..registerLazySingleton(() => KickPlayerUseCase(sl()))
+    ..registerLazySingleton(() => StartNextRoundUseCase(sl()))
+    ..registerLazySingleton(() => SubmitRoundAnswersUseCase(sl()))
+    ..registerLazySingleton(() => UpdateCategoryScoreUseCase(sl()))
+    ..registerLazySingleton(() => EndGameUseCase(sl()))
+    // Repository
+    ..registerLazySingleton<RoomRepository>(() => RoomRepositoryImpl(remoteDataSource: sl()))
+    // Data sources
+    ..registerLazySingleton<RoomRemoteDataSource>(() => RoomRemoteDataSourceImpl(firestore: sl(), firebaseAuth: sl()))
+    // AppInfo / Settings Feature
+    ..registerFactory(() => AppInfoCubit(getPrivacyPolicyUseCase: sl(), getAboutGameUseCase: sl()))
+    ..registerLazySingleton(() => GetPrivacyPolicyUseCase(sl()))
+    ..registerLazySingleton(() => GetAboutGameUseCase(sl()))
+    ..registerLazySingleton<AppInfoRepository>(() => AppInfoRepositoryImpl(remoteDataSource: sl()))
+    ..registerLazySingleton<AppInfoRemoteDataSource>(() => AppInfoRemoteDataSourceImpl(firestore: sl()))
+    // Services
+    ..registerLazySingleton(NotificationService.new)
+    // External
+    ..registerLazySingleton(() => FirebaseAuth.instance)
+    ..registerLazySingleton(() => FirebaseFirestore.instance)
+    ..registerLazySingleton(() => FirebaseStorage.instance)
+    ..registerLazySingleton(() => GoogleSignIn.instance)
+    ..registerLazySingleton(() => const FlutterSecureStorage());
 }

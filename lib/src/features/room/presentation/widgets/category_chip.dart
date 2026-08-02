@@ -12,16 +12,11 @@ class CategoryChip extends StatelessWidget {
   final VoidCallback onTap;
 
   const CategoryChip({
-    super.key,
-    required this.emoji,
-    required this.name,
-    required this.isSelected,
-    required this.onTap,
+    required this.emoji, required this.name, required this.isSelected, required this.onTap, super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -70,5 +65,4 @@ class CategoryChip extends StatelessWidget {
         ),
       ),
     );
-  }
 }

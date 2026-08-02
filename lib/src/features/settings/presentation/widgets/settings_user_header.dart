@@ -13,16 +13,13 @@ class SettingsUserHeader extends StatelessWidget {
   final VoidCallback? onTap;
 
   const SettingsUserHeader({
-    super.key,
-    required this.name,
-    required this.email,
+    required this.name, required this.email, super.key,
     this.imageUrl,
     this.onTap,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
@@ -76,5 +73,4 @@ class SettingsUserHeader extends StatelessWidget {
         ),
       ),
     );
-  }
 }

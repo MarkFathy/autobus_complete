@@ -10,9 +10,7 @@ class RoundsSelectorRow extends StatelessWidget {
   final ValueChanged<int> onRoundsChanged;
 
   const RoundsSelectorRow({
-    super.key,
-    required this.selectedRounds,
-    required this.onRoundsChanged,
+    required this.selectedRounds, required this.onRoundsChanged, super.key,
   });
 
   /// Returns the correct Arabic plural form for rounds count:
@@ -27,8 +25,7 @@ class RoundsSelectorRow extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
+  Widget build(BuildContext context) => Row(
       children: [
         Text(
           S.of(context).numberOfRounds,
@@ -55,12 +52,10 @@ class RoundsSelectorRow extends StatelessWidget {
                 size: 22.sp,
               ),
               style: getTextStyle().s14.w700.yellowColor,
-              items: List.generate(10, (i) => i + 1).map((rounds) {
-                return DropdownMenuItem<int>(
+              items: List.generate(10, (i) => i + 1).map((rounds) => DropdownMenuItem<int>(
                   value: rounds,
                   child: Text('$rounds ${_getRoundsLabel(context, rounds)}'),
-                );
-              }).toList(),
+                )).toList(),
               onChanged: (val) {
                 if (val != null) {
                   onRoundsChanged(val);
@@ -71,5 +66,4 @@ class RoundsSelectorRow extends StatelessWidget {
         ),
       ],
     );
-  }
 }

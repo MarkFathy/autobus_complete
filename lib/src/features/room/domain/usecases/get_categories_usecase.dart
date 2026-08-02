@@ -10,7 +10,5 @@ class GetCategoriesUseCase implements BaseUseCase<List<RoomCategoryEntity>, NoPa
   GetCategoriesUseCase(this.repository);
 
   @override
-  Future<Either<Failure, List<RoomCategoryEntity>>> call(NoParams params) async {
-    return await repository.getCategories();
-  }
+  Future<Either<Failure, List<RoomCategoryEntity>>> call(NoParams params) async => repository.getCategories();
 }

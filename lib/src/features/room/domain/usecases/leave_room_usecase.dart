@@ -9,7 +9,5 @@ class LeaveRoomUseCase implements BaseUseCase<void, String> {
   LeaveRoomUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(String roomCode) async {
-    return await repository.leaveRoom(roomCode: roomCode);
-  }
+  Future<Either<Failure, void>> call(String roomCode) async => repository.leaveRoom(roomCode: roomCode);
 }

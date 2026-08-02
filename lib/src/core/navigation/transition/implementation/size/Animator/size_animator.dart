@@ -1,8 +1,8 @@
 import 'package:autobus_complete/src/core/navigation/constants/imports_constants.dart';
 import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/size/Option/size_animation_option.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Option/size_animation_option.dart';
 
 class SizeAnimator extends Animator<double>
     implements CurveBehaviour, TweenBehaviour<double> {
@@ -11,22 +11,16 @@ class SizeAnimator extends Animator<double>
   SizeAnimator(this.options);
 
   @override
-  CurvedAnimation setCurveAnimation(Animation<double> animation) {
-    return CurvedAnimation(
+  CurvedAnimation setCurveAnimation(Animation<double> animation) => CurvedAnimation(
       parent: animation,
       curve: options.curve ?? RouterConstants.transitionCurve,
       reverseCurve:
           options.reverseCurve ?? RouterConstants.reverseTransitionCurve,
     );
-  }
 
   @override
-  Tween<double> setTween() {
-    return Tween<double>(begin: options.begin, end: options.end);
-  }
+  Tween<double> setTween() => Tween<double>(begin: options.begin, end: options.end);
 
   @override
-  Animation<double> animator(Animation<double> animation) {
-    return setTween().animate(setCurveAnimation(animation));
-  }
+  Animation<double> animator(Animation<double> animation) => setTween().animate(setCurveAnimation(animation));
 }

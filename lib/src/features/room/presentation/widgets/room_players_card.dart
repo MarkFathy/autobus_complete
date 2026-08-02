@@ -29,15 +29,13 @@ class RoomPlayersCard extends StatelessWidget {
   final void Function(RoomPlayer player)? onPlayerLongPress;
 
   const RoomPlayersCard({
-    super.key,
-    required this.players,
+    required this.players, super.key,
     this.maxPlayers = 12,
     this.onPlayerLongPress,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
@@ -117,7 +115,6 @@ class RoomPlayersCard extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 class PlayerTileItem extends StatelessWidget {
@@ -125,14 +122,12 @@ class PlayerTileItem extends StatelessWidget {
   final VoidCallback? onLongPress;
 
   const PlayerTileItem({
-    super.key,
-    required this.player,
+    required this.player, super.key,
     this.onLongPress,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onLongPress: onLongPress,
       child: Container(
         padding: EdgeInsets.all(8.r),
@@ -248,15 +243,13 @@ class PlayerTileItem extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class InteractivePlayerName extends StatefulWidget {
   final String name;
 
   const InteractivePlayerName({
-    super.key,
-    required this.name,
+    required this.name, super.key,
   });
 
   @override
@@ -295,7 +288,7 @@ class _InteractivePlayerNameState extends State<InteractivePlayerName> {
       curve: Curves.easeInOut,
     );
 
-    await Future.delayed(const Duration(milliseconds: 700));
+    await Future<void>.delayed(const Duration(milliseconds: 700));
 
     if (_scrollController.hasClients) {
       await _scrollController.animateTo(

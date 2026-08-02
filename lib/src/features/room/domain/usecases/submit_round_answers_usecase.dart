@@ -24,10 +24,8 @@ class SubmitRoundAnswersUseCase
   SubmitRoundAnswersUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(SubmitRoundAnswersParams params) async {
-    return await repository.submitRoundAnswers(
+  Future<Either<Failure, void>> call(SubmitRoundAnswersParams params) async => repository.submitRoundAnswers(
       roomCode: params.roomCode,
       answers: params.answers,
     );
-  }
 }

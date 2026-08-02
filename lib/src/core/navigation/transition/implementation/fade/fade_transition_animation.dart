@@ -1,8 +1,8 @@
 import 'package:autobus_complete/src/core/navigation/transition/factory/transition_creator.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/fade/Animator/fade_animator.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/fade/Option/fade_animation_option.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'Animator/fade_animator.dart';
-import 'Option/fade_animation_option.dart';
 
 class FadeTransitionAnimation implements TransitionCreator {
   final FadeAnimationOptions options;
@@ -14,10 +14,8 @@ class FadeTransitionAnimation implements TransitionCreator {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) {
-    return FadeTransition(
+  ) => FadeTransition(
       opacity: FadeAnimator(options).animator(animation),
       child: child,
     );
-  }
 }

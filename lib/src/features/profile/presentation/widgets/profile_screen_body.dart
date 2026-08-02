@@ -27,9 +27,12 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ProfileCubit>()..getUserProfile(),
+  Widget build(BuildContext context) => BlocProvider(
+      create: (_) {
+        final cubit = sl<ProfileCubit>();
+        unawaited(cubit.getUserProfile());
+        return cubit;
+      },
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileLoaded) {
@@ -53,7 +56,7 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
               context,
               message: S.of(context).operationCancelled, // or deleted success
             );
-            Go.offAllNamed(NamedRoutes.login);
+            unawaited(Go.offAllNamed(NamedRoutes.login));
           } else if (state is ProfileError) {
             CustomSnackBar.showError(context, message: state.message);
           }
@@ -67,9 +70,7 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
             isLoading: isLoading,
             child: AppScaffold(
               safeTop: true,
-              safeBottom: true,
               appBar: CustomAppBar(
-                showBackButton: true,
                 title: Text(
                   S.of(context).editProfile,
                   style: getTextStyle().s20.w700.whiteColor,
@@ -88,8 +89,8 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                         imageUrl: cubit.isImageRemoved
                             ? null
                             : currentUser?.photoUrl,
-                        onPickImageSource: (source) => cubit.pickImage(source),
-                        onRemoveImage: () => cubit.removeImage(),
+                        onPickImageSource: cubit.pickImage,
+                        onRemoveImage: cubit.removeImage,
                         radius: 65,
                       ),
                       30.szH,
@@ -130,9 +131,11 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                         text: S.of(context).saveChanges,
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            cubit.updateProfile(
-                              name: _nameController.text.trim(),
-                              email: _emailController.text.trim(),
+                            unawaited(
+                              cubit.updateProfile(
+                                name: _nameController.text.trim(),
+                                email: _emailController.text.trim(),
+                              ),
                             );
                           }
                         },
@@ -140,7 +143,7 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                       24.szH,
 
                       // ── Change Password & Actions Group ───────────
-                      Container(
+                      DecoratedBox(
                         decoration: BoxDecoration(
                           color: AppColors.textFieldFillColor,
                           borderRadius: BorderRadius.circular(20.r),
@@ -184,16 +187,14 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                               color: AppColors.yellowColor,
                               size: 18.sp,
                             ),
-                            onTap: () {
-                              cubit.sendPasswordResetEmail();
-                            },
+                            onTap: cubit.sendPasswordResetEmail,
                           ),
                         ),
                       ),
                       20.szH,
 
                       // ── Delete Account Button ─────────────────────
-                      Container(
+                      DecoratedBox(
                         decoration: BoxDecoration(
                           color: AppColors.textFieldFillColor,
                           borderRadius: BorderRadius.circular(20.r),
@@ -227,11 +228,11 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                               style: getTextStyle().s16.w600.redColor,
                             ),
                             onTap: () {
-                              DeleteAccountBottomSheet.show(
-                                context,
-                                onConfirmDelete: () {
-                                  cubit.deleteAccount();
-                                },
+                              unawaited(
+                                DeleteAccountBottomSheet.show(
+                                  context,
+                                  onConfirmDelete: cubit.deleteAccount,
+                                ),
                               );
                             },
                           ),
@@ -247,5 +248,4 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
         },
       ),
     );
-  }
 }

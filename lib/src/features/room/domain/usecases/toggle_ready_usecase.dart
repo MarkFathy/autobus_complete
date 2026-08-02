@@ -9,7 +9,5 @@ class ToggleReadyUseCase implements BaseUseCase<void, String> {
   ToggleReadyUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(String roomCode) async {
-    return await repository.toggleReadyStatus(roomCode: roomCode);
-  }
+  Future<Either<Failure, void>> call(String roomCode) async => repository.toggleReadyStatus(roomCode: roomCode);
 }

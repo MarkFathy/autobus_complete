@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
+UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str) as Map<String, dynamic>);
 
 String userModelToJson(UserModel data) => json.encode(data.toJson());
 
@@ -14,19 +14,9 @@ class UserModel {
   final bool? hasCreatedFund;
   final String? tokenType;
 
-  UserModel({
-    required this.user,
-    required this.token,
-    required this.hasCreatedFund,
-    required this.tokenType,
-  });
+  UserModel({required this.user, required this.token, required this.hasCreatedFund, required this.tokenType});
 
-  UserModel copyWith({
-    UserData? user,
-    String? token,
-    bool? hasCreatedFund,
-    String? tokenType,
-  }) => UserModel(
+  UserModel copyWith({UserData? user, String? token, bool? hasCreatedFund, String? tokenType}) => UserModel(
     user: user ?? this.user,
     token: token ?? this.token,
     hasCreatedFund: hasCreatedFund ?? this.hasCreatedFund,
@@ -34,17 +24,17 @@ class UserModel {
   );
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-    user: UserData.fromJson(json["beneficiary"]),
-    token: json["token"],
-    hasCreatedFund: json["has_created_fund"],
-    tokenType: json["token_type"],
+    user: UserData.fromJson(json['beneficiary'] as Map<String, dynamic>),
+    token: json['token'] as String?,
+    hasCreatedFund: json['has_created_fund'] as bool?,
+    tokenType: json['token_type'] as String?,
   );
 
   Map<String, dynamic> toJson() => {
-    "beneficiary": user.toJson(),
-    "token": token,
-    "has_created_fund": hasCreatedFund,
-    "token_type": tokenType,
+    'beneficiary': user.toJson(),
+    'token': token,
+    'has_created_fund': hasCreatedFund,
+    'token_type': tokenType,
   };
 }
 
@@ -146,52 +136,52 @@ class UserData {
   );
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
-    id: json["id"],
-    phone: json["phone"],
-    firstName: json["first_name"],
-    lastName: json["last_name"],
-    otp: json["otp"],
-    otpVerifiedAt: json["otp_verified_at"],
-    otpExpiresAt: json["otp_expires_at"],
-    email: json["email"],
-    referCode: json["refer_code"],
-    referCodeFrom: json["refer_code_from"],
-    referralCount: json["referral_count"],
-    referralEarnings: json["referral_earnings"],
-    maxReferrals: json["max_referrals"],
-    birthDate: json["birth_date"],
-    active: json["active"],
-    numberOfLogin: json["number_of_login"],
-    createdAt: json["created_at"],
-    updatedAt: json["updated_at"],
-    deletedAt: json["deleted_at"],
-    countryId: json["country_id"],
-    cityId: json["city_id"],
-    gender: json["gender"],
+    id: json['id'] as int,
+    phone: json['phone'] as String,
+    firstName: json['first_name'] as String?,
+    lastName: json['last_name'] as String?,
+    otp: json['otp'] as String?,
+    otpVerifiedAt: json['otp_verified_at'],
+    otpExpiresAt: json['otp_expires_at'] as String?,
+    email: json['email'] as String?,
+    referCode: json['refer_code'] as String?,
+    referCodeFrom: json['refer_code_from'] as String?,
+    referralCount: json['referral_count'] as String?,
+    referralEarnings: json['referral_earnings'] as String?,
+    maxReferrals: json['max_referrals'] as String?,
+    birthDate: json['birth_date'] as String?,
+    active: json['active'] as String?,
+    numberOfLogin: json['number_of_login'],
+    createdAt: json['created_at'],
+    updatedAt: json['updated_at'],
+    deletedAt: json['deleted_at'] as String?,
+    countryId: json['country_id'] as String?,
+    cityId: json['city_id'] as String?,
+    gender: json['gender'] as String?,
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "phone": phone,
-    "first_name": firstName,
-    "last_name": lastName,
-    "otp": otp,
-    "otp_verified_at": otpVerifiedAt,
-    "otp_expires_at": otpExpiresAt,
-    "email": email,
-    "refer_code": referCode,
-    "refer_code_from": referCodeFrom,
-    "referral_count": referralCount,
-    "referral_earnings": referralEarnings,
-    "max_referrals": maxReferrals,
-    "birth_date": birthDate,
-    "active": active,
-    "number_of_login": numberOfLogin,
-    "created_at": createdAt,
-    "updated_at": updatedAt,
-    "deleted_at": deletedAt,
-    "country_id": countryId,
-    "city_id": cityId,
-    "gender": gender,
+    'id': id,
+    'phone': phone,
+    'first_name': firstName,
+    'last_name': lastName,
+    'otp': otp,
+    'otp_verified_at': otpVerifiedAt,
+    'otp_expires_at': otpExpiresAt,
+    'email': email,
+    'refer_code': referCode,
+    'refer_code_from': referCodeFrom,
+    'referral_count': referralCount,
+    'referral_earnings': referralEarnings,
+    'max_referrals': maxReferrals,
+    'birth_date': birthDate,
+    'active': active,
+    'number_of_login': numberOfLogin,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+    'deleted_at': deletedAt,
+    'country_id': countryId,
+    'city_id': cityId,
+    'gender': gender,
   };
 }

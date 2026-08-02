@@ -7,14 +7,11 @@ class AppLoadingOverlay extends StatelessWidget {
   final Widget child;
 
   const AppLoadingOverlay({
-    super.key,
-    required this.isLoading,
-    required this.child,
+    required this.isLoading, required this.child, super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(
+  Widget build(BuildContext context) => Stack(
       children: [
         child,
         if (isLoading)
@@ -36,5 +33,4 @@ class AppLoadingOverlay extends StatelessWidget {
           ),
       ],
     );
-  }
 }

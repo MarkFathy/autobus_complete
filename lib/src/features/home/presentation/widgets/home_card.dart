@@ -13,17 +13,13 @@ class HomeCard extends StatelessWidget {
   final Color? iconColor;
 
   const HomeCard({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
+    required this.icon, required this.title, required this.subtitle, super.key,
     this.onTap,
     this.iconColor,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Container(
         width: double.infinity,
@@ -60,5 +56,4 @@ class HomeCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

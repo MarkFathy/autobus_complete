@@ -10,7 +10,5 @@ class GetAboutGameUseCase implements BaseUseCase<AppInfoEntity, NoParams> {
   GetAboutGameUseCase(this.repository);
 
   @override
-  Future<Either<Failure, AppInfoEntity>> call(NoParams params) async {
-    return await repository.getAboutGame();
-  }
+  Future<Either<Failure, AppInfoEntity>> call(NoParams params) async => repository.getAboutGame();
 }

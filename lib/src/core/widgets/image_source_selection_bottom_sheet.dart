@@ -12,15 +12,13 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
   final ValueChanged<ImageSource> onSourceSelected;
 
   const ImageSourceSelectionBottomSheet({
-    super.key,
-    required this.onSourceSelected,
+    required this.onSourceSelected, super.key,
   });
 
   static Future<void> show(
     BuildContext context, {
     required ValueChanged<ImageSource> onSourceSelected,
-  }) {
-    return showModalBottomSheet(
+  }) => showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(
@@ -30,15 +28,12 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
         onSourceSelected: onSourceSelected,
       ),
     );
-  }
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // ── Drag Handle Pill ─────────────────────────────────────
           Container(
@@ -151,5 +146,4 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
         ],
       ),
     );
-  }
 }

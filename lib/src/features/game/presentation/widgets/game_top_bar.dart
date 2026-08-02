@@ -13,16 +13,12 @@ class GameTopBar extends StatelessWidget {
   final bool isShuffling;
 
   const GameTopBar({
-    super.key,
-    required this.currentRound,
-    required this.totalRounds,
-    required this.letter,
+    required this.currentRound, required this.totalRounds, required this.letter, super.key,
     this.isShuffling = false,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
@@ -103,9 +99,7 @@ class GameTopBar extends StatelessWidget {
                 child: Center(
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 80),
-                    transitionBuilder: (child, animation) {
-                      return ScaleTransition(scale: animation, child: child);
-                    },
+                    transitionBuilder: (child, animation) => ScaleTransition(scale: animation, child: child),
                     child: Text(
                       letter,
                       key: ValueKey<String>(letter),
@@ -123,5 +117,4 @@ class GameTopBar extends StatelessWidget {
         ],
       ),
     );
-  }
 }

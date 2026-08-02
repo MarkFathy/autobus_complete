@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:autobus_complete/src/config/res/font_manager.dart';
 import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
@@ -17,7 +19,5 @@ class AboutGameScreen extends StatelessWidget {
   const AboutGameScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const AboutGameScreenBody();
-  }
+  Widget build(BuildContext context) => const AboutGameScreenBody();
 }

@@ -10,23 +10,19 @@ extension FormFieldExtension on Widget {
     T? initialValue,
     String? Function(T?)? validator,
     AutovalidateMode autovalidateMode = AutovalidateMode.disabled,
-  }) {
-    return FormField<T>(
+  }) => FormField<T>(
       key: key,
       initialValue: initialValue,
       validator: validator,
       autovalidateMode: autovalidateMode,
-      builder: (FormFieldState<T> validateState) {
-        return Container(
+      builder: (validateState) => DecoratedBox(
           decoration: validateState.hasError
               ? BoxDecoration(
                   borderRadius: BorderRadius.circular(AppCircular.r16),
                   border: Border.all(color: AppColors.yellowColor),
                 )
-              : null,
+              : const BoxDecoration(),
           child: this,
-        );
-      },
+        ),
     );
-  }
 }

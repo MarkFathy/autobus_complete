@@ -8,9 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomDropDown extends StatelessWidget {
   const CustomDropDown({
-    super.key,
-    required this.list,
-    required this.onChanged,
+    required this.list, required this.onChanged, super.key,
     this.hint,
     this.label,
     this.padding,
@@ -36,11 +34,10 @@ class CustomDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<DropDownModel?> selectValue = ValueNotifier(value);
+    final selectValue = ValueNotifier<DropDownModel?>(value);
     return ValueListenableBuilder<DropDownModel?>(
       valueListenable: selectValue,
-      builder: (context, value, child) {
-        return Padding(
+      builder: (context, value, child) => Padding(
           padding: padding ?? EdgeInsets.symmetric(vertical: AppPadding.pH10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +86,7 @@ class CustomDropDown extends StatelessWidget {
                         underline: const SizedBox(),
                         icon:
                             icon ??
-                            Icon(
+                            const Icon(
                               Icons.arrow_drop_down,
                               color: AppColors.whiteColor,
                             ),
@@ -119,8 +116,7 @@ class CustomDropDown extends StatelessWidget {
               ),
             ],
           ),
-        );
-      },
+        ),
     );
   }
 }

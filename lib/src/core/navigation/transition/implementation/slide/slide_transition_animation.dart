@@ -1,8 +1,8 @@
 import 'package:autobus_complete/src/core/navigation/constants/imports_constants.dart';
 import 'package:autobus_complete/src/core/navigation/transition/factory/transition_creator.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/slide/Option/slide_animation_option.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/slide/animator/slide_animator.dart';
 import 'package:flutter/material.dart';
-import 'Option/slide_animation_option.dart';
-import 'animator/slide_animator.dart';
 
 class SlideTransitionAnimation implements TransitionCreator {
   final SlideAnimationOptions options;
@@ -12,13 +12,11 @@ class SlideTransitionAnimation implements TransitionCreator {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) {
-    return SlideTransition(
+  ) => SlideTransition(
       position: SliderAnimator(options).animator(animation),
       child: child,
     ).buildSecondaryTransition(
       animation: animation,
       applySecondaryTransition: options.secondaryTransition,
     );
-  }
 }

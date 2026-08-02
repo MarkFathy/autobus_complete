@@ -1,10 +1,10 @@
 import 'dart:math';
+
 import 'package:autobus_complete/src/config/res/app_sizes.dart';
+import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-import '../../../config/res/color_manager.dart';
 
 class CachedImage extends StatelessWidget {
   final String url;
@@ -22,8 +22,7 @@ class CachedImage extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const CachedImage({
-    super.key,
-    required this.url,
+    required this.url, super.key,
     this.fit,
     this.width,
     this.height,
@@ -92,7 +91,6 @@ class CachedImage extends StatelessWidget {
                 : null,
             border: Border.all(
               color: borderColor ?? Colors.transparent,
-              width: 1,
             ),
             shape: boxShape ?? BoxShape.rectangle,
             color: bgColor ?? AppColors.whiteColor.withValues(alpha: .5),
@@ -113,7 +111,6 @@ class CachedImage extends StatelessWidget {
                 : null,
             border: Border.all(
               color: borderColor ?? Colors.transparent,
-              width: 1,
             ),
             shape: boxShape ?? BoxShape.rectangle,
           ),

@@ -23,16 +23,17 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => sl<AuthCubit>()),
-        BlocProvider(create: (_) => sl<ProfileCubit>()..getUserProfile()),
+        BlocProvider(create: (_) {
+          final cubit = sl<ProfileCubit>();
+          unawaited(cubit.getUserProfile());
+          return cubit;
+        }),
       ],
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, authState) {
           if (authState is AuthUnauthenticated) {
-            CustomSnackBar.showSuccess(
-              context,
-              message: S.of(context).logoutSuccess,
-            );
-            Go.offAllNamed(NamedRoutes.login);
+            CustomSnackBar.showSuccess(context, message: S.of(context).logoutSuccess);
+            unawaited(Go.offAllNamed(NamedRoutes.login));
           } else if (authState is AuthError) {
             CustomSnackBar.showError(context, message: authState.message);
           }
@@ -60,14 +61,7 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                 isLoading: isAuthLoading || isProfileLoading,
                 child: AppScaffold(
                   safeTop: true,
-                  safeBottom: true,
-                  appBar: CustomAppBar(
-                    showBackButton: true,
-                    title: Text(
-                      S.of(context).settings,
-                      style: getTextStyle().s20.w700.whiteColor,
-                    ),
-                  ),
+                  appBar: CustomAppBar(title: Text(S.of(context).settings, style: getTextStyle().s20.w700.whiteColor)),
                   body: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -78,26 +72,20 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                           email: userEmail,
                           imageUrl: userPhoto,
                           onTap: () async {
-                            await Go.toNamed(
-                              NamedRoutes.profile,
-                              transition: TransitionType.slide,
-                            );
+                            await Go.toNamed(NamedRoutes.profile, transition: TransitionType.slide);
                             if (context.mounted) {
-                              context.read<ProfileCubit>().getUserProfile();
+                              unawaited(context.read<ProfileCubit>().getUserProfile());
                             }
                           },
                         ),
                         20.szH,
 
                         // ── Settings List Group ──────────────────────────
-                        Container(
+                        DecoratedBox(
                           decoration: BoxDecoration(
                             color: AppColors.textFieldFillColor,
                             borderRadius: BorderRadius.circular(20.r),
-                            border: Border.all(
-                              color: AppColors.yellowColor.withValues(alpha: 0.3),
-                              width: 1.w,
-                            ),
+                            border: Border.all(color: AppColors.yellowColor.withValues(alpha: 0.3), width: 1.w),
                           ),
                           child: Column(
                             children: [
@@ -109,27 +97,21 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      isArabic
-                                          ? S.of(context).arabic
-                                          : S.of(context).english,
+                                      isArabic ? S.of(context).arabic : S.of(context).english,
                                       style: getTextStyle().s14.w400.yellowColor,
                                     ),
                                     8.szW,
-                                    Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 16.sp,
-                                      color: AppColors.greyColor,
-                                    ),
+                                    Icon(Icons.arrow_forward_ios_rounded, size: 16.sp, color: AppColors.greyColor),
                                   ],
                                 ),
                                 onTap: () {
-                                  LanguageBottomSheet.show(
-                                    context,
-                                    onLanguageSelected: (langCode) {
-                                      context
-                                          .read<AppCubit>()
-                                          .changeLanguage(langCode);
-                                    },
+                                  unawaited(
+                                    LanguageBottomSheet.show(
+                                      context,
+                                      onLanguageSelected: (langCode) {
+                                        unawaited(context.read<AppCubit>().changeLanguage(langCode));
+                                      },
+                                    ),
                                   );
                                 },
                               ),
@@ -148,17 +130,14 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                                 trailing: Switch(
                                   value: _isNotificationEnabled,
                                   activeThumbColor: AppColors.yellowColor,
-                                  activeTrackColor:
-                                      AppColors.yellowColor.withValues(alpha: 0.3),
+                                  activeTrackColor: AppColors.yellowColor.withValues(alpha: 0.3),
                                   inactiveThumbColor: AppColors.greyColor,
-                                  inactiveTrackColor:
-                                      AppColors.scaffoldBackgroundColor,
-                                  onChanged: (value) async {
+                                  inactiveTrackColor: AppColors.scaffoldBackgroundColor,
+                                  onChanged: (value) {
                                     setState(() {
                                       _isNotificationEnabled = value;
                                     });
-                                    await sl<NotificationService>()
-                                        .setNotificationsEnabled(value);
+                                    unawaited(sl<NotificationService>().setNotificationsEnabled(enable: value));
                                   },
                                 ),
                               ),
@@ -180,7 +159,7 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                                   color: AppColors.greyColor,
                                 ),
                                 onTap: () {
-                                  Go.toNamed(NamedRoutes.aboutGame);
+                                  unawaited(Go.toNamed(NamedRoutes.aboutGame));
                                 },
                               ),
                               Divider(
@@ -201,7 +180,7 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                                   color: AppColors.greyColor,
                                 ),
                                 onTap: () {
-                                  Go.toNamed(NamedRoutes.privacyPolicy);
+                                  unawaited(Go.toNamed(NamedRoutes.privacyPolicy));
                                 },
                               ),
                             ],
@@ -210,14 +189,11 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                         20.szH,
 
                         // ── Logout Button ────────────────────────────────
-                        Container(
+                        DecoratedBox(
                           decoration: BoxDecoration(
                             color: AppColors.textFieldFillColor,
                             borderRadius: BorderRadius.circular(20.r),
-                            border: Border.all(
-                              color: AppColors.redColor.withValues(alpha: 0.4),
-                              width: 1.w,
-                            ),
+                            border: Border.all(color: AppColors.redColor.withValues(alpha: 0.4), width: 1.w),
                           ),
                           child: SettingsTileItem(
                             icon: Icons.logout_rounded,
@@ -225,12 +201,7 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                             iconColor: AppColors.redColor,
                             textColor: AppColors.redColor,
                             onTap: () {
-                              LogoutConfirmationBottomSheet.show(
-                                context,
-                                onConfirmLogout: () {
-                                  authCubit.logout();
-                                },
-                              );
+                              unawaited(LogoutConfirmationBottomSheet.show(context, onConfirmLogout: authCubit.logout));
                             },
                           ),
                         ),

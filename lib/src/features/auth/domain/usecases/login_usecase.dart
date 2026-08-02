@@ -11,12 +11,10 @@ class LoginUseCase implements BaseUseCase<UserEntity, LoginParams> {
   LoginUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserEntity>> call(LoginParams params) async {
-    return await repository.login(
+  Future<Either<Failure, UserEntity>> call(LoginParams params) async => repository.login(
       email: params.email,
       password: params.password,
     );
-  }
 }
 
 class LoginParams extends Equatable {

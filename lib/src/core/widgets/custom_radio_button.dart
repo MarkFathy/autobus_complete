@@ -10,17 +10,14 @@ class CustomRadioButton extends StatelessWidget {
   final Color unselectedBorderColor;
 
   const CustomRadioButton({
-    super.key,
-    required this.isSelected,
-    required this.onTap,
+    required this.isSelected, required this.onTap, super.key,
     this.size = 24,
     this.selectedColor = AppColors.yellowColor,
     this.unselectedBorderColor = AppColors.whiteColor,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -47,5 +44,4 @@ class CustomRadioButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

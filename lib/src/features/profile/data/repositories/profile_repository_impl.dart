@@ -1,9 +1,10 @@
 import 'dart:io';
+
 import 'package:autobus_complete/src/core/error/exceptions.dart';
 import 'package:autobus_complete/src/core/error/failure.dart';
 import 'package:autobus_complete/src/features/profile/data/datasources/profile_remote_data_source.dart';
-import 'package:autobus_complete/src/features/profile/domain/repository/profile_repository.dart';
 import 'package:autobus_complete/src/features/profile/domain/entities/profile_entity.dart';
+import 'package:autobus_complete/src/features/profile/domain/repository/profile_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 
@@ -17,9 +18,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       final profileModel = await remoteDataSource.getUserProfile();
       return Right(profileModel);
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('[ProfileRepository.getUserProfile]: $e');
-      return Left(Failure(ServerException(0, false, 'Failed to load profile', null)));
+      return const Left(Failure(ServerException(0, 'Failed to load profile', null)));
     }
   }
 
@@ -38,9 +39,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
         removeImage: removeImage,
       );
       return Right(profileModel);
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('[ProfileRepository.updateProfile]: $e');
-      return Left(Failure(ServerException(0, false, 'Failed to update profile', null)));
+      return const Left(Failure(ServerException(0, 'Failed to update profile', null)));
     }
   }
 
@@ -49,9 +50,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       await remoteDataSource.sendPasswordResetEmail();
       return const Right(null);
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('[ProfileRepository.sendPasswordResetEmail]: $e');
-      return Left(Failure(ServerException(0, false, 'Failed to send reset email', null)));
+      return const Left(Failure(ServerException(0, 'Failed to send reset email', null)));
     }
   }
 
@@ -60,9 +61,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       await remoteDataSource.deleteAccount();
       return const Right(null);
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('[ProfileRepository.deleteAccount]: $e');
-      return Left(Failure(ServerException(0, false, 'Failed to delete account', null)));
+      return const Left(Failure(ServerException(0, 'Failed to delete account', null)));
     }
   }
 }

@@ -29,18 +29,16 @@ class AuthRepositoryImpl implements AuthRepository {
         ServerFailure(
           ServerException(
             400,
-            false,
             FirebaseErrorHandler.getAuthErrorMessage(e),
             null,
           ),
         ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       return Left(
         ServerFailure(
           ServerException(
             500,
-            false,
             FirebaseErrorHandler.getExceptionMessage(e),
             null,
           ),
@@ -69,18 +67,16 @@ class AuthRepositoryImpl implements AuthRepository {
         ServerFailure(
           ServerException(
             400,
-            false,
             FirebaseErrorHandler.getAuthErrorMessage(e),
             null,
           ),
         ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       return Left(
         ServerFailure(
           ServerException(
             500,
-            false,
             FirebaseErrorHandler.getExceptionMessage(e),
             null,
           ),
@@ -99,18 +95,16 @@ class AuthRepositoryImpl implements AuthRepository {
         ServerFailure(
           ServerException(
             400,
-            false,
             FirebaseErrorHandler.getAuthErrorMessage(e),
             null,
           ),
         ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       return Left(
         ServerFailure(
           ServerException(
             500,
-            false,
             FirebaseErrorHandler.getExceptionMessage(e),
             null,
           ),
@@ -129,18 +123,16 @@ class AuthRepositoryImpl implements AuthRepository {
         ServerFailure(
           ServerException(
             400,
-            false,
             FirebaseErrorHandler.getAuthErrorMessage(e),
             null,
           ),
         ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       return Left(
         ServerFailure(
           ServerException(
             500,
-            false,
             FirebaseErrorHandler.getExceptionMessage(e),
             null,
           ),
@@ -154,12 +146,11 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await remoteDataSource.logout();
       return const Right(null);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(
         ServerFailure(
           ServerException(
             500,
-            false,
             FirebaseErrorHandler.getExceptionMessage(e),
             null,
           ),

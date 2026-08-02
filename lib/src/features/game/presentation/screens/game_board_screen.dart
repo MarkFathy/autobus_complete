@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+
 class GameBoardScreen extends StatefulWidget {
   final String? targetLetter;
   final List<RoomCategoryEntity>? categories;
@@ -91,7 +92,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
         : AppLetters.englishLetters;
     final random = Random();
 
-    int tickCount = 0;
+    var tickCount = 0;
     _shuffleTimer = Timer.periodic(const Duration(milliseconds: 60), (timer) {
       tickCount++;
       if (tickCount < 18) {
@@ -131,16 +132,16 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     if (_hasSubmitted) return;
     _hasSubmitted = true;
 
-    final Map<String, String> answers = {};
+    final answers = <String, String>{};
     _controllers.forEach((catId, controller) {
       answers[catId] = controller.text.trim();
     });
-    sl<RoomCubit>().submitRoundAnswers(answers);
+    unawaited(sl<RoomCubit>().submitRoundAnswers(answers));
   }
 
   void _onAutobusCompletePressed() {
     _submitCurrentAnswers();
-    Go.offNamed(NamedRoutes.scoring);
+    unawaited(Go.offNamed(NamedRoutes.scoring));
   }
 
   @override
@@ -154,7 +155,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
           final room = sl<RoomCubit>().currentRoom;
           if (room?.status == 'scoring') {
             _submitCurrentAnswers();
-            Go.offNamed(NamedRoutes.scoring);
+            unawaited(Go.offNamed(NamedRoutes.scoring));
           }
         },
         child: PopScope(

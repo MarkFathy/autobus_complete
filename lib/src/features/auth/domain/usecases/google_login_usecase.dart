@@ -10,7 +10,5 @@ class GoogleLoginUseCase implements BaseUseCase<UserEntity, NoParams> {
   GoogleLoginUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserEntity>> call(NoParams params) async {
-    return await repository.loginWithGoogle();
-  }
+  Future<Either<Failure, UserEntity>> call(NoParams params) async => repository.loginWithGoogle();
 }

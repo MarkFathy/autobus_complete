@@ -28,12 +28,10 @@ class AppInfoModel extends AppInfoEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'titleAr': titleAr,
       'titleEn': titleEn,
       'contentAr': contentAr,
       'contentEn': contentEn,
     };
-  }
 }

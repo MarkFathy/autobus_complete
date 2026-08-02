@@ -7,21 +7,15 @@ class CustomWidgetValidator<T> extends StatelessWidget {
   final Widget Function(FormFieldState<T> value) builder;
   final InputDecoration? decoration;
   const CustomWidgetValidator(
-      {super.key,
+      {required this.validator, required this.builder, super.key,
       this.initialValue,
-      required this.validator,
       this.child,
-      this.decoration,
-      required this.builder});
+      this.decoration});
 
   @override
-  Widget build(BuildContext context) {
-    return FormField(
+  Widget build(BuildContext context) => FormField(
       initialValue: initialValue,
       validator: validator,
-      builder: (FormFieldState<T> field) {
-        return builder(field);
-      },
+      builder: builder,
     );
-  }
 }

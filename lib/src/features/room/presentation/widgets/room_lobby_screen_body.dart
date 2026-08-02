@@ -4,8 +4,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
   const RoomLobbyScreenBody({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider.value(
+  Widget build(BuildContext context) => BlocProvider.value(
       value: sl<RoomCubit>(),
       child: BlocConsumer<RoomCubit, RoomState>(
         listener: (context, state) {
@@ -15,15 +14,15 @@ class RoomLobbyScreenBody extends StatelessWidget {
               message: S.of(context).roomCodeCopied,
             );
           } else if (state is RoomGameStarted) {
-            Go.offNamed(NamedRoutes.countdown);
+            unawaited(Go.offNamed(NamedRoutes.countdown));
           } else if (state is RoomLeftSuccess) {
-            Go.offAllNamed(NamedRoutes.home);
+            unawaited(Go.offAllNamed(NamedRoutes.home));
           } else if (state is RoomKickedByHost) {
             CustomSnackBar.showError(
               context,
               message: S.of(context).kickedByHost,
             );
-            Go.offAllNamed(NamedRoutes.home);
+            unawaited(Go.offAllNamed(NamedRoutes.home));
           } else if (state is RoomError) {
             CustomSnackBar.showError(context, message: state.message);
           }
@@ -36,7 +35,6 @@ class RoomLobbyScreenBody extends StatelessWidget {
           if (room == null) {
             return AppScaffold(
               appBar: CustomAppBar(
-                showBackButton: true,
                 title: Text(
                   S.of(context).lobby,
                   style: getTextStyle().s20.w700.whiteColor,
@@ -49,15 +47,13 @@ class RoomLobbyScreenBody extends StatelessWidget {
           }
 
           final isHost = room.hostId == currentUserId;
-          final playersList = room.players.map((p) {
-            return RoomPlayer(
+          final playersList = room.players.map((p) => RoomPlayer(
               id: p.id,
               name: p.name,
               photoUrl: p.photoUrl,
               isHost: p.isHost,
               isReady: p.isReady,
-            );
-          }).toList();
+            )).toList();
 
           final selectedCategoryIds =
               room.categories.map((c) => c.id).toSet();
@@ -74,8 +70,6 @@ class RoomLobbyScreenBody extends StatelessWidget {
             orElse: () => RoomPlayerModel(
               id: currentUserId ?? '',
               name: 'Player',
-              isHost: false,
-              isReady: false,
             ),
           );
 
@@ -83,19 +77,21 @@ class RoomLobbyScreenBody extends StatelessWidget {
             canPop: false,
             onPopInvokedWithResult: (didPop, result) {
               if (didPop) return;
-              LeaveRoomBottomSheet.show(
-                context,
-                onLeaveConfirmed: () => roomCubit.leaveRoom(),
+              unawaited(
+                LeaveRoomBottomSheet.show(
+                  context,
+                  onLeaveConfirmed: roomCubit.leaveRoom,
+                ),
               );
             },
             child: AppScaffold(
-              safeBottom: true,
               appBar: CustomAppBar(
-                showBackButton: true,
                 onTap: () {
-                  LeaveRoomBottomSheet.show(
-                    context,
-                    onLeaveConfirmed: () => roomCubit.leaveRoom(),
+                  unawaited(
+                    LeaveRoomBottomSheet.show(
+                      context,
+                      onLeaveConfirmed: roomCubit.leaveRoom,
+                    ),
                   );
                 },
                 title: Text(
@@ -146,9 +142,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
                     CustomButton(
                       text: S.of(context).startGame,
                       onPressed: canStartGame
-                          ? () {
-                              roomCubit.startGame();
-                            }
+                          ? roomCubit.startGame
                           : null,
                     )
                   else
@@ -159,9 +153,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
                       backgroundColor: currentPlayer.isReady
                           ? AppColors.greyColor
                           : AppColors.cyanColor,
-                      onPressed: () {
-                        roomCubit.toggleReadyStatus();
-                      },
+                      onPressed: roomCubit.toggleReadyStatus,
                     ),
                 ],
               ),
@@ -175,7 +167,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
                     title: S.of(context).roomCode,
                     roomCode: room.roomCode,
                     onTap: () {
-                      roomCubit.copyRoomCodeToClipboard(room.roomCode);
+                      unawaited(roomCubit.copyRoomCodeToClipboard(room.roomCode));
                     },
                   ),
                   20.szH,
@@ -190,9 +182,11 @@ class RoomLobbyScreenBody extends StatelessWidget {
                           : room.categories,
                       onRoundsChanged: (rounds) {
                         if (isHost) {
-                          roomCubit.updateRoomSettings(
-                            rounds: rounds,
-                            categories: room.categories,
+                          unawaited(
+                            roomCubit.updateRoomSettings(
+                              rounds: rounds,
+                              categories: room.categories,
+                            ),
                           );
                         }
                       },
@@ -207,9 +201,11 @@ class RoomLobbyScreenBody extends StatelessWidget {
                               .where((c) => updatedCategoryIds.contains(c.id))
                               .toList();
 
-                          roomCubit.updateRoomSettings(
-                            rounds: room.rounds,
-                            categories: selectedEntities,
+                          unawaited(
+                            roomCubit.updateRoomSettings(
+                              rounds: room.rounds,
+                              categories: selectedEntities,
+                            ),
                           );
                         }
                       },
@@ -219,19 +215,20 @@ class RoomLobbyScreenBody extends StatelessWidget {
 
                   // ── Room Joined Players Card ────────────────────────────
                   RoomPlayersCard(
-                    maxPlayers: 12,
                     players: playersList,
                     onPlayerLongPress: (targetPlayer) {
                       if (isHost && targetPlayer.id != currentUserId) {
-                        PlayerActionsBottomSheet.show(
-                          context,
-                          player: targetPlayer,
-                          onMakeHost: () {
-                            roomCubit.makeHost(targetPlayer.id);
-                          },
-                          onKickPlayer: () {
-                            roomCubit.kickPlayer(targetPlayer.id);
-                          },
+                        unawaited(
+                          PlayerActionsBottomSheet.show(
+                            context,
+                            player: targetPlayer,
+                            onMakeHost: () {
+                              unawaited(roomCubit.makeHost(targetPlayer.id));
+                            },
+                            onKickPlayer: () {
+                              unawaited(roomCubit.kickPlayer(targetPlayer.id));
+                            },
+                          ),
                         );
                       }
                     },
@@ -245,7 +242,6 @@ class RoomLobbyScreenBody extends StatelessWidget {
         },
       ),
     );
-  }
 }
 
 class RoomCodeCard extends StatelessWidget {
@@ -254,18 +250,15 @@ class RoomCodeCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const RoomCodeCard({
-    super.key,
-    required this.title,
-    required this.roomCode,
+    required this.title, required this.roomCode, super.key,
     this.onTap,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap ??
           () {
-            Clipboard.setData(ClipboardData(text: roomCode));
+            unawaited(Clipboard.setData(ClipboardData(text: roomCode)));
             CustomSnackBar.showSuccess(
               context,
               message: S.of(context).roomCodeCopied,
@@ -311,5 +304,4 @@ class RoomCodeCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

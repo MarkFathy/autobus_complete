@@ -4,9 +4,12 @@ class PrivacyPolicyScreenBody extends StatelessWidget {
   const PrivacyPolicyScreenBody({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<AppInfoCubit>()..loadPrivacyPolicy(),
+  Widget build(BuildContext context) => BlocProvider(
+      create: (_) {
+        final cubit = sl<AppInfoCubit>();
+        unawaited(cubit.loadPrivacyPolicy());
+        return cubit;
+      },
       child: BlocBuilder<AppInfoCubit, AppInfoState>(
         builder: (context, state) {
           final isLoading = state is AppInfoLoading;
@@ -23,8 +26,7 @@ class PrivacyPolicyScreenBody extends StatelessWidget {
           return AppLoadingOverlay(
             isLoading: isLoading,
             child: AppScaffold(
-              safeBottom: true,
-              appBar: const CustomAppBar(showBackButton: true),
+              appBar: const CustomAppBar(),
               body: isError
                   ? Center(
                       child: Padding(
@@ -60,5 +62,4 @@ class PrivacyPolicyScreenBody extends StatelessWidget {
         },
       ),
     );
-  }
 }

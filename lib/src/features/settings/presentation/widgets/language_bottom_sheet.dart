@@ -18,8 +18,7 @@ class LanguageBottomSheet extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
     ValueChanged<String>? onLanguageSelected,
-  }) {
-    return showModalBottomSheet(
+  }) => showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(
@@ -29,7 +28,6 @@ class LanguageBottomSheet extends StatelessWidget {
         onLanguageSelected: onLanguageSelected,
       ),
     );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +37,6 @@ class LanguageBottomSheet extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // ── Drag Handle Pill ─────────────────────────────────────
           Container(
@@ -98,8 +95,7 @@ class _LanguageOptionTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -142,5 +138,4 @@ class _LanguageOptionTile extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -1,8 +1,9 @@
 import 'dart:io';
+
 import 'package:autobus_complete/src/core/error/failure.dart';
 import 'package:autobus_complete/src/core/usecases/usecase.dart';
-import 'package:autobus_complete/src/features/profile/domain/repository/profile_repository.dart';
 import 'package:autobus_complete/src/features/profile/domain/entities/profile_entity.dart';
+import 'package:autobus_complete/src/features/profile/domain/repository/profile_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
@@ -29,12 +30,10 @@ class UpdateProfileUseCase implements BaseUseCase<ProfileEntity, UpdateProfilePa
   UpdateProfileUseCase(this.repository);
 
   @override
-  Future<Either<Failure, ProfileEntity>> call(UpdateProfileParams params) async {
-    return await repository.updateProfile(
+  Future<Either<Failure, ProfileEntity>> call(UpdateProfileParams params) async => repository.updateProfile(
       name: params.name,
       email: params.email,
       imageFile: params.imageFile,
       removeImage: params.removeImage,
     );
-  }
 }

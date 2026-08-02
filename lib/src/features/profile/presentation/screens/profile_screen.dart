@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
 import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
-import 'package:autobus_complete/src/core/helpers/validators%20copy.dart';
+import 'package:autobus_complete/src/core/helpers/validators.dart';
 import 'package:autobus_complete/src/core/navigation/named_routes.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
@@ -27,7 +29,5 @@ class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const ProfileScreenBody();
-  }
+  Widget build(BuildContext context) => const ProfileScreenBody();
 }

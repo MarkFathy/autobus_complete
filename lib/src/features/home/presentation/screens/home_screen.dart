@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:autobus_complete/gen/assets.gen.dart';
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
@@ -24,7 +26,5 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const HomeScreenBody();
-  }
-}
+  Widget build(BuildContext context) => const HomeScreenBody();
+}

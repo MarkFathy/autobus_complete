@@ -7,10 +7,8 @@ class CupertinoPageRouterCreator implements PageRouterCreator {
     RouteSettings? settings,
     TransitionType? transition,
     AnimationOption? animationOptions,
-  }) {
-    return CupertinoPageRoute(
+  }) => CupertinoPageRoute(
       builder: (context) => page,
       settings: settings,
     );
-  }
 }

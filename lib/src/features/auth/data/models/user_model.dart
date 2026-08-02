@@ -9,21 +9,17 @@ class UserModel extends UserEntity {
     super.photoUrl,
   });
 
-  factory UserModel.fromFirebaseUser(User user) {
-    return UserModel(
+  factory UserModel.fromFirebaseUser(User user) => UserModel(
       id: user.uid,
       email: user.email ?? '',
       name: user.displayName ?? '',
       photoUrl: user.photoURL,
     );
-  }
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      id: json['id'] ?? '',
-      email: json['email'] ?? '',
-      name: json['name'] ?? '',
-      photoUrl: json['photoUrl'],
-    );
-  }
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+        id: (json['id'] as String?) ?? '',
+        email: (json['email'] as String?) ?? '',
+        name: (json['name'] as String?) ?? '',
+        photoUrl: json['photoUrl'] as String?,
+      );
 }

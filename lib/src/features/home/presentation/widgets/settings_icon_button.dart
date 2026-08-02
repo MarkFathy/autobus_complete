@@ -13,8 +13,7 @@ class SettingsIconButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return IconButton(
+  Widget build(BuildContext context) => IconButton(
       onPressed: onPressed,
       icon: Container(
         height: size.r,
@@ -34,5 +33,4 @@ class SettingsIconButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

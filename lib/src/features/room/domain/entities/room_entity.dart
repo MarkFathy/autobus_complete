@@ -98,12 +98,10 @@ class RoomEntity extends Equatable {
     required this.status,
     required this.rounds,
     required this.currentRound,
-    this.currentLetter,
+    required this.categories, required this.players, this.currentLetter,
     this.usedLetters = const [],
     this.roundAnswers = const {},
     this.roundScores = const {},
-    required this.categories,
-    required this.players,
   });
 
   @override

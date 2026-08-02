@@ -1,6 +1,6 @@
+import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
 
 class RotationAnimationOptions extends AnimationOption {
   final double begin;

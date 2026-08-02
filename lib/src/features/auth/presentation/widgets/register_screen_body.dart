@@ -28,8 +28,7 @@ class _RegisterScreenBodyState extends State<RegisterScreenBody> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
+  Widget build(BuildContext context) => BlocProvider(
       create: (_) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
@@ -38,7 +37,7 @@ class _RegisterScreenBodyState extends State<RegisterScreenBody> {
               context,
               message: S.of(context).registerSuccess,
             );
-            Go.offAllNamed(NamedRoutes.home);
+            unawaited(Go.offAllNamed(NamedRoutes.home));
           } else if (state is AuthEmailVerificationSent) {
             CustomSnackBar.showSuccess(context, message: state.message);
             Go.back();
@@ -59,17 +58,15 @@ class _RegisterScreenBodyState extends State<RegisterScreenBody> {
             isLoading: isLoading,
             child: AppScaffold(
               safeTop: true,
-              safeBottom: true,
-              appBar: CustomAppBar(),
+              appBar: const CustomAppBar(),
               body: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                       UserAvatarPicker(
                         selectedImage: selectedImage,
-                        onPickImageSource: (source) => cubit.pickImage(source),
+                        onPickImageSource: cubit.pickImage,
                         onRemoveImage: cubit.removeImage,
                       ),
                       40.szH,
@@ -104,7 +101,6 @@ class _RegisterScreenBodyState extends State<RegisterScreenBody> {
                         isPassword: true,
                         validator: (value) => Validators.validatePassword(
                           value,
-                          minLength: 8,
                           emptyMessage: S.of(context).passwordRequired,
                           minLengthMessage: S.of(context).passwordMinLength,
                         ),
@@ -119,7 +115,6 @@ class _RegisterScreenBodyState extends State<RegisterScreenBody> {
                         validator: (value) {
                           final passwordVal = Validators.validatePassword(
                             value,
-                            minLength: 8,
                             emptyMessage: S.of(context).passwordRequired,
                             minLengthMessage: S.of(context).passwordMinLength,
                           );
@@ -144,10 +139,10 @@ class _RegisterScreenBodyState extends State<RegisterScreenBody> {
                                   if (Validators.validateEmail(_emailController.text) != null) {
                                     _emailKey.currentState?.shake();
                                   }
-                                  if (Validators.validatePassword(_passwordController.text, minLength: 8) != null) {
+                                  if (Validators.validatePassword(_passwordController.text) != null) {
                                     _passwordKey.currentState?.shake();
                                   }
-                                  if (Validators.validatePassword(_confirmPasswordController.text, minLength: 8) != null ||
+                                  if (Validators.validatePassword(_confirmPasswordController.text) != null ||
                                       _passwordController.text != _confirmPasswordController.text) {
                                     _confirmPasswordKey.currentState?.shake();
                                     if (_passwordController.text != _confirmPasswordController.text &&
@@ -166,11 +161,13 @@ class _RegisterScreenBodyState extends State<RegisterScreenBody> {
                                 final email = _emailController.text.trim();
                                 final password = _passwordController.text.trim();
 
-                                cubit.register(
-                                  name,
-                                  email,
-                                  password,
-                                  imageFile: cubit.selectedImage,
+                                unawaited(
+                                  cubit.register(
+                                    name,
+                                    email,
+                                    password,
+                                    imageFile: cubit.selectedImage,
+                                  ),
                                 );
                               },
                       ),
@@ -184,5 +181,4 @@ class _RegisterScreenBodyState extends State<RegisterScreenBody> {
         },
       ),
     );
-  }
 }

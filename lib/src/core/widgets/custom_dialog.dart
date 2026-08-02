@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:autobus_complete/src/config/res/app_sizes.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/constants_manager.dart';
@@ -12,14 +14,14 @@ void showCustomDialog(
   bool barrierDismissible = true,
   Color? color,
 }) {
-  showGeneralDialog(
-    context: context,
-    barrierLabel: ConstantManager.emptyText,
-    barrierDismissible: barrierDismissible,
-    barrierColor: Colors.black.withOpacity(0.5),
-    transitionDuration: const Duration(milliseconds: 250),
-    pageBuilder: (_, __, ___) {
-      return Center(
+  unawaited(
+    showGeneralDialog(
+      context: context,
+      barrierLabel: ConstantManager.emptyText,
+      barrierDismissible: barrierDismissible,
+      barrierColor: Colors.black.withValues(alpha: 0.5),
+      transitionDuration: const Duration(milliseconds: 250),
+      pageBuilder: (_, _, _) => Center(
         child: Container(
           width: double.infinity,
           margin: margin ?? EdgeInsets.symmetric(horizontal: AppPadding.pH20),
@@ -30,13 +32,11 @@ void showCustomDialog(
           ),
           child: child,
         ),
-      );
-    },
-    transitionBuilder: (_, anim, __, child) {
-      return ScaleTransition(
+      ),
+      transitionBuilder: (_, anim, _, child) => ScaleTransition(
         scale: anim,
         child: FadeTransition(opacity: anim, child: child),
-      );
-    },
+      ),
+    ),
   );
 }

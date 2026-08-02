@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
@@ -29,7 +31,5 @@ class RoomLobbyScreen extends StatelessWidget {
   const RoomLobbyScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const RoomLobbyScreenBody();
-  }
+  Widget build(BuildContext context) => const RoomLobbyScreenBody();
 }

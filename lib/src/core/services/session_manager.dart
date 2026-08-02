@@ -21,17 +21,11 @@ class SessionManager {
     }
   }
 
-  static Future<String?> getToken() async {
-    return await SecureStorage.read(_kAccessToken);
-  }
+  static Future<String?> getToken() async => SecureStorage.read(_kAccessToken);
 
-  static Future<String?> getUserId() async {
-    return await SecureStorage.read(_kUserId);
-  }
+  static Future<String?> getUserId() async => SecureStorage.read(_kUserId);
 
-  static Future<String?> getEmail() async {
-    return await SecureStorage.read(_kUserEmail);
-  }
+  static Future<String?> getEmail() async => SecureStorage.read(_kUserEmail);
 
   static Future<bool> isLoggedIn() async {
     final token = await getToken();

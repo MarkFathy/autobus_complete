@@ -1,6 +1,6 @@
 import 'package:autobus_complete/src/core/navigation/transition/factory/transition_creator.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/shake/Options/shake_animation_options.dart';
 import 'package:flutter/material.dart';
-import 'Options/shake_animation_options.dart';
 
 class ShakeTransitionAnimation implements TransitionCreator {
   final ShakeAnimationOptions options;
@@ -12,24 +12,19 @@ class ShakeTransitionAnimation implements TransitionCreator {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) {
-    return TweenAnimationBuilder(
+  ) => TweenAnimationBuilder(
       tween: Tween(begin: 1.0, end: 0.0),
       duration: const Duration(milliseconds: 600),
       curve: Curves.easeInOutBack,
-      builder: (_, double value, child) {
-        return Transform.translate(
+      builder: (_, value, child) => Transform.translate(
           offset: getOffset(
             value,
             shakeFactor: -10,
-            direction: ShakeDirection.horizontal,
           ),
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }
 
 enum ShakeDirection { horizontal, vertical }

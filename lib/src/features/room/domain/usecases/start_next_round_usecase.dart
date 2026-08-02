@@ -9,7 +9,5 @@ class StartNextRoundUseCase implements BaseUseCase<void, String> {
   StartNextRoundUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(String roomCode) async {
-    return await repository.startNextRound(roomCode: roomCode);
-  }
+  Future<Either<Failure, void>> call(String roomCode) async => repository.startNextRound(roomCode: roomCode);
 }

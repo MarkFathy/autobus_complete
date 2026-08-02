@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
@@ -32,7 +34,5 @@ class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const SettingsScreenBody();
-  }
+  Widget build(BuildContext context) => const SettingsScreenBody();
 }

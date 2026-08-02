@@ -10,15 +10,13 @@ class ScoreBadge extends StatelessWidget {
   final Color backgroundColor;
 
   const ScoreBadge({
-    super.key,
-    required this.label,
+    required this.label, super.key,
     this.color = AppColors.cyanColor,
     Color? backgroundColor,
   }) : backgroundColor = backgroundColor ?? const Color(0x2600BCD4); // cyan with alpha 0.15
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
@@ -30,5 +28,4 @@ class ScoreBadge extends StatelessWidget {
         style: getTextStyle().s12.bold.copyWith(color: color),
       ),
     );
-  }
 }

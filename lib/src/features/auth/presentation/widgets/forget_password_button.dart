@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 
 class ForgetPasswordButton extends StatelessWidget {
   final VoidCallback onTap;
-  const ForgetPasswordButton({super.key, required this.onTap});
+  const ForgetPasswordButton({required this.onTap, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Align(
+  Widget build(BuildContext context) => Align(
       alignment: AlignmentDirectional.topEnd,
       child: GestureDetector(
         onTap: onTap,
@@ -20,5 +19,4 @@ class ForgetPasswordButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

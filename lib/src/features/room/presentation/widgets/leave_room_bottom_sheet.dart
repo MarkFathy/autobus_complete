@@ -11,15 +11,13 @@ class LeaveRoomBottomSheet extends StatelessWidget {
   final VoidCallback onLeaveConfirmed;
 
   const LeaveRoomBottomSheet({
-    super.key,
-    required this.onLeaveConfirmed,
+    required this.onLeaveConfirmed, super.key,
   });
 
   static Future<void> show(
     BuildContext context, {
     required VoidCallback onLeaveConfirmed,
-  }) {
-    return showModalBottomSheet(
+  }) => showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -27,11 +25,9 @@ class LeaveRoomBottomSheet extends StatelessWidget {
         onLeaveConfirmed: onLeaveConfirmed,
       ),
     );
-  }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: EdgeInsets.all(24.r),
       decoration: BoxDecoration(
         color: AppColors.textFieldFillColor,
@@ -106,5 +102,4 @@ class LeaveRoomBottomSheet extends StatelessWidget {
         ],
       ),
     );
-  }
 }

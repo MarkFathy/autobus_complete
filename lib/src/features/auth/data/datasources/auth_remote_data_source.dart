@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/services/notification_service.dart';
 import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
@@ -13,12 +14,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> login({required String email, required String password});
-  Future<UserModel> register({
-    required String name,
-    required String email,
-    required String password,
-    File? imageFile,
-  });
+  Future<UserModel> register({required String name, required String email, required String password, File? imageFile});
   Future<UserModel> loginWithGoogle();
   Future<void> sendPasswordResetEmail(String email);
   Future<void> logout();
@@ -44,22 +40,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> _ensureGoogleSignInInitialized() async {
     if (!_googleSignInInitialized) {
       await GoogleSignIn.instance.initialize(
-        serverClientId:
-            '55011551290-pamklni64cjdokreu8kqmodbduo46hl0.apps.googleusercontent.com',
+        serverClientId: '55011551290-pamklni64cjdokreu8kqmodbduo46hl0.apps.googleusercontent.com',
       );
       _googleSignInInitialized = true;
     }
   }
 
   @override
-  Future<UserModel> login({
-    required String email,
-    required String password,
-  }) async {
-    final userCredential = await firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+  Future<UserModel> login({required String email, required String password}) async {
+    final userCredential = await firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
     if (userCredential.user != null) {
       final user = userCredential.user!;
       if (!user.emailVerified) {
@@ -74,24 +63,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (token != null) {
         await authLocalDataSource.saveToken(token);
       }
-      await authLocalDataSource.saveUserLoggedIn(true);
+      await authLocalDataSource.saveUserLoggedIn(value: true);
 
-      final docSnapshot =
-          await firestore.collection('users').doc(refreshedUser.uid).get();
+      final docSnapshot = await firestore.collection('users').doc(refreshedUser.uid).get();
       final existingData = docSnapshot.data();
 
-      final String resolvedName =
-          (existingData?['name'] as String?)?.isNotEmpty == true
-              ? existingData!['name'] as String
-              : (refreshedUser.displayName ?? '');
+      final resolvedName = (existingData?['name'] as String?)?.isNotEmpty ?? false
+          ? existingData!['name'] as String
+          : (refreshedUser.displayName ?? '');
 
-      final String? resolvedPhotoUrl =
-          existingData?['photoUrl'] as String? ?? refreshedUser.photoURL;
+      final resolvedPhotoUrl = existingData?['photoUrl'] as String? ?? refreshedUser.photoURL;
 
       await firestore.collection('users').doc(refreshedUser.uid).set({
         'email': refreshedUser.email,
         if (resolvedName.isNotEmpty) 'name': resolvedName,
-        if (resolvedPhotoUrl != null) 'photoUrl': resolvedPhotoUrl,
+        'photoUrl': ?resolvedPhotoUrl,
         'emailVerified': refreshedUser.emailVerified,
         'provider': 'email',
       }, SetOptions(merge: true));
@@ -105,7 +91,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       try {
         await sl<NotificationService>().updateFcmTokenInFirestore();
-      } catch (_) {}
+      } on Object catch (_) {}
 
       return userModel;
     } else {
@@ -121,10 +107,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     File? imageFile,
   }) async {
     try {
-      final userCredential = await firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final userCredential = await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       if (userCredential.user != null) {
         final user = userCredential.user!;
 
@@ -135,7 +118,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             final ref = storage.ref().child('user_photos/${user.uid}.jpg');
             await ref.putFile(imageFile);
             photoUrl = await ref.getDownloadURL();
-          } catch (_) {
+          } on Object catch (_) {
             try {
               final bytes = await imageFile.readAsBytes();
               final base64String = base64Encode(bytes);
@@ -143,7 +126,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
               if (generatedDataUrl.length < 800000) {
                 photoUrl = generatedDataUrl;
               }
-            } catch (_) {}
+            } on Object catch (_) {}
           }
         }
 
@@ -163,7 +146,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           if (photoUrl != null && !photoUrl.startsWith('data:image')) {
             await user.updatePhotoURL(photoUrl);
           }
-        } catch (_) {}
+        } on Object catch (_) {}
 
         await user.sendEmailVerification();
         await firebaseAuth.signOut();
@@ -175,10 +158,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (e.code == 'email-already-in-use') {
         try {
           // Attempt to sign in to check if they are verified
-          final cred = await firebaseAuth.signInWithEmailAndPassword(
-            email: email,
-            password: password,
-          );
+          final cred = await firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
           if (!cred.user!.emailVerified) {
             await cred.user!.sendEmailVerification();
             await firebaseAuth.signOut();
@@ -199,71 +179,68 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> loginWithGoogle() async {
     try {
-      try {
-        await googleSignIn.signOut();
-      } catch (_) {}
+      await googleSignIn.signOut();
+    } on Object catch (_) {}
 
-      await _ensureGoogleSignInInitialized();
+    await _ensureGoogleSignInInitialized();
 
-      final GoogleSignInAccount? googleUser =
-          await googleSignIn.authenticate();
-
-      if (googleUser == null) {
-        throw Exception(S.current.firebaseGoogleSignCancel);
-      }
-
-      final googleAuth = await googleUser.authentication;
-      final credential =
-          GoogleAuthProvider.credential(idToken: googleAuth.idToken);
-
-      final userCredential =
-          await firebaseAuth.signInWithCredential(credential);
-
-      final user = userCredential.user;
-
-      if (user == null) {
+    final GoogleSignInAccount googleUser;
+    try {
+      googleUser = await googleSignIn.authenticate();
+    } catch (e) {
+      final errorString = e.toString().toLowerCase();
+      if (errorString.contains('canceled') || errorString.contains('16')) {
         throw Exception(S.current.firebaseFailedToSignInGoogle);
       }
-
-      final token = await user.getIdToken();
-
-      if (token != null) {
-        await authLocalDataSource.saveToken(token);
-      }
-      await authLocalDataSource.saveUserLoggedIn(true);
-
-      final docSnapshot = await firestore.collection('users').doc(user.uid).get();
-      final existingData = docSnapshot.data();
-
-      final String resolvedName = (existingData?['name'] as String?)?.isNotEmpty == true
-          ? existingData!['name'] as String
-          : (user.displayName ?? '');
-
-      final String? resolvedPhotoUrl = existingData?['photoUrl'] as String? ?? user.photoURL;
-
-      await firestore.collection('users').doc(user.uid).set({
-        'email': user.email,
-        if (resolvedName.isNotEmpty) 'name': resolvedName,
-        if (resolvedPhotoUrl != null) 'photoUrl': resolvedPhotoUrl,
-        'emailVerified': user.emailVerified,
-        'provider': 'google',
-      }, SetOptions(merge: true));
-
-      final userModel = UserModel(
-        id: user.uid,
-        email: user.email ?? '',
-        name: resolvedName,
-        photoUrl: resolvedPhotoUrl,
-      );
-
-      try {
-        await sl<NotificationService>().updateFcmTokenInFirestore();
-      } catch (_) {}
-
-      return userModel;
-    } catch (e) {
       rethrow;
     }
+
+    final googleAuth = googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(idToken: googleAuth.idToken);
+
+    final userCredential = await firebaseAuth.signInWithCredential(credential);
+
+    final user = userCredential.user;
+
+    if (user == null) {
+      throw Exception(S.current.firebaseFailedToSignInGoogle);
+    }
+
+    final token = await user.getIdToken();
+
+    if (token != null) {
+      await authLocalDataSource.saveToken(token);
+    }
+    await authLocalDataSource.saveUserLoggedIn(value: true);
+
+    final docSnapshot = await firestore.collection('users').doc(user.uid).get();
+    final existingData = docSnapshot.data();
+
+    final resolvedName = (existingData?['name'] as String?)?.isNotEmpty ?? false
+        ? existingData!['name'] as String
+        : (user.displayName ?? '');
+
+    final resolvedPhotoUrl = existingData?['photoUrl'] as String? ?? user.photoURL;
+
+    await firestore.collection('users').doc(user.uid).set({
+      'email': user.email,
+      if (resolvedName.isNotEmpty) 'name': resolvedName,
+      'photoUrl': ?resolvedPhotoUrl,
+      'emailVerified': user.emailVerified,
+      'provider': 'google',
+    }, SetOptions(merge: true));
+
+    final userModel = UserModel(
+      id: user.uid,
+      email: user.email ?? '',
+      name: resolvedName,
+      photoUrl: resolvedPhotoUrl,
+    );
+
+    try {
+      await sl<NotificationService>().updateFcmTokenInFirestore();
+    } on Object catch (_) {}
+    return userModel;
   }
 
   @override
@@ -274,11 +251,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> logout() async {
     await authLocalDataSource.clearToken();
-    await authLocalDataSource.saveUserLoggedIn(false);
+    await authLocalDataSource.saveUserLoggedIn(value: false);
     await SessionManager.clearSession();
     await firebaseAuth.signOut();
     try {
       await GoogleSignIn.instance.signOut();
-    } catch (_) {}
+    } on Object catch (_) {}
   }
 }

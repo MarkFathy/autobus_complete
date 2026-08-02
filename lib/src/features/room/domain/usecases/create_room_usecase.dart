@@ -24,10 +24,8 @@ class CreateRoomUseCase implements BaseUseCase<String, CreateRoomParams> {
   CreateRoomUseCase(this.repository);
 
   @override
-  Future<Either<Failure, String>> call(CreateRoomParams params) async {
-    return await repository.createRoom(
+  Future<Either<Failure, String>> call(CreateRoomParams params) async => repository.createRoom(
       rounds: params.rounds,
       categories: params.categories,
     );
-  }
 }

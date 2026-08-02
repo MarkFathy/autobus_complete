@@ -14,10 +14,7 @@ class PlayerActionsBottomSheet extends StatelessWidget {
   final VoidCallback onKickPlayer;
 
   const PlayerActionsBottomSheet({
-    super.key,
-    required this.player,
-    required this.onMakeHost,
-    required this.onKickPlayer,
+    required this.player, required this.onMakeHost, required this.onKickPlayer, super.key,
   });
 
   static Future<void> show(
@@ -25,8 +22,7 @@ class PlayerActionsBottomSheet extends StatelessWidget {
     required RoomPlayer player,
     required VoidCallback onMakeHost,
     required VoidCallback onKickPlayer,
-  }) {
-    return showModalBottomSheet(
+  }) => showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -36,11 +32,9 @@ class PlayerActionsBottomSheet extends StatelessWidget {
         onKickPlayer: onKickPlayer,
       ),
     );
-  }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: EdgeInsets.all(24.r),
       decoration: BoxDecoration(
         color: AppColors.textFieldFillColor,
@@ -57,7 +51,6 @@ class PlayerActionsBottomSheet extends StatelessWidget {
           UserProfileAvatar(
             radius: 28,
             imageUrl: player.photoUrl,
-            borderColor: AppColors.yellowColor,
           ),
           12.szH,
           Text(
@@ -148,5 +141,4 @@ class PlayerActionsBottomSheet extends StatelessWidget {
         ],
       ),
     );
-  }
 }

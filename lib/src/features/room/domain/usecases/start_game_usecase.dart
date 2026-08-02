@@ -9,7 +9,5 @@ class StartGameUseCase implements BaseUseCase<void, String> {
   StartGameUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(String roomCode) async {
-    return await repository.startGame(roomCode: roomCode);
-  }
+  Future<Either<Failure, void>> call(String roomCode) async => repository.startGame(roomCode: roomCode);
 }

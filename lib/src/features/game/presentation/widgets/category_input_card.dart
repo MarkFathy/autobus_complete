@@ -14,18 +14,14 @@ class CategoryInputCard extends StatelessWidget {
   final TextInputAction? textInputAction;
 
   const CategoryInputCard({
-    super.key,
-    required this.emoji,
-    required this.categoryName,
-    required this.controller,
+    required this.emoji, required this.categoryName, required this.controller, super.key,
     this.focusNode,
     this.onChanged,
     this.textInputAction,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
@@ -87,5 +83,4 @@ class CategoryInputCard extends StatelessWidget {
         ],
       ),
     );
-  }
 }

@@ -1,7 +1,7 @@
 import 'package:autobus_complete/src/core/navigation/constants/imports_constants.dart';
 import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/slide/Option/slide_animation_option.dart';
 import 'package:flutter/animation.dart';
-import '../Option/slide_animation_option.dart';
 
 class SliderAnimator extends Animator<Offset>
     implements TweenBehaviour<Offset>, CurveBehaviour {
@@ -16,21 +16,17 @@ class SliderAnimator extends Animator<Offset>
   };
 
   @override
-  Tween<Offset> setTween() {
-    return options.customTween ??
+  Tween<Offset> setTween() => options.customTween ??
         _tweenMap[options.direction ?? SlideDirection.leftToRight] ??
         RouterConstants.leftToRightTween;
-  }
 
   @override
-  CurvedAnimation setCurveAnimation(Animation<double> animation) {
-    return CurvedAnimation(
+  CurvedAnimation setCurveAnimation(Animation<double> animation) => CurvedAnimation(
       parent: animation,
       curve: options.curve ?? RouterConstants.transitionCurve,
       reverseCurve:
           options.reverseCurve ?? RouterConstants.reverseTransitionCurve,
     );
-  }
 
   @override
   Animation<Offset> animator(Animation<double> animation) =>

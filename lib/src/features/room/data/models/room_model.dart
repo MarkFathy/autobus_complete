@@ -9,14 +9,12 @@ class RoomCategoryModel extends RoomCategoryEntity {
     required super.icon,
   });
 
-  factory RoomCategoryModel.fromJson(Map<String, dynamic> json) {
-    return RoomCategoryModel(
+  factory RoomCategoryModel.fromJson(Map<String, dynamic> json) => RoomCategoryModel(
       id: json['id']?.toString() ?? '',
       nameAr: json['nameAr'] as String? ?? json['name'] as String? ?? '',
       nameEn: json['nameEn'] as String? ?? json['name'] as String? ?? '',
       icon: json['icon'] as String? ?? '',
     );
-  }
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -25,14 +23,12 @@ class RoomCategoryModel extends RoomCategoryEntity {
         'icon': icon,
       };
 
-  factory RoomCategoryModel.fromEntity(RoomCategoryEntity entity) {
-    return RoomCategoryModel(
+  factory RoomCategoryModel.fromEntity(RoomCategoryEntity entity) => RoomCategoryModel(
       id: entity.id,
       nameAr: entity.nameAr,
       nameEn: entity.nameEn,
       icon: entity.icon,
     );
-  }
 }
 
 class RoomPlayerModel extends RoomPlayerEntity {
@@ -45,16 +41,14 @@ class RoomPlayerModel extends RoomPlayerEntity {
     super.score = 0,
   });
 
-  factory RoomPlayerModel.fromJson(Map<String, dynamic> json) {
-    return RoomPlayerModel(
-      id: json['id'] ?? '',
-      name: json['name'] ?? '',
-      photoUrl: json['photoUrl'],
-      isHost: json['isHost'] ?? false,
-      isReady: json['isReady'] ?? false,
-      score: json['score'] ?? 0,
+  factory RoomPlayerModel.fromJson(Map<String, dynamic> json) => RoomPlayerModel(
+      id: (json['id'] as String?) ?? '',
+      name: (json['name'] as String?) ?? '',
+      photoUrl: json['photoUrl'] as String?,
+      isHost: (json['isHost'] as bool?) ?? false,
+      isReady: (json['isReady'] as bool?) ?? false,
+      score: (json['score'] as int?) ?? 0,
     );
-  }
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -65,8 +59,7 @@ class RoomPlayerModel extends RoomPlayerEntity {
         'score': score,
       };
 
-  factory RoomPlayerModel.fromEntity(RoomPlayerEntity entity) {
-    return RoomPlayerModel(
+  factory RoomPlayerModel.fromEntity(RoomPlayerEntity entity) => RoomPlayerModel(
       id: entity.id,
       name: entity.name,
       photoUrl: entity.photoUrl,
@@ -74,7 +67,6 @@ class RoomPlayerModel extends RoomPlayerEntity {
       isReady: entity.isReady,
       score: entity.score,
     );
-  }
 }
 
 class RoomModel extends RoomEntity {
@@ -84,16 +76,14 @@ class RoomModel extends RoomEntity {
     required super.status,
     required super.rounds,
     required super.currentRound,
-    super.currentLetter,
+    required super.categories, required super.players, super.currentLetter,
     super.usedLetters = const [],
     super.roundAnswers = const {},
     super.roundScores = const {},
-    required super.categories,
-    required super.players,
   });
 
   factory RoomModel.fromJson(Map<String, dynamic> json) {
-    final Map<String, Map<String, String>> parsedAnswers = {};
+    final parsedAnswers = <String, Map<String, String>>{};
     if (json['roundAnswers'] != null && json['roundAnswers'] is Map) {
       (json['roundAnswers'] as Map<String, dynamic>).forEach((playerKey, val) {
         if (val is Map) {
@@ -105,7 +95,7 @@ class RoomModel extends RoomEntity {
       });
     }
 
-    final Map<String, Map<String, int>> parsedScores = {};
+    final parsedScores = <String, Map<String, int>>{};
     if (json['roundScores'] != null && json['roundScores'] is Map) {
       (json['roundScores'] as Map<String, dynamic>).forEach((playerKey, val) {
         if (val is Map) {
@@ -118,12 +108,12 @@ class RoomModel extends RoomEntity {
     }
 
     return RoomModel(
-      roomCode: json['roomCode'] ?? '',
-      hostId: json['hostId'] ?? '',
-      status: json['status'] ?? 'waiting',
-      rounds: json['rounds'] ?? 5,
-      currentRound: json['currentRound'] ?? 1,
-      currentLetter: json['currentLetter'],
+      roomCode: (json['roomCode'] as String?) ?? '',
+      hostId: (json['hostId'] as String?) ?? '',
+      status: (json['status'] as String?) ?? 'waiting',
+      rounds: (json['rounds'] as int?) ?? 5,
+      currentRound: (json['currentRound'] as int?) ?? 1,
+      currentLetter: json['currentLetter'] as String?,
       usedLetters: (json['usedLetters'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??

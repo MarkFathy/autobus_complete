@@ -7,10 +7,8 @@ class MaterialPageRouterCreator implements PageRouterCreator {
     RouteSettings? settings,
     TransitionType? transition,
     AnimationOption? animationOptions,
-  }) {
-    return MaterialPageRoute(
+  }) => MaterialPageRoute(
       builder: (context) => page,
       settings: settings,
     );
-  }
 }

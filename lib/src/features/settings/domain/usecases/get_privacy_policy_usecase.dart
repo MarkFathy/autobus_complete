@@ -10,7 +10,5 @@ class GetPrivacyPolicyUseCase implements BaseUseCase<AppInfoEntity, NoParams> {
   GetPrivacyPolicyUseCase(this.repository);
 
   @override
-  Future<Either<Failure, AppInfoEntity>> call(NoParams params) async {
-    return await repository.getPrivacyPolicy();
-  }
+  Future<Either<Failure, AppInfoEntity>> call(NoParams params) async => repository.getPrivacyPolicy();
 }

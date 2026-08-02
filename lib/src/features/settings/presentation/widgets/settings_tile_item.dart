@@ -14,9 +14,9 @@ class SettingsTileItem extends StatelessWidget {
   final Color? textColor;
 
   const SettingsTileItem({
-    super.key,
     required this.icon,
     required this.title,
+    super.key,
     this.trailing,
     this.onTap,
     this.iconColor,
@@ -24,44 +24,36 @@ class SettingsTileItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16.r),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-          child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8.r),
-                decoration: BoxDecoration(
-                  color: (iconColor ?? AppColors.yellowColor).withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  icon,
-                  color: iconColor ?? AppColors.yellowColor,
-                  size: 22.sp,
-                ),
+  Widget build(BuildContext context) => Material(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8.r),
+              decoration: BoxDecoration(
+                color: (iconColor ?? AppColors.yellowColor).withValues(alpha: 0.12),
+                shape: BoxShape.circle,
               ),
-              14.szW,
-              Expanded(
-                child: Text(
-                  title,
-                  style: (textColor != null
-                          ? getTextStyle().copyWith(color: textColor!)
-                          : getTextStyle().whiteColor)
-                      .s16
-                      .w600,
-                ),
+              child: Icon(icon, color: iconColor ?? AppColors.yellowColor, size: 22.sp),
+            ),
+            14.szW,
+            Expanded(
+              child: Text(
+                title,
+                style: (textColor != null ? getTextStyle().copyWith(color: textColor) : getTextStyle().whiteColor)
+                    .s16
+                    .w600,
               ),
-              if (trailing != null) trailing!,
-            ],
-          ),
+            ),
+            ?trailing,
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }

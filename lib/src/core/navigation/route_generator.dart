@@ -1,5 +1,8 @@
 import 'package:autobus_complete/src/core/navigation/constants/imports_constants.dart';
 import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
+import 'package:autobus_complete/src/core/navigation/named_routes.dart';
+import 'package:autobus_complete/src/core/navigation/navigator.dart';
+import 'package:autobus_complete/src/core/navigation/page_router/imports_page_router_builder.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/register_screen.dart';
 import 'package:autobus_complete/src/features/game/presentation/screens/game_board_screen.dart';
@@ -14,9 +17,6 @@ import 'package:autobus_complete/src/features/settings/presentation/screens/priv
 import 'package:autobus_complete/src/features/settings/presentation/screens/settings_screen.dart';
 import 'package:autobus_complete/src/features/splash/presentation/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'named_routes.dart';
-import 'page_router/imports_page_router_builder.dart';
-import 'navigator.dart';
 
 class RouterGenerator {
   RouterGenerator._();
@@ -24,12 +24,12 @@ class RouterGenerator {
   static final PageRouterBuilder _pageRouter = PageRouterBuilder();
 
   static Route<dynamic> getRoute(RouteSettings settings) {
-    Object? realArguments = settings.arguments;
+    var realArguments = settings.arguments;
     TransitionType? transition;
     AnimationOption? options;
 
     if (settings.arguments is NamedRouteArgs) {
-      final args = settings.arguments as NamedRouteArgs;
+      final args = settings.arguments! as NamedRouteArgs;
       realArguments = args.arguments;
       transition = args.transition;
       options = args.options;
@@ -152,10 +152,8 @@ class RouterGenerator {
     };
   }
 
-  static Route<dynamic> undefineRoute() {
-    return MaterialPageRoute(
+  static Route<dynamic> undefineRoute() => MaterialPageRoute(
       builder: (_) =>
           const Scaffold(body: Center(child: Text('No route exists here ! '))),
     );
-  }
 }

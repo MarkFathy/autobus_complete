@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:autobus_complete/src/core/helpers/cache_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,18 +16,19 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void _showAwesomeNotificationFromRemoteMessage(RemoteMessage message) {
   final notification = message.notification;
-  final title = notification?.title ?? message.data['title'] ?? 'أتوبيس كومبليت';
-  final body = notification?.body ?? message.data['body'] ?? '';
+  final title = notification?.title ?? (message.data['title'] as String?) ?? 'أتوبيس كومبليت';
+  final body = notification?.body ?? (message.data['body'] as String?) ?? '';
 
   if (title.isNotEmpty || body.isNotEmpty) {
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
-        channelKey: 'basic_channel',
-        title: title,
-        body: body,
-        notificationLayout: NotificationLayout.Default,
-        payload: Map<String, String>.from(message.data),
+    unawaited(
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
+          channelKey: 'basic_channel',
+          title: title,
+          body: body,
+          payload: Map<String, String>.from(message.data),
+        ),
       ),
     );
   }
@@ -70,16 +72,14 @@ class NotificationService {
     // 3. Register FCM Handlers
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((message) {
       debugPrint('Foreground FCM message received: ${message.data}');
       _showAwesomeNotificationFromRemoteMessage(message);
     });
 
     // 4. Save FCM token when user signs in or on token refresh
     await updateFcmTokenInFirestore();
-    _fcm.onTokenRefresh.listen((newToken) {
-      _saveTokenToUserDocument(newToken);
-    });
+    _fcm.onTokenRefresh.listen(_saveTokenToUserDocument);
   }
 
   /// Request permissions for local and remote notifications
@@ -88,11 +88,7 @@ class NotificationService {
     if (!isAllowed) {
       await AwesomeNotifications().requestPermissionToSendNotifications();
     }
-    final settings = await _fcm.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    final settings = await _fcm.requestPermission();
     return settings.authorizationStatus == AuthorizationStatus.authorized;
   }
 
@@ -107,7 +103,7 @@ class NotificationService {
         await _saveTokenToUserDocument(token);
       }
       return token;
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Error getting FCM token: $e');
       return null;
     }
@@ -122,7 +118,7 @@ class NotificationService {
           'lastTokenUpdate': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
         debugPrint('FCM Token successfully saved for user: $uid');
-      } catch (e) {
+      } on Object catch (e) {
         debugPrint('Error saving FCM Token to Firestore: $e');
       }
     }
@@ -138,7 +134,7 @@ class NotificationService {
   }
 
   /// Enable or disable notifications
-  Future<void> setNotificationsEnabled(bool enable) async {
+  Future<void> setNotificationsEnabled({required bool enable}) async {
     await CacheStorage.write(notificationSettingKey, enable);
     if (enable) {
       await requestPermission();
@@ -148,14 +144,12 @@ class NotificationService {
       final uid = _auth.currentUser?.uid;
       if (uid != null && uid.isNotEmpty) {
         try {
-          await _firestore.collection('users').doc(uid).update({
-            'fcmToken': FieldValue.delete(),
-          });
-        } catch (_) {}
+          await _firestore.collection('users').doc(uid).update({'fcmToken': FieldValue.delete()});
+        } on Object catch (_) {}
       }
       try {
         await _fcm.deleteToken();
-      } catch (_) {}
+      } on Object catch (_) {}
     }
   }
 

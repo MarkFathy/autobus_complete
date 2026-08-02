@@ -22,7 +22,7 @@ class NetworkRequest<GenericModel> {
     this.headers,
     this.onReceiveProgress,
   });
-  NetworkRequest copyWith({
+  NetworkRequest<GenericModel> copyWith({
     String? path,
     RequestMethod? method,
     Map<String, dynamic>? body,
@@ -32,8 +32,7 @@ class NetworkRequest<GenericModel> {
     bool? isFormData,
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
-  }) {
-    return NetworkRequest(
+  }) => NetworkRequest<GenericModel>(
       path: path ?? this.path,
       method: method ?? this.method,
       body: body ?? this.body,
@@ -43,5 +42,4 @@ class NetworkRequest<GenericModel> {
       onSendProgress: onSendProgress ?? this.onSendProgress,
       onReceiveProgress: onReceiveProgress ?? this.onReceiveProgress,
     );
-  }
 }

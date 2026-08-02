@@ -5,7 +5,5 @@ class DividerWidget extends StatelessWidget {
 
   final Color ?color;
   @override
-  Widget build(BuildContext context) {
-    return  Divider(color:color?? Colors.white.withOpacity(.6));
-  }
+  Widget build(BuildContext context) => Divider(color:color?? Colors.white.withValues(alpha: .6));
 }

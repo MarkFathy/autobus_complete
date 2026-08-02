@@ -28,12 +28,10 @@ class UpdateCategoryScoreUseCase
   UpdateCategoryScoreUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(UpdateCategoryScoreParams params) async {
-    return await repository.updateCategoryScore(
+  Future<Either<Failure, void>> call(UpdateCategoryScoreParams params) async => repository.updateCategoryScore(
       roomCode: params.roomCode,
       playerId: params.playerId,
       categoryId: params.categoryId,
       score: params.score,
     );
-  }
 }

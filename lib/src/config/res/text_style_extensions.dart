@@ -1,10 +1,8 @@
+import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'color_manager.dart';
-
 extension TextStyleEx on TextStyle {
-
   TextStyle get bold => copyWith(fontWeight: FontWeight.bold);
   TextStyle get w900 => copyWith(fontWeight: FontWeight.w900);
   TextStyle get w800 => copyWith(fontWeight: FontWeight.w800);
@@ -35,8 +33,7 @@ extension TextStyleEx on TextStyle {
   TextStyle get overLine => copyWith(decoration: TextDecoration.overline);
   TextStyle get ellipsis => copyWith(overflow: TextOverflow.ellipsis);
 
-  TextStyle get scaffoldBackgroundColor =>
-      copyWith(color: AppColors.scaffoldBackgroundColor);
+  TextStyle get scaffoldBackgroundColor => copyWith(color: AppColors.scaffoldBackgroundColor);
   TextStyle get whiteColor => copyWith(color: AppColors.whiteColor);
   TextStyle get white => copyWith(color: AppColors.whiteColor);
   TextStyle get yellowColor => copyWith(color: AppColors.yellowColor);
@@ -49,7 +46,5 @@ extension TextStyleEx on TextStyle {
   TextStyle get grey => copyWith(color: AppColors.greyColor);
   TextStyle get blackColor => copyWith(color: AppColors.blackColor);
   TextStyle get black => copyWith(color: AppColors.blackColor);
-  TextStyle get textFieldFillColor =>
-      copyWith(color: AppColors.textFieldFillColor);
+  TextStyle get textFieldFillColor => copyWith(color: AppColors.textFieldFillColor);
 }
-

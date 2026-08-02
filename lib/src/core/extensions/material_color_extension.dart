@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 extension ColorsExt on Color {
   MaterialColor toMaterialColor() {
-    final int red = this.red;
-    final int green = this.green;
-    final int blue = this.blue;
+    final red = (r * 255).round();
+    final green = (g * 255).round();
+    final blue = (b * 255).round();
 
-    final Map<int, Color> shades = {
+    final shades = <int, Color>{
       50: Color.fromRGBO(red, green, blue, .1),
       100: Color.fromRGBO(red, green, blue, .2),
       200: Color.fromRGBO(red, green, blue, .3),
@@ -19,6 +19,6 @@ extension ColorsExt on Color {
       900: Color.fromRGBO(red, green, blue, 1),
     };
 
-    return MaterialColor(value, shades);
+    return MaterialColor(toARGB32(), shades);
   }
 }

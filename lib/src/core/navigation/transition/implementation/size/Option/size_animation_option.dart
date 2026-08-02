@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
+import 'package:flutter/material.dart';
 
 class SizeAnimationOptions extends AnimationOption {
   final double begin;

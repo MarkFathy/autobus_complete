@@ -12,23 +12,19 @@ class AppInfoRepositoryImpl implements AppInfoRepository {
   AppInfoRepositoryImpl({required this.remoteDataSource});
 
   @override
-  AppInfoEntity? getCachedPrivacyPolicy() {
-    return remoteDataSource.getCachedPrivacyPolicy();
-  }
+  AppInfoEntity? getCachedPrivacyPolicy() => remoteDataSource.getCachedPrivacyPolicy();
 
   @override
-  AppInfoEntity? getCachedAboutGame() {
-    return remoteDataSource.getCachedAboutGame();
-  }
+  AppInfoEntity? getCachedAboutGame() => remoteDataSource.getCachedAboutGame();
 
   @override
   Future<Either<Failure, AppInfoEntity>> getPrivacyPolicy() async {
     try {
       final result = await remoteDataSource.getPrivacyPolicy();
       return Right(result);
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('[AppInfoRepository.getPrivacyPolicy]: $e');
-      return Left(ServerFailure(ServerException(500, false, 'Failed to load Privacy Policy', null)));
+      return const Left(ServerFailure(ServerException(500, 'Failed to load Privacy Policy', null)));
     }
   }
 
@@ -37,9 +33,9 @@ class AppInfoRepositoryImpl implements AppInfoRepository {
     try {
       final result = await remoteDataSource.getAboutGame();
       return Right(result);
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('[AppInfoRepository.getAboutGame]: $e');
-      return Left(ServerFailure(ServerException(500, false, 'Failed to load About Game', null)));
+      return const Left(ServerFailure(ServerException(500, 'Failed to load About Game', null)));
     }
   }
 }

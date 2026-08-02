@@ -1,7 +1,7 @@
-import 'package:flutter/animation.dart';
 import 'package:autobus_complete/src/core/navigation/constants/imports_constants.dart';
 import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
-import '../Options/scale_animation_option.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/scale/Options/scale_animation_option.dart';
+import 'package:flutter/animation.dart';
 
 class ScaleAnimator extends Animator<double>
     implements CurveBehaviour, TweenBehaviour<double> {
@@ -10,22 +10,16 @@ class ScaleAnimator extends Animator<double>
   ScaleAnimator(this.options);
 
   @override
-  CurvedAnimation setCurveAnimation(Animation<double> animation) {
-    return CurvedAnimation(
+  CurvedAnimation setCurveAnimation(Animation<double> animation) => CurvedAnimation(
       parent: animation,
       curve: options.curve ?? RouterConstants.transitionCurve,
       reverseCurve:
           options.reverseCurve ?? RouterConstants.reverseTransitionCurve,
     );
-  }
 
   @override
-  Tween<double> setTween() {
-    return Tween<double>(begin: options.begin, end: options.end);
-  }
+  Tween<double> setTween() => Tween<double>(begin: options.begin, end: options.end);
 
   @override
-  Animation<double> animator(Animation<double> animation) {
-    return setTween().animate(setCurveAnimation(animation));
-  }
+  Animation<double> animator(Animation<double> animation) => setTween().animate(setCurveAnimation(animation));
 }

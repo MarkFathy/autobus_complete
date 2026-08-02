@@ -1,6 +1,6 @@
 extension AppLogicOnImageExtension on String {
   bool isVideo() {
-    String extension = split(".").last;
+    final extension = split('.').last;
     if (extension == 'mp4' ||
         extension == 'avi' ||
         extension == 'mov' ||

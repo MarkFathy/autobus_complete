@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:autobus_complete/src/config/res/font_manager.dart';
@@ -63,7 +65,7 @@ class _ScoringScreenState extends State<ScoringScreen> {
   }
 
   int _calculatePlayerTotal(RoomEntity? room, String playerId, List<RoomCategoryEntity> categories) {
-    int total = 0;
+    var total = 0;
     for (final cat in categories) {
       total += _getScoreForPlayer(room, playerId, cat.id);
     }
@@ -80,9 +82,9 @@ class _ScoringScreenState extends State<ScoringScreen> {
         listener: (context, state) {
           final room = sl<RoomCubit>().currentRoom;
           if (room?.status == 'playing') {
-            Go.offNamed(NamedRoutes.countdown);
+            unawaited(Go.offNamed(NamedRoutes.countdown));
           } else if (room?.status == 'finished') {
-            Go.offNamed(NamedRoutes.leaderboard);
+            unawaited(Go.offNamed(NamedRoutes.leaderboard));
           }
         },
         builder: (context, state) {
@@ -164,7 +166,6 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                     UserProfileAvatar(
                                       radius: 16,
                                       imageUrl: player.photoUrl,
-                                      borderColor: AppColors.yellowColor,
                                     ),
                                     10.szW,
                                     Expanded(
@@ -244,10 +245,12 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                                     _localScores[player.id]![cat.id] = scoreVal;
                                                   });
                                                   // Broadcast to Firestore Stream so all players see the update!
-                                                  sl<RoomCubit>().updateCategoryScore(
-                                                    playerId: player.id,
-                                                    categoryId: cat.id,
-                                                    score: scoreVal,
+                                                  unawaited(
+                                                    sl<RoomCubit>().updateCategoryScore(
+                                                      playerId: player.id,
+                                                      categoryId: cat.id,
+                                                      score: scoreVal,
+                                                    ),
                                                   );
                                                 },
                                                 child: Container(
@@ -335,9 +338,9 @@ class _ScoringScreenState extends State<ScoringScreen> {
                             : S.of(context).endGame,
                         onPressed: () {
                           if (currentRound < totalRounds) {
-                            sl<RoomCubit>().startNextRound();
+                            unawaited(sl<RoomCubit>().startNextRound());
                           } else {
-                            sl<RoomCubit>().endGame();
+                            unawaited(sl<RoomCubit>().endGame());
                           }
                         },
                       )
@@ -359,6 +362,6 @@ class _ScoringScreenState extends State<ScoringScreen> {
 
   List<RoomPlayerEntity> get _defaultPlayers => [
         const RoomPlayerEntity(id: '1', name: 'Player 1', isHost: true),
-        const RoomPlayerEntity(id: '2', name: 'Player 2', isHost: false),
+        const RoomPlayerEntity(id: '2', name: 'Player 2'),
       ];
 }

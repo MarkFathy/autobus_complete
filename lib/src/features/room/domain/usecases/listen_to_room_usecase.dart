@@ -8,7 +8,5 @@ class ListenToRoomUseCase {
 
   ListenToRoomUseCase(this.repository);
 
-  Stream<Either<Failure, RoomEntity>> call(String roomCode) {
-    return repository.listenToRoom(roomCode: roomCode);
-  }
+  Stream<Either<Failure, RoomEntity>> call(String roomCode) => repository.listenToRoom(roomCode: roomCode);
 }

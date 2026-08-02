@@ -12,8 +12,7 @@ class AppScaffold extends StatelessWidget {
   final bool safeBottom;
 
   const AppScaffold({
-    super.key,
-    required this.body,
+    required this.body, super.key,
     this.appBar,
     this.floatingActionButton,
     this.bottomNavigationBar,
@@ -23,8 +22,7 @@ class AppScaffold extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       backgroundColor: backgroundColor ?? AppColors.scaffoldBackgroundColor,
       appBar: appBar,
       floatingActionButton: floatingActionButton,
@@ -40,5 +38,4 @@ class AppScaffold extends StatelessWidget {
             )
           : null,
     );
-  }
 }

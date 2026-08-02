@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/services/session_manager.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_data_source.dart';
@@ -42,44 +43,38 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     await user.reload();
     final refreshedUser = firebaseAuth.currentUser ?? user;
 
-    final docSnapshot =
-        await firestore.collection('users').doc(refreshedUser.uid).get();
+    final docSnapshot = await firestore.collection('users').doc(refreshedUser.uid).get();
 
-    String resolvedName = refreshedUser.displayName ?? '';
-    String resolvedEmail = refreshedUser.email ?? '';
-    String? resolvedPhotoUrl = refreshedUser.photoURL;
+    var resolvedName = refreshedUser.displayName ?? '';
+    var resolvedEmail = refreshedUser.email ?? '';
+    var resolvedPhotoUrl = refreshedUser.photoURL;
 
     if (docSnapshot.exists && docSnapshot.data() != null) {
       final data = docSnapshot.data()!;
-      if ((data['name'] as String?)?.isNotEmpty == true) {
-        resolvedName = data['name'];
+      if ((data['name'] as String?)?.isNotEmpty ?? false) {
+        resolvedName = data['name'] as String;
       }
-      if ((data['email'] as String?)?.isNotEmpty == true) {
-        resolvedEmail = data['email'];
+      if ((data['email'] as String?)?.isNotEmpty ?? false) {
+        resolvedEmail = data['email'] as String;
       }
       if (data['photoUrl'] != null) {
-        resolvedPhotoUrl = data['photoUrl'];
+        resolvedPhotoUrl = data['photoUrl'] as String?;
       }
     }
 
     if (!docSnapshot.exists ||
-        (docSnapshot.data()?['name'] as String?)?.isEmpty != false ||
+        ((docSnapshot.data()?['name'] as String?)?.isEmpty ?? true) ||
         docSnapshot.data()?['photoUrl'] == null) {
       await firestore.collection('users').doc(refreshedUser.uid).set({
         'email': resolvedEmail,
         if (resolvedName.isNotEmpty) 'name': resolvedName,
-        if (resolvedPhotoUrl != null) 'photoUrl': resolvedPhotoUrl,
+        'photoUrl': ?resolvedPhotoUrl,
         'emailVerified': refreshedUser.emailVerified,
         'provider': 'email',
       }, SetOptions(merge: true));
     }
 
-    return ProfileModel(
-      id: refreshedUser.uid,
-      name: resolvedName,
-      email: resolvedEmail,
-      photoUrl: resolvedPhotoUrl,
-    );
+    return ProfileModel(id: refreshedUser.uid, name: resolvedName, email: resolvedEmail, photoUrl: resolvedPhotoUrl);
   }
 
   @override
@@ -94,20 +89,20 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       throw Exception(S.current.firebaseUserNotFound);
     }
 
-    String? photoUrl = user.photoURL;
+    var photoUrl = user.photoURL;
 
     if (removeImage) {
       photoUrl = null;
       try {
         final ref = storage.ref().child('user_photos/${user.uid}.jpg');
         await ref.delete();
-      } catch (_) {}
+      } on Object catch (_) {}
     } else if (imageFile != null) {
       try {
         final ref = storage.ref().child('user_photos/${user.uid}.jpg');
         await ref.putFile(imageFile);
         photoUrl = await ref.getDownloadURL();
-      } catch (e) {
+      } on Object catch (_) {
         try {
           final bytes = await imageFile.readAsBytes();
           final base64String = base64Encode(bytes);
@@ -117,7 +112,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           } else {
             photoUrl = user.photoURL;
           }
-        } catch (_) {
+        } on Object catch (_) {
           photoUrl = user.photoURL;
         }
       }
@@ -128,31 +123,19 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       if (photoUrl != null && !photoUrl.startsWith('data:image')) {
         await user.updatePhotoURL(photoUrl);
       }
-    } catch (_) {}
+    } on Object catch (_) {}
 
     if (email != user.email && email.trim().isNotEmpty) {
       try {
         await user.verifyBeforeUpdateEmail(email);
-      } catch (_) {}
+      } on Object catch (_) {}
     }
 
-    final updatedData = {
-      'name': name,
-      'email': email,
-      'photoUrl': photoUrl,
-    };
+    final updatedData = {'name': name, 'email': email, 'photoUrl': photoUrl};
 
-    await firestore
-        .collection('users')
-        .doc(user.uid)
-        .set(updatedData, SetOptions(merge: true));
+    await firestore.collection('users').doc(user.uid).set(updatedData, SetOptions(merge: true));
 
-    return ProfileModel(
-      id: user.uid,
-      name: name,
-      email: email,
-      photoUrl: photoUrl,
-    );
+    return ProfileModel(id: user.uid, name: name, email: email, photoUrl: photoUrl);
   }
 
   @override
@@ -170,11 +153,11 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     if (user != null) {
       try {
         await firestore.collection('users').doc(user.uid).delete();
-      } catch (_) {}
+      } on Object catch (_) {}
       await user.delete();
     }
     await authLocalDataSource.clearToken();
-    await authLocalDataSource.saveUserLoggedIn(false);
+    await authLocalDataSource.saveUserLoggedIn(value: false);
     await SessionManager.clearSession();
   }
 }

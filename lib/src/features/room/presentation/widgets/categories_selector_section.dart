@@ -17,9 +17,7 @@ class CategoriesSelectorSection extends StatelessWidget {
   final List<RoomCategoryEntity> availableCategories;
 
   const CategoriesSelectorSection({
-    super.key,
-    required this.selectedCategories,
-    required this.onCategoriesChanged,
+    required this.selectedCategories, required this.onCategoriesChanged, super.key,
     this.availableCategories = const [],
   });
 

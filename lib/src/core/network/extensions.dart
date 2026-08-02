@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:autobus_complete/src/core/network/network_request.dart';
 import 'package:dio/dio.dart';
-import 'network_request.dart';
 
-extension NetworkRequestExtension on NetworkRequest {
+extension NetworkRequestExtension on NetworkRequest<dynamic> {
   bool get _canBeConvertedToFormData =>
       hasBodyAndProgress() && body != null && body!.entries.isNotEmpty;
 
@@ -13,9 +13,7 @@ extension NetworkRequestExtension on NetworkRequest {
       method == RequestMethod.patch ||
       method == RequestMethod.delete;
 
-  String asString() {
-    return method.toString().split('.').last.toUpperCase();
-  }
+  String asString() => method.toString().split('.').last.toUpperCase();
 
   Future<void> prepareRequestData() async {
     if (_canBeConvertedToFormData) {
@@ -35,14 +33,12 @@ extension NetworkRequestExtension on NetworkRequest {
 }
 
 extension MultiPartFileConverter on File {
-  MultipartFile toMultiPart() {
-    return MultipartFile.fromFileSync(path);
-  }
+  MultipartFile toMultiPart() => MultipartFile.fromFileSync(path);
 }
 
 extension MultiPartFileListConverter on List<File> {
   List<MultipartFile> toMultiPart() {
-    final List<MultipartFile> multipartFiles = [];
+    final multipartFiles = <MultipartFile>[];
     for (final file in this) {
       multipartFiles.add(file.toMultiPart());
     }

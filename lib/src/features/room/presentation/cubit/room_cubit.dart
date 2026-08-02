@@ -1,5 +1,8 @@
 import 'dart:async';
+
+import 'package:autobus_complete/src/core/error/failure.dart';
 import 'package:autobus_complete/src/core/usecases/usecase.dart';
+
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/create_room_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/end_game_usecase.dart';
@@ -17,6 +20,7 @@ import 'package:autobus_complete/src/features/room/domain/usecases/toggle_ready_
 import 'package:autobus_complete/src/features/room/domain/usecases/update_category_score_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/update_room_settings_usecase.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_state.dart';
+import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +42,7 @@ class RoomCubit extends Cubit<RoomState> {
   final UpdateCategoryScoreUseCase updateCategoryScoreUseCase;
   final EndGameUseCase endGameUseCase;
 
-  StreamSubscription? _roomSubscription;
+  StreamSubscription<Either<Failure, RoomEntity>>? _roomSubscription;
   RoomEntity? currentRoom;
   List<RoomCategoryEntity> availableCategories = [];
 
@@ -62,54 +66,40 @@ class RoomCubit extends Cubit<RoomState> {
 
   Future<List<RoomCategoryEntity>> fetchCategories() async {
     final result = await getCategoriesUseCase(NoParams());
-    return result.fold(
-      (failure) => [],
-      (categories) {
-        availableCategories = categories;
-        return categories;
-      },
-    );
+    return result.fold((failure) => [], (categories) {
+      availableCategories = categories;
+      return categories;
+    });
   }
 
-  Future<void> createRoom({
-    int rounds = 5,
-    List<RoomCategoryEntity>? categories,
-  }) async {
+  Future<void> createRoom({int rounds = 5, List<RoomCategoryEntity>? categories}) async {
     emit(RoomLoading());
-    List<RoomCategoryEntity> selectedCategories = categories ?? [];
+    var selectedCategories = categories ?? [];
     if (selectedCategories.isEmpty) {
       selectedCategories = await fetchCategories();
     }
 
-    final result = await createRoomUseCase(
-      CreateRoomParams(rounds: rounds, categories: selectedCategories),
-    );
+    final result = await createRoomUseCase(CreateRoomParams(rounds: rounds, categories: selectedCategories));
 
-    await result.fold(
-      (failure) async => emit(RoomError(failure.serverException.message)),
-      (roomCode) async {
-        await listenToRoom(roomCode);
-        emit(RoomCreatedSuccess(roomCode));
-      },
-    );
+    await result.fold((failure) async => emit(RoomError(failure.serverException.message)), (roomCode) async {
+      await listenToRoom(roomCode);
+      emit(RoomCreatedSuccess(roomCode));
+    });
   }
 
   Future<void> joinRoom(String roomCode) async {
     emit(RoomLoading());
     final result = await joinRoomUseCase(roomCode);
-    await result.fold(
-      (failure) async => emit(RoomError(failure.serverException.message)),
-      (_) async {
-        await listenToRoom(roomCode);
-        emit(RoomJoinedSuccess(roomCode));
-      },
-    );
+    await result.fold((failure) async => emit(RoomError(failure.serverException.message)), (_) async {
+      await listenToRoom(roomCode);
+      emit(RoomJoinedSuccess(roomCode));
+    });
   }
 
   Future<void> listenToRoom(String roomCode) async {
-    _roomSubscription?.cancel();
+    unawaited(_roomSubscription?.cancel());
     final completer = Completer<void>();
-    bool isFirstSnapshot = true;
+    var isFirstSnapshot = true;
 
     _roomSubscription = listenToRoomUseCase(roomCode).listen(
       (result) {
@@ -122,11 +112,10 @@ class RoomCubit extends Cubit<RoomState> {
           },
           (roomEntity) {
             final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-            final isCurrentPlayerInRoom = currentUserId != null &&
-                roomEntity.players.any((p) => p.id == currentUserId);
+            final isCurrentPlayerInRoom = currentUserId != null && roomEntity.players.any((p) => p.id == currentUserId);
 
             if (!isCurrentPlayerInRoom && currentRoom != null) {
-              _roomSubscription?.cancel();
+              unawaited(_roomSubscription?.cancel());
               _roomSubscription = null;
               currentRoom = null;
               if (isFirstSnapshot && !completer.isCompleted) {
@@ -171,41 +160,28 @@ class RoomCubit extends Cubit<RoomState> {
     await toggleReadyUseCase(currentRoom!.roomCode);
   }
 
-  Future<void> updateRoomSettings({
-    required int rounds,
-    required List<RoomCategoryEntity> categories,
-  }) async {
+  Future<void> updateRoomSettings({required int rounds, required List<RoomCategoryEntity> categories}) async {
     if (currentRoom == null) return;
     await updateRoomSettingsUseCase(
-      UpdateRoomSettingsParams(
-        roomCode: currentRoom!.roomCode,
-        rounds: rounds,
-        categories: categories,
-      ),
+      UpdateRoomSettingsParams(roomCode: currentRoom!.roomCode, rounds: rounds, categories: categories),
     );
   }
 
   Future<void> startGame() async {
     if (currentRoom == null) return;
     final result = await startGameUseCase(currentRoom!.roomCode);
-    result.fold(
-      (failure) => emit(RoomError(failure.serverException.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(RoomError(failure.serverException.message)), (_) {});
   }
 
   Future<void> playAgain() async {
     if (currentRoom == null) return;
     final result = await playAgainUseCase(currentRoom!.roomCode);
-    result.fold(
-      (failure) => emit(RoomError(failure.serverException.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(RoomError(failure.serverException.message)), (_) {});
   }
 
   Future<void> leaveRoom() async {
     final roomCodeToLeave = currentRoom?.roomCode;
-    _roomSubscription?.cancel();
+    unawaited(_roomSubscription?.cancel());
     _roomSubscription = null;
     currentRoom = null;
 
@@ -217,60 +193,31 @@ class RoomCubit extends Cubit<RoomState> {
 
   Future<void> makeHost(String newHostId) async {
     if (currentRoom == null) return;
-    final result = await makeHostUseCase(
-      MakeHostParams(
-        roomCode: currentRoom!.roomCode,
-        newHostId: newHostId,
-      ),
-    );
-    result.fold(
-      (failure) => emit(RoomError(failure.serverException.message)),
-      (_) {},
-    );
+    final result = await makeHostUseCase(MakeHostParams(roomCode: currentRoom!.roomCode, newHostId: newHostId));
+    result.fold((failure) => emit(RoomError(failure.serverException.message)), (_) {});
   }
 
   Future<void> kickPlayer(String playerId) async {
     if (currentRoom == null) return;
-    final result = await kickPlayerUseCase(
-      KickPlayerParams(
-        roomCode: currentRoom!.roomCode,
-        playerId: playerId,
-      ),
-    );
-    result.fold(
-      (failure) => emit(RoomError(failure.serverException.message)),
-      (_) {},
-    );
+    final result = await kickPlayerUseCase(KickPlayerParams(roomCode: currentRoom!.roomCode, playerId: playerId));
+    result.fold((failure) => emit(RoomError(failure.serverException.message)), (_) {});
   }
 
   Future<void> startNextRound() async {
     if (currentRoom == null) return;
     final result = await startNextRoundUseCase(currentRoom!.roomCode);
-    result.fold(
-      (failure) => emit(RoomError(failure.serverException.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(RoomError(failure.serverException.message)), (_) {});
   }
 
   Future<void> submitRoundAnswers(Map<String, String> answers) async {
     if (currentRoom == null) return;
     final result = await submitRoundAnswersUseCase(
-      SubmitRoundAnswersParams(
-        roomCode: currentRoom!.roomCode,
-        answers: answers,
-      ),
+      SubmitRoundAnswersParams(roomCode: currentRoom!.roomCode, answers: answers),
     );
-    result.fold(
-      (failure) => emit(RoomError(failure.serverException.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(RoomError(failure.serverException.message)), (_) {});
   }
 
-  Future<void> updateCategoryScore({
-    required String playerId,
-    required String categoryId,
-    required int score,
-  }) async {
+  Future<void> updateCategoryScore({required String playerId, required String categoryId, required int score}) async {
     if (currentRoom == null) return;
     final result = await updateCategoryScoreUseCase(
       UpdateCategoryScoreParams(
@@ -280,19 +227,13 @@ class RoomCubit extends Cubit<RoomState> {
         score: score,
       ),
     );
-    result.fold(
-      (failure) => emit(RoomError(failure.serverException.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(RoomError(failure.serverException.message)), (_) {});
   }
 
   Future<void> endGame() async {
     if (currentRoom == null) return;
     final result = await endGameUseCase(currentRoom!.roomCode);
-    result.fold(
-      (failure) => emit(RoomError(failure.serverException.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(RoomError(failure.serverException.message)), (_) {});
   }
 
   Future<void> copyRoomCodeToClipboard(String roomCode) async {
@@ -302,7 +243,7 @@ class RoomCubit extends Cubit<RoomState> {
 
   @override
   Future<void> close() {
-    _roomSubscription?.cancel();
+    unawaited(_roomSubscription?.cancel());
     return super.close();
   }
 }

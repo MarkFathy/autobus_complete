@@ -9,7 +9,5 @@ class SendPasswordResetUseCase implements BaseUseCase<void, NoParams> {
   SendPasswordResetUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(NoParams params) async {
-    return await repository.sendPasswordResetEmail();
-  }
+  Future<Either<Failure, void>> call(NoParams params) async => repository.sendPasswordResetEmail();
 }

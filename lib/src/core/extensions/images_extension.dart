@@ -8,7 +8,7 @@ extension Images on String {
         height: height,
         width: width,
         fit: boxFit ?? BoxFit.contain,
-        color: color,
+        colorFilter: color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
       );
 
   Widget toAsset({

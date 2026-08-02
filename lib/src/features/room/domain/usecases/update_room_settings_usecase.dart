@@ -26,11 +26,9 @@ class UpdateRoomSettingsUseCase implements BaseUseCase<void, UpdateRoomSettingsP
   UpdateRoomSettingsUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(UpdateRoomSettingsParams params) async {
-    return await repository.updateRoomSettings(
+  Future<Either<Failure, void>> call(UpdateRoomSettingsParams params) async => repository.updateRoomSettings(
       roomCode: params.roomCode,
       rounds: params.rounds,
       categories: params.categories,
     );
-  }
 }

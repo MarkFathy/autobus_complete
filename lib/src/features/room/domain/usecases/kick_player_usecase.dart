@@ -23,10 +23,8 @@ class KickPlayerUseCase implements BaseUseCase<void, KickPlayerParams> {
   KickPlayerUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(KickPlayerParams params) async {
-    return await repository.kickPlayer(
+  Future<Either<Failure, void>> call(KickPlayerParams params) async => repository.kickPlayer(
       roomCode: params.roomCode,
       playerId: params.playerId,
     );
-  }
 }

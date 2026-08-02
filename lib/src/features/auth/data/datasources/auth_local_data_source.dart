@@ -5,7 +5,7 @@ abstract class AuthLocalDataSource {
   Future<String?> getToken();
   Future<void> clearToken();
 
-  Future<void> saveUserLoggedIn(bool value);
+  Future<void> saveUserLoggedIn({required bool value});
   Future<bool> isUserLoggedIn();
 }
 
@@ -22,9 +22,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<String?> getToken() async {
-    return await SecureStorage.read(_tokenKey);
-  }
+  Future<String?> getToken() async => SecureStorage.read(_tokenKey);
 
   @override
   Future<void> clearToken() async {
@@ -32,12 +30,10 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<void> saveUserLoggedIn(bool value) async {
+  Future<void> saveUserLoggedIn({required bool value}) async {
     await CacheStorage.write(_loggedInKey, value);
   }
 
   @override
-  Future<bool> isUserLoggedIn() async {
-    return CacheStorage.read(_loggedInKey) ?? false;
-  }
-}
+  Future<bool> isUserLoggedIn() async => (CacheStorage.read(_loggedInKey) as bool?) ?? false;
+}

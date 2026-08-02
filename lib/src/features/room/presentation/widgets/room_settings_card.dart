@@ -42,8 +42,7 @@ class _RoomSettingsCardState extends State<RoomSettingsCard> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
@@ -106,5 +105,4 @@ class _RoomSettingsCardState extends State<RoomSettingsCard> {
         ],
       ),
     );
-  }
 }

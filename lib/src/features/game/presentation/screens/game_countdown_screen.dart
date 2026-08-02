@@ -42,16 +42,16 @@ class _GameCountdownScreenState extends State<GameCountdownScreen>
   }
 
   void _startCountdown() {
-    _animationController.forward(from: 0.0);
+    unawaited(_animationController.forward(from: 0.0));
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsLeft > 1) {
         setState(() {
           _secondsLeft--;
         });
-        _animationController.forward(from: 0.0);
+        unawaited(_animationController.forward(from: 0.0));
       } else {
         _timer?.cancel();
-        Go.offNamed(NamedRoutes.gameBoard);
+        unawaited(Go.offNamed(NamedRoutes.gameBoard));
       }
     });
   }
@@ -64,14 +64,12 @@ class _GameCountdownScreenState extends State<GameCountdownScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return PopScope(
+  Widget build(BuildContext context) => PopScope(
       canPop: false,
       child: AppScaffold(
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Get Ready Text
               Text(
@@ -125,5 +123,4 @@ class _GameCountdownScreenState extends State<GameCountdownScreen>
         ),
       ),
     );
-  }
 }

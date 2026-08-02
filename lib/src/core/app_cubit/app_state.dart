@@ -13,12 +13,10 @@ class AppState extends Equatable {
   AppState copyWith({
     Locale? locale,
     ThemeMode? themeMode,
-  }) {
-    return AppState(
+  }) => AppState(
       locale: locale ?? this.locale,
       themeMode: themeMode ?? this.themeMode,
     );
-  }
 
   @override
   List<Object?> get props => [locale, themeMode];

@@ -1,7 +1,7 @@
 import 'package:autobus_complete/src/core/navigation/constants/imports_constants.dart';
 import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_imports.dart';
+import 'package:autobus_complete/src/core/navigation/transition/implementation/rotation/Option/rotation_animation_option.dart';
 import 'package:flutter/animation.dart';
-import '../Option/rotation_animation_option.dart';
 
 class RotationAnimator extends Animator<double>
     implements TweenBehaviour<double>, CurveBehaviour {
@@ -10,14 +10,12 @@ class RotationAnimator extends Animator<double>
   RotationAnimator(this.options);
 
   @override
-  CurvedAnimation setCurveAnimation(Animation<double> animation) {
-    return CurvedAnimation(
+  CurvedAnimation setCurveAnimation(Animation<double> animation) => CurvedAnimation(
       parent: animation,
       curve: options.curve ?? RouterConstants.transitionCurve,
       reverseCurve:
           options.reverseCurve ?? RouterConstants.reverseTransitionCurve,
     );
-  }
 
   @override
   Tween<double> setTween() {
@@ -26,7 +24,5 @@ class RotationAnimator extends Animator<double>
   }
 
   @override
-  Animation<double> animator(Animation<double> animation) {
-    return setTween().animate(setCurveAnimation(animation));
-  }
+  Animation<double> animator(Animation<double> animation) => setTween().animate(setCurveAnimation(animation));
 }

@@ -1,7 +1,7 @@
+import 'dart:async';
 
+import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/res/color_manager.dart';
 
 enum ButtonStatus { loading, idle }
 
@@ -32,13 +32,13 @@ class CustomAnimatedButton extends StatefulWidget {
   const CustomAnimatedButton({
     required this.height,
     required this.width,
+    required this.child,
+    required this.onTap,
     this.minWidth = 0,
     this.loader,
     this.animationDuration = const Duration(milliseconds: 500),
     this.curve = Curves.easeInOutCirc,
     this.reverseCurve = Curves.easeInOutCirc,
-    required this.child,
-    required this.onTap,
     this.color,
     this.colorBrightness,
     this.elevation,
@@ -60,8 +60,7 @@ class CustomAnimatedButton extends StatefulWidget {
   CustomButtonState createState() => CustomButtonState();
 }
 
-class CustomButtonState extends State<CustomAnimatedButton>
-    with TickerProviderStateMixin {
+class CustomButtonState extends State<CustomAnimatedButton> with TickerProviderStateMixin {
   double? loaderWidth;
 
   late Animation<double> _animation;
@@ -74,18 +73,12 @@ class CustomButtonState extends State<CustomAnimatedButton>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.animationDuration,
-    );
+    _controller = AnimationController(vsync: this, duration: widget.animationDuration);
 
-    _animation = Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: widget.curve,
-        reverseCurve: widget.reverseCurve,
-      ),
-    );
+    _animation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve, reverseCurve: widget.reverseCurve));
 
     _animation.addStatusListener((status) {
       if (status == AnimationStatus.dismissed) {
@@ -109,11 +102,11 @@ class CustomButtonState extends State<CustomAnimatedButton>
     setState(() {
       buttonStatus = ButtonStatus.loading;
     });
-    _controller.forward();
+    unawaited(_controller.forward());
   }
 
   void stopLoading() {
-    _controller.reverse();
+    unawaited(_controller.reverse());
   }
 
   double get minWidth => _minWidth;
@@ -127,14 +120,8 @@ class CustomButtonState extends State<CustomAnimatedButton>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return _buildButton();
-      },
-    );
-  }
+  Widget build(BuildContext context) =>
+      AnimatedBuilder(animation: _controller, builder: (context, child) => _buildButton());
 
   void doWhileLoading() async {
     try {
@@ -145,42 +132,30 @@ class CustomButtonState extends State<CustomAnimatedButton>
     }
   }
 
-  Widget _buildButton() {
-    return SizedBox(
+  Widget _buildButton() => SizedBox(
+    height: widget.height,
+    width: widget.width,
+    child: ButtonTheme(
       height: widget.height,
-      width: widget.width,
-      child: ButtonTheme(
-        height: widget.height,
-        shape: RoundedRectangleBorder(
-          side: widget.borderSide,
-          borderRadius: BorderRadius.circular(widget.borderRadius),
-        ),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            overlayColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            backgroundColor: widget.color,
-            elevation: widget.elevation,
-            padding: widget.padding,
-            disabledBackgroundColor:
-                widget.disabledColor ?? AppColors.whiteColor,
-            shape: RoundedRectangleBorder(
-              side: widget.borderSide,
-              borderRadius: BorderRadius.circular(widget.borderRadius),
-            ),
+      shape: RoundedRectangleBorder(side: widget.borderSide, borderRadius: BorderRadius.circular(widget.borderRadius)),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          overlayColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          backgroundColor: widget.color,
+          elevation: widget.elevation,
+          padding: widget.padding,
+          disabledBackgroundColor: widget.disabledColor ?? AppColors.whiteColor,
+          shape: RoundedRectangleBorder(
+            side: widget.borderSide,
+            borderRadius: BorderRadius.circular(widget.borderRadius),
           ),
-          clipBehavior: widget.clipBehavior,
-          focusNode: widget.focusNode,
-          onPressed: buttonStatus == ButtonStatus.idle
-              ? () {
-                  doWhileLoading();
-                }
-              : null,
-          child: buttonStatus == ButtonStatus.idle
-              ? widget.child
-              : widget.loader,
         ),
+        clipBehavior: widget.clipBehavior,
+        focusNode: widget.focusNode,
+        onPressed: buttonStatus == ButtonStatus.idle ? doWhileLoading : null,
+        child: buttonStatus == ButtonStatus.idle ? widget.child : widget.loader,
       ),
-    );
-  }
+    ),
+  );
 }

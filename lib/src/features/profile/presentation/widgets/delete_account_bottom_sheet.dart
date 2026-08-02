@@ -11,15 +11,13 @@ class DeleteAccountBottomSheet extends StatelessWidget {
   final VoidCallback onConfirmDelete;
 
   const DeleteAccountBottomSheet({
-    super.key,
-    required this.onConfirmDelete,
+    required this.onConfirmDelete, super.key,
   });
 
   static Future<void> show(
     BuildContext context, {
     required VoidCallback onConfirmDelete,
-  }) {
-    return showModalBottomSheet(
+  }) => showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(
@@ -29,15 +27,12 @@ class DeleteAccountBottomSheet extends StatelessWidget {
         onConfirmDelete: onConfirmDelete,
       ),
     );
-  }
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // ── Drag Handle Pill ─────────────────────────────────────
           Container(
@@ -84,7 +79,7 @@ class DeleteAccountBottomSheet extends StatelessWidget {
               // Cancel Button
               Expanded(
                 child: GestureDetector(
-                  onTap: () => Go.back(),
+                  onTap: Go.back,
                   child: Container(
                     height: 48.h,
                     decoration: BoxDecoration(
@@ -133,5 +128,4 @@ class DeleteAccountBottomSheet extends StatelessWidget {
         ],
       ),
     );
-  }
 }
