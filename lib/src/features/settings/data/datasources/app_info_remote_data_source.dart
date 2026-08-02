@@ -41,7 +41,6 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
 
   @override
   Future<AppInfoModel> getPrivacyPolicy() async {
-    // 1. Check local CacheStorage first for instantaneous load
     final cachedData = CacheStorage.read(_privacyKey, isDecoded: true);
     AppInfoModel? cachedModel;
     if (cachedData != null && cachedData is Map<String, dynamic>) {
@@ -50,52 +49,45 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
       } catch (_) {}
     }
 
-    // 2. Fetch fresh data from Firestore and update CacheStorage
     try {
+      // 1. Check doc ID 'privacy_policy'
       final doc = await firestore.collection('game_info').doc('privacy_policy').get();
-      if (doc.exists && doc.data() != null) {
+      if (doc.exists && doc.data() != null && doc.data()!['contentAr'] != null) {
         final model = AppInfoModel.fromJson(doc.data()!, doc.id);
         await CacheStorage.write(_privacyKey, {...doc.data()!, 'id': doc.id});
         return model;
       }
 
-      final query = await firestore.collection('game_info').where('type', isEqualTo: 'privacy_policy').limit(1).get();
-      if (query.docs.isNotEmpty) {
-        final model = AppInfoModel.fromJson(query.docs.first.data(), query.docs.first.id);
-        await CacheStorage.write(_privacyKey, {...query.docs.first.data(), 'id': query.docs.first.id});
+      // 2. Check doc ID 'privacy'
+      final docPrivacy = await firestore.collection('game_info').doc('privacy').get();
+      if (docPrivacy.exists && docPrivacy.data() != null && docPrivacy.data()!['contentAr'] != null) {
+        final model = AppInfoModel.fromJson(docPrivacy.data()!, docPrivacy.id);
+        await CacheStorage.write(_privacyKey, {...docPrivacy.data()!, 'id': docPrivacy.id});
         return model;
       }
 
-      final allDocs = await firestore.collection('game_info').limit(5).get();
+      // 3. Query type or name containing privacy
+      final allDocs = await firestore.collection('game_info').get();
       for (final d in allDocs.docs) {
-        if (d.id.contains('privacy') || (d.data()['type']?.toString().contains('privacy') ?? false)) {
+        final idLower = d.id.toLowerCase();
+        final typeLower = (d.data()['type']?.toString() ?? '').toLowerCase();
+        if (idLower.contains('privacy') || typeLower.contains('privacy')) {
           final model = AppInfoModel.fromJson(d.data(), d.id);
           await CacheStorage.write(_privacyKey, {...d.data(), 'id': d.id});
           return model;
         }
       }
-      if (allDocs.docs.isNotEmpty) {
-        final model = AppInfoModel.fromJson(allDocs.docs.first.data(), allDocs.docs.first.id);
-        await CacheStorage.write(_privacyKey, {...allDocs.docs.first.data(), 'id': allDocs.docs.first.id});
-        return model;
-      }
-    } catch (e) {
-      // If network fails but we have cached content, safely return cachedModel
-      if (cachedModel != null) {
-        return cachedModel;
-      }
+    } catch (_) {
+      if (cachedModel != null) return cachedModel;
       rethrow;
     }
 
-    if (cachedModel != null) {
-      return cachedModel;
-    }
+    if (cachedModel != null) return cachedModel;
     throw Exception('Privacy Policy document not found in game_info collection');
   }
 
   @override
   Future<AppInfoModel> getAboutGame() async {
-    // 1. Check local CacheStorage first for instantaneous load
     final cachedData = CacheStorage.read(_aboutKey, isDecoded: true);
     AppInfoModel? cachedModel;
     if (cachedData != null && cachedData is Map<String, dynamic>) {
@@ -104,50 +96,40 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
       } catch (_) {}
     }
 
-    // 2. Fetch fresh data from Firestore and update CacheStorage
     try {
+      // 1. Check doc ID 'about_game'
       final doc = await firestore.collection('game_info').doc('about_game').get();
-      if (doc.exists && doc.data() != null) {
+      if (doc.exists && doc.data() != null && doc.data()!['contentAr'] != null) {
         final model = AppInfoModel.fromJson(doc.data()!, doc.id);
         await CacheStorage.write(_aboutKey, {...doc.data()!, 'id': doc.id});
         return model;
       }
 
-      final query = await firestore.collection('game_info').where('type', isEqualTo: 'about_game').limit(1).get();
-      if (query.docs.isNotEmpty) {
-        final model = AppInfoModel.fromJson(query.docs.first.data(), query.docs.first.id);
-        await CacheStorage.write(_aboutKey, {...query.docs.first.data(), 'id': query.docs.first.id});
+      // 2. Check doc ID 'about'
+      final docAbout = await firestore.collection('game_info').doc('about').get();
+      if (docAbout.exists && docAbout.data() != null && docAbout.data()!['contentAr'] != null) {
+        final model = AppInfoModel.fromJson(docAbout.data()!, docAbout.id);
+        await CacheStorage.write(_aboutKey, {...docAbout.data()!, 'id': docAbout.id});
         return model;
       }
 
-      final allDocs = await firestore.collection('game_info').limit(5).get();
+      // 3. Query type or name containing about
+      final allDocs = await firestore.collection('game_info').get();
       for (final d in allDocs.docs) {
-        if (d.id.contains('about') || (d.data()['type']?.toString().contains('about') ?? false)) {
+        final idLower = d.id.toLowerCase();
+        final typeLower = (d.data()['type']?.toString() ?? '').toLowerCase();
+        if (idLower.contains('about') || typeLower.contains('about')) {
           final model = AppInfoModel.fromJson(d.data(), d.id);
           await CacheStorage.write(_aboutKey, {...d.data(), 'id': d.id});
           return model;
         }
       }
-      if (allDocs.docs.length > 1) {
-        final model = AppInfoModel.fromJson(allDocs.docs[1].data(), allDocs.docs[1].id);
-        await CacheStorage.write(_aboutKey, {...allDocs.docs[1].data(), 'id': allDocs.docs[1].id});
-        return model;
-      } else if (allDocs.docs.isNotEmpty) {
-        final model = AppInfoModel.fromJson(allDocs.docs.first.data(), allDocs.docs.first.id);
-        await CacheStorage.write(_aboutKey, {...allDocs.docs.first.data(), 'id': allDocs.docs.first.id});
-        return model;
-      }
-    } catch (e) {
-      // If network fails but we have cached content, safely return cachedModel
-      if (cachedModel != null) {
-        return cachedModel;
-      }
+    } catch (_) {
+      if (cachedModel != null) return cachedModel;
       rethrow;
     }
 
-    if (cachedModel != null) {
-      return cachedModel;
-    }
+    if (cachedModel != null) return cachedModel;
     throw Exception('About Game document not found in game_info collection');
   }
 }
