@@ -512,34 +512,39 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     final remainingPlayers =
         room.players.where((p) => p.id != user.uid).toList();
 
-    if (remainingPlayers.isEmpty || (room.status == 'finished' && room.hostId == user.uid)) {
+    if (remainingPlayers.isEmpty) {
       await docRef.delete();
-    } else if (room.hostId == user.uid) {
-      // Exiting user was the Host -> Transfer Host to the first remaining player!
-      final newHost = remainingPlayers.first;
-      final updatedPlayers = remainingPlayers.map((p) {
-        final isNewHost = p.id == newHost.id;
-        return RoomPlayerModel(
-          id: p.id,
-          name: p.name,
-          photoUrl: p.photoUrl,
-          isHost: isNewHost,
-          isReady: isNewHost || p.isReady,
-          score: p.score,
-        );
-      }).toList();
-
-      await docRef.update({
-        'hostId': newHost.id,
-        'players': updatedPlayers.map((p) => p.toJson()).toList(),
-      });
-    } else {
-      await docRef.update({
-        'players': remainingPlayers
-            .map((p) => RoomPlayerModel.fromEntity(p).toJson())
-            .toList(),
-      });
+      return;
     }
+
+    // ponytail: simplified host transfer & game finish logic when players leave
+    final isHostLeaving = room.hostId == user.uid;
+    final newHost = isHostLeaving ? remainingPlayers.first : null;
+    final updatedHostId = isHostLeaving ? newHost!.id : room.hostId;
+
+    final updatedPlayers = remainingPlayers.map((p) {
+      final isNewHost = p.id == updatedHostId;
+      return RoomPlayerModel(
+        id: p.id,
+        name: p.name,
+        photoUrl: p.photoUrl,
+        isHost: isNewHost,
+        isReady: isNewHost || p.isReady,
+        score: p.score,
+      );
+    }).toList();
+
+    final updateData = <String, dynamic>{
+      'hostId': updatedHostId,
+      'players': updatedPlayers.map((p) => p.toJson()).toList(),
+    };
+
+    if (remainingPlayers.length == 1 &&
+        (room.status == 'playing' || room.status == 'scoring')) {
+      updateData['status'] = 'finished';
+    }
+
+    await docRef.update(updateData);
   }
 
   @override

@@ -14,6 +14,7 @@ import 'package:autobus_complete/src/features/game/presentation/widgets/game_top
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_cubit.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_state.dart';
+import 'package:autobus_complete/src/features/room/presentation/widgets/leave_room_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -138,6 +139,18 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     unawaited(Go.offNamed(NamedRoutes.scoring));
   }
 
+  void _onLeaveRoomPressed() {
+    unawaited(
+      LeaveRoomBottomSheet.show(
+        context,
+        onLeaveConfirmed: () async {
+          await sl<RoomCubit>().leaveRoom();
+          unawaited(Go.offAllNamed(NamedRoutes.home));
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final activeCategories = _getActiveCategories();
@@ -146,26 +159,37 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       value: sl<RoomCubit>(),
       child: BlocListener<RoomCubit, RoomState>(
         listener: (context, state) {
+          if (state is RoomLeftSuccess || state is RoomKickedByHost) {
+            unawaited(Go.offAllNamed(NamedRoutes.home));
+            return;
+          }
           final room = sl<RoomCubit>().currentRoom;
           if (room?.status == 'scoring') {
             _submitCurrentAnswers();
             unawaited(Go.offNamed(NamedRoutes.scoring));
+          } else if (room?.status == 'finished') {
+            unawaited(Go.offNamed(NamedRoutes.leaderboard));
           }
         },
         child: PopScope(
           canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            _onLeaveRoomPressed();
+          },
           child: AppScaffold(
             body: SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 child: Column(
                   children: [
-                    // Top Bar with Rounds & Letter Shuffle (Synced from Firebase)
+                    // Top Bar with Rounds, Letter Shuffle & 3-Dots Leave Menu
                     GameTopBar(
                       currentRound: _getCurrentRound(),
                       totalRounds: _getTotalRounds(),
                       letter: _currentLetter,
                       isShuffling: _isShuffling,
+                      onLeaveRoom: _onLeaveRoomPressed,
                     ),
                     16.szH,
 

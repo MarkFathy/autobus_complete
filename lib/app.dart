@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
             initialRoute: NamedRoutes.splash.routeName,
             onGenerateRoute: RouterGenerator.getRoute,
             onUnknownRoute: (_) => RouterGenerator.undefineRoute(),
+            builder: (context, child) => MediaQuery.withNoTextScaling(child: child!),
           ),
         ),
       ),

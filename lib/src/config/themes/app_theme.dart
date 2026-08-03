@@ -4,11 +4,14 @@ import 'package:autobus_complete/src/config/res/font_manager.dart';
 import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   BuildContext context = Go.navigatorKey.currentContext!;
 
   static ThemeData get light => ThemeData(
+    fontFamily: GoogleFonts.cairo().fontFamily,
+    textTheme: GoogleFonts.cairoTextTheme(),
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColors.scaffoldBackgroundColor,
     primaryColor: AppColors.scaffoldBackgroundColor,

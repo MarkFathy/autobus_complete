@@ -25,44 +25,43 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) => AppBar(
-      automaticallyImplyLeading: false,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      surfaceTintColor: Colors.transparent,
-      backgroundColor: Colors.transparent,
-      title: title,
-      centerTitle: centerTitle,
-      leading:
-          leading ??
-          (showBackButton
-              ? IconButton(
+    automaticallyImplyLeading: false,
+    elevation: 0,
+    scrolledUnderElevation: 0,
+    surfaceTintColor: Colors.transparent,
+    backgroundColor: Colors.transparent,
+    title: title,
+    centerTitle: centerTitle,
+    leading:
+        leading ??
+        (showBackButton
+            ? Center(
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints.tightFor(width: 40.r, height: 40.r),
                   icon: Container(
-                    height: 35,
-                    width: 35,
+                    height: 40.r,
+                    width: 40.r,
+                    alignment: Alignment.center,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: context.colors.onSurface),
-
                       color: context.colors.primary,
                     ),
-
-                    child: Icon(
-                      Icons.arrow_back_ios_new_sharp,
-                      color: context.colors.onSurface,
-                      size: 26.sp,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 2.w),
+                      child: Icon(Icons.arrow_back_ios_new_rounded, color: context.colors.onSurface, size: 20.sp),
                     ),
                   ),
                   onPressed: onTap ?? Go.back,
-                )
-              : null),
-      actions: action != null ? [action!] : null,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(25),
-          bottomRight: Radius.circular(25),
-        ),
-      ),
-    );
+                ),
+              )
+            : null),
+    actions: action != null ? [action!] : null,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
+    ),
+  );
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
