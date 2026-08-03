@@ -23,6 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "aboutUs": MessageLookupByLibrary.simpleMessage("About Us"),
+    "adminReply": MessageLookupByLibrary.simpleMessage("Admin Response"),
     "animalCategory": MessageLookupByLibrary.simpleMessage("Animal"),
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("Bus Complete!"),
@@ -38,6 +39,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Choose Image Source",
     ),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
+    "complaint": MessageLookupByLibrary.simpleMessage("Complaint"),
+    "complaintDeletedSuccess": MessageLookupByLibrary.simpleMessage(
+      "Deleted successfully!",
+    ),
+    "complaintSentSuccess": MessageLookupByLibrary.simpleMessage(
+      "Submitted successfully!",
+    ),
+    "complaintsAndSuggestions": MessageLookupByLibrary.simpleMessage(
+      "Complaints & Suggestions",
+    ),
     "contactUs": MessageLookupByLibrary.simpleMessage("Contact Us"),
     "copyRoomCode": MessageLookupByLibrary.simpleMessage("Copy Room Code"),
     "countryCategory": MessageLookupByLibrary.simpleMessage("Country"),
@@ -45,6 +56,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete Account"),
     "deleteAccountConfirmation": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to delete your account? This action cannot be undone.",
+    ),
+    "deleteComplaint": MessageLookupByLibrary.simpleMessage(
+      "Delete Complaint/Suggestion",
+    ),
+    "deleteComplaintConfirmation": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to delete this complaint/suggestion?",
     ),
     "dontHaveAnAccount": MessageLookupByLibrary.simpleMessage(
       "Don\'t have an account?",
@@ -166,8 +183,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Logged out successfully!",
     ),
     "makeHost": MessageLookupByLibrary.simpleMessage("Make Host"),
+    "messageDetails": MessageLookupByLibrary.simpleMessage("Details"),
+    "messageHint": MessageLookupByLibrary.simpleMessage("Type details here..."),
     "nextRound": MessageLookupByLibrary.simpleMessage("Next Round"),
     "noAnswerGiven": MessageLookupByLibrary.simpleMessage("No answer given"),
+    "noComplaintsYet": MessageLookupByLibrary.simpleMessage(
+      "No complaints or suggestions yet",
+    ),
     "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
     "numberOfRounds": MessageLookupByLibrary.simpleMessage("Number of Rounds"),
     "objectCategory": MessageLookupByLibrary.simpleMessage("Object"),
@@ -195,6 +217,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordsDoNotMatch": MessageLookupByLibrary.simpleMessage(
       "Passwords do not match",
     ),
+    "pendingResponse": MessageLookupByLibrary.simpleMessage("Pending Response"),
     "plantCategory": MessageLookupByLibrary.simpleMessage("Plant"),
     "playAgain": MessageLookupByLibrary.simpleMessage("Play Again"),
     "players": MessageLookupByLibrary.simpleMessage("Players"),
@@ -212,6 +235,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Account created successfully!",
     ),
     "registerTitle": MessageLookupByLibrary.simpleMessage("Register"),
+    "replied": MessageLookupByLibrary.simpleMessage("Replied"),
     "roomCode": MessageLookupByLibrary.simpleMessage("Room Code"),
     "roomCodeCopied": MessageLookupByLibrary.simpleMessage(
       "Room code copied successfully!",
@@ -227,15 +251,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
       "Select at least 4 categories",
     ),
+    "send": MessageLookupByLibrary.simpleMessage("Send"),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("Send Reset Link"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "startGame": MessageLookupByLibrary.simpleMessage("Start Game"),
+    "subject": MessageLookupByLibrary.simpleMessage("Subject"),
+    "subjectHint": MessageLookupByLibrary.simpleMessage("Enter subject"),
     "submitAnswers": MessageLookupByLibrary.simpleMessage("Submit Answers"),
+    "submitComplaintOrSuggestion": MessageLookupByLibrary.simpleMessage(
+      "Submit Complaint or Suggestion",
+    ),
+    "suggestion": MessageLookupByLibrary.simpleMessage("Suggestion"),
     "totalScore": MessageLookupByLibrary.simpleMessage("Total Score"),
     "unReady": MessageLookupByLibrary.simpleMessage("Not Ready"),
     "waitingForOtherPlayers": MessageLookupByLibrary.simpleMessage(
       "Waiting for host to calculate scores",
     ),
+    "yesDelete": MessageLookupByLibrary.simpleMessage("Yes, Delete"),
     "yesDeleteAccount": MessageLookupByLibrary.simpleMessage(
       "Yes, Delete Account",
     ),

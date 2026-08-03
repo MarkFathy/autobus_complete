@@ -23,6 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "aboutUs": MessageLookupByLibrary.simpleMessage("عن اللعبة"),
+    "adminReply": MessageLookupByLibrary.simpleMessage("رد الإدارة"),
     "animalCategory": MessageLookupByLibrary.simpleMessage("حيوان"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("أتوبيس كومبليت!"),
@@ -38,6 +39,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "اختر مصدر الصورة",
     ),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
+    "complaint": MessageLookupByLibrary.simpleMessage("شكوى"),
+    "complaintDeletedSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم حذف الرسالة بنجاح!",
+    ),
+    "complaintSentSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال الشكوى/المقترح بنجاح!",
+    ),
+    "complaintsAndSuggestions": MessageLookupByLibrary.simpleMessage(
+      "شكاوى ومقترحات",
+    ),
     "contactUs": MessageLookupByLibrary.simpleMessage("تواصل معنا"),
     "copyRoomCode": MessageLookupByLibrary.simpleMessage("نسخ رمز الغرفة"),
     "countryCategory": MessageLookupByLibrary.simpleMessage("بلد"),
@@ -45,6 +56,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteAccount": MessageLookupByLibrary.simpleMessage("حذف الحساب"),
     "deleteAccountConfirmation": MessageLookupByLibrary.simpleMessage(
       "هل أنت تأكد من حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
+    ),
+    "deleteComplaint": MessageLookupByLibrary.simpleMessage(
+      "حذف الشكوى/المقترح",
+    ),
+    "deleteComplaintConfirmation": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من رغبتك في حذف هذه الشكوى/المقترح؟",
     ),
     "dontHaveAnAccount": MessageLookupByLibrary.simpleMessage("لا تمتلك حساب؟"),
     "editProfile": MessageLookupByLibrary.simpleMessage("تعديل الملف الشخصي"),
@@ -164,8 +181,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم تسجيل الخروج بنجاح!",
     ),
     "makeHost": MessageLookupByLibrary.simpleMessage("تعيين كمنشئ الغرفة"),
+    "messageDetails": MessageLookupByLibrary.simpleMessage("التفاصيل"),
+    "messageHint": MessageLookupByLibrary.simpleMessage(
+      "اكتب تفاصيل الشكوى أو المقترح هنا...",
+    ),
     "nextRound": MessageLookupByLibrary.simpleMessage("الجولة التالية"),
     "noAnswerGiven": MessageLookupByLibrary.simpleMessage("لم يتم إدخال إجابة"),
+    "noComplaintsYet": MessageLookupByLibrary.simpleMessage(
+      "لا توجد شكاوى أو مقترحات سابقة",
+    ),
     "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
     "numberOfRounds": MessageLookupByLibrary.simpleMessage("عدد الجولات"),
     "objectCategory": MessageLookupByLibrary.simpleMessage("جماد"),
@@ -193,6 +217,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordsDoNotMatch": MessageLookupByLibrary.simpleMessage(
       "كلمتا المرور غير متطابقتين",
     ),
+    "pendingResponse": MessageLookupByLibrary.simpleMessage("في انتظار الرد"),
     "plantCategory": MessageLookupByLibrary.simpleMessage("نبات"),
     "playAgain": MessageLookupByLibrary.simpleMessage("إعادة اللعب"),
     "players": MessageLookupByLibrary.simpleMessage("اللاعبون"),
@@ -210,6 +235,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم إنشاء الحساب بنجاح!",
     ),
     "registerTitle": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+    "replied": MessageLookupByLibrary.simpleMessage("تم الرد"),
     "roomCode": MessageLookupByLibrary.simpleMessage("رمز الغرفة"),
     "roomCodeCopied": MessageLookupByLibrary.simpleMessage(
       "تم نسخ رمز الغرفة بنجاح!",
@@ -225,15 +251,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
       "اختر 4 فئات على الأقل",
     ),
+    "send": MessageLookupByLibrary.simpleMessage("إرسال"),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("إرسال الرابط"),
     "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "startGame": MessageLookupByLibrary.simpleMessage("ابدأ اللعبة"),
+    "subject": MessageLookupByLibrary.simpleMessage("العنوان"),
+    "subjectHint": MessageLookupByLibrary.simpleMessage(
+      "أدخل عنوان الشكوى أو المقترح",
+    ),
     "submitAnswers": MessageLookupByLibrary.simpleMessage("إرسال الإجابات"),
+    "submitComplaintOrSuggestion": MessageLookupByLibrary.simpleMessage(
+      "تقديم شكوى أو مقترح",
+    ),
+    "suggestion": MessageLookupByLibrary.simpleMessage("مقترح"),
     "totalScore": MessageLookupByLibrary.simpleMessage("المجموع الكلي"),
     "unReady": MessageLookupByLibrary.simpleMessage("غير جاهز"),
     "waitingForOtherPlayers": MessageLookupByLibrary.simpleMessage(
       "في انتظار الهوست لحساب النقاط",
     ),
+    "yesDelete": MessageLookupByLibrary.simpleMessage("نعم، حذف"),
     "yesDeleteAccount": MessageLookupByLibrary.simpleMessage("نعم، حذف الحساب"),
     "yesLeave": MessageLookupByLibrary.simpleMessage("مغادرة"),
     "yesLogout": MessageLookupByLibrary.simpleMessage("نعم، تسجيل الخروج"),

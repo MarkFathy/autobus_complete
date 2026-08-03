@@ -5,6 +5,7 @@ import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:autobus_complete/src/core/navigation/page_router/imports_page_router_builder.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/register_screen.dart';
+import 'package:autobus_complete/src/features/complaints/presentation/screens/complaints_screen.dart';
 import 'package:autobus_complete/src/features/game/presentation/screens/game_board_screen.dart';
 import 'package:autobus_complete/src/features/game/presentation/screens/game_countdown_screen.dart';
 import 'package:autobus_complete/src/features/game/presentation/screens/leaderboard_screen.dart';
@@ -53,9 +54,8 @@ class RouterGenerator {
         settings: actualSettings,
         transition: transition,
         options: options,
-   
       ),
-        //Login Screen
+      //Login Screen
       NamedRoutes.login => _pageRouter.build(
         const LoginScreen(),
         settings: actualSettings,
@@ -72,7 +72,7 @@ class RouterGenerator {
       ),
 
       //Home Screen
-       NamedRoutes.home => _pageRouter.build(
+      NamedRoutes.home => _pageRouter.build(
         const HomeScreen(),
         settings: actualSettings,
         transition: transition,
@@ -149,11 +149,18 @@ class RouterGenerator {
         transition: transition,
         options: options,
       ),
+
+      //Complaints Screen
+      NamedRoutes.complaints => _pageRouter.build(
+        const ComplaintsScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
     };
   }
 
   static Route<dynamic> undefineRoute() => MaterialPageRoute(
-      builder: (_) =>
-          const Scaffold(body: Center(child: Text('No route exists here ! '))),
-    );
+    builder: (_) => const Scaffold(body: Center(child: Text('No route exists here ! '))),
+  );
 }

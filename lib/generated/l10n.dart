@@ -364,6 +364,151 @@ class S {
     );
   }
 
+  /// `Complaints & Suggestions`
+  String get complaintsAndSuggestions {
+    return Intl.message(
+      'Complaints & Suggestions',
+      name: 'complaintsAndSuggestions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit Complaint or Suggestion`
+  String get submitComplaintOrSuggestion {
+    return Intl.message(
+      'Submit Complaint or Suggestion',
+      name: 'submitComplaintOrSuggestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complaint`
+  String get complaint {
+    return Intl.message('Complaint', name: 'complaint', desc: '', args: []);
+  }
+
+  /// `Suggestion`
+  String get suggestion {
+    return Intl.message('Suggestion', name: 'suggestion', desc: '', args: []);
+  }
+
+  /// `Subject`
+  String get subject {
+    return Intl.message('Subject', name: 'subject', desc: '', args: []);
+  }
+
+  /// `Enter subject`
+  String get subjectHint {
+    return Intl.message(
+      'Enter subject',
+      name: 'subjectHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Details`
+  String get messageDetails {
+    return Intl.message('Details', name: 'messageDetails', desc: '', args: []);
+  }
+
+  /// `Type details here...`
+  String get messageHint {
+    return Intl.message(
+      'Type details here...',
+      name: 'messageHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send`
+  String get send {
+    return Intl.message('Send', name: 'send', desc: '', args: []);
+  }
+
+  /// `Pending Response`
+  String get pendingResponse {
+    return Intl.message(
+      'Pending Response',
+      name: 'pendingResponse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replied`
+  String get replied {
+    return Intl.message('Replied', name: 'replied', desc: '', args: []);
+  }
+
+  /// `Admin Response`
+  String get adminReply {
+    return Intl.message(
+      'Admin Response',
+      name: 'adminReply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No complaints or suggestions yet`
+  String get noComplaintsYet {
+    return Intl.message(
+      'No complaints or suggestions yet',
+      name: 'noComplaintsYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submitted successfully!`
+  String get complaintSentSuccess {
+    return Intl.message(
+      'Submitted successfully!',
+      name: 'complaintSentSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Complaint/Suggestion`
+  String get deleteComplaint {
+    return Intl.message(
+      'Delete Complaint/Suggestion',
+      name: 'deleteComplaint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this complaint/suggestion?`
+  String get deleteComplaintConfirmation {
+    return Intl.message(
+      'Are you sure you want to delete this complaint/suggestion?',
+      name: 'deleteComplaintConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, Delete`
+  String get yesDelete {
+    return Intl.message('Yes, Delete', name: 'yesDelete', desc: '', args: []);
+  }
+
+  /// `Deleted successfully!`
+  String get complaintDeletedSuccess {
+    return Intl.message(
+      'Deleted successfully!',
+      name: 'complaintDeletedSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Contact Us`
   String get contactUs {
     return Intl.message('Contact Us', name: 'contactUs', desc: '', args: []);

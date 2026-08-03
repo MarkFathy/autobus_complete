@@ -10,6 +10,13 @@ import 'package:autobus_complete/src/features/auth/domain/usecases/login_usecase
 import 'package:autobus_complete/src/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:autobus_complete/src/features/auth/domain/usecases/register_usecase.dart';
 import 'package:autobus_complete/src/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:autobus_complete/src/features/complaints/data/datasources/complaints_remote_data_source.dart';
+import 'package:autobus_complete/src/features/complaints/data/repositories/complaints_repository_impl.dart';
+import 'package:autobus_complete/src/features/complaints/domain/abstract_repository/complaints_repository.dart';
+import 'package:autobus_complete/src/features/complaints/domain/usecases/delete_complaint_usecase.dart';
+import 'package:autobus_complete/src/features/complaints/domain/usecases/get_complaints_stream_usecase.dart';
+import 'package:autobus_complete/src/features/complaints/domain/usecases/submit_complaint_usecase.dart';
+import 'package:autobus_complete/src/features/complaints/presentation/cubit/complaints_cubit.dart';
 import 'package:autobus_complete/src/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:autobus_complete/src/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:autobus_complete/src/features/profile/domain/repository/profile_repository.dart';
@@ -156,6 +163,20 @@ Future<void> setupServiceLocator() async {
     ..registerLazySingleton(() => GetAboutGameUseCase(sl()))
     ..registerLazySingleton<AppInfoRepository>(() => AppInfoRepositoryImpl(remoteDataSource: sl()))
     ..registerLazySingleton<AppInfoRemoteDataSource>(() => AppInfoRemoteDataSourceImpl(firestore: sl()))
+    // Complaints Feature
+    ..registerFactory(
+      () => ComplaintsCubit(
+        submitComplaintUseCase: sl(),
+        getComplaintsStreamUseCase: sl(),
+        deleteComplaintUseCase: sl(),
+        firebaseAuth: sl(),
+      ),
+    )
+    ..registerLazySingleton(() => SubmitComplaintUseCase(sl()))
+    ..registerLazySingleton(() => GetComplaintsStreamUseCase(sl()))
+    ..registerLazySingleton(() => DeleteComplaintUseCase(sl()))
+    ..registerLazySingleton<ComplaintsRepository>(() => ComplaintsRepositoryImpl(remoteDataSource: sl()))
+    ..registerLazySingleton<ComplaintsRemoteDataSource>(() => ComplaintsRemoteDataSourceImpl(firestore: sl()))
     // Services
     ..registerLazySingleton(NotificationService.new)
     // External

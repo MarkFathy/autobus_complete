@@ -199,6 +199,27 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                                 unawaited(Go.toNamed(NamedRoutes.privacyPolicy));
                               },
                             ),
+                            Divider(
+                              height: 1,
+                              thickness: 0.8,
+                              indent: 16.w,
+                              endIndent: 16.w,
+                              color: context.colors.outline.withValues(alpha: 0.2),
+                            ),
+
+                            // Complaints & Suggestions Tile
+                            SettingsTileItem(
+                              icon: Icons.rate_review_outlined,
+                              title: S.of(context).complaintsAndSuggestions,
+                              trailing: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 16.sp,
+                                color: context.colors.onSurfaceVariant,
+                              ),
+                              onTap: () {
+                                unawaited(Go.toNamed(NamedRoutes.complaints));
+                              },
+                            ),
                           ],
                         ),
                       ),
