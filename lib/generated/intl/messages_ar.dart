@@ -20,6 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ar';
 
+  static String m0(count) => "اختر ${count} فئات إضافية على الأقل";
+
+  static String m1(count) => "تم تحديد ${count} فئات";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "aboutUs": MessageLookupByLibrary.simpleMessage("عن اللعبة"),
@@ -31,6 +35,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "camera": MessageLookupByLibrary.simpleMessage("الكاميرا"),
     "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
     "categories": MessageLookupByLibrary.simpleMessage("الفئات"),
+    "categoriesRemaining": m0,
+    "categoriesSelected": m1,
     "changePassword": MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
     "changePasswordInfo": MessageLookupByLibrary.simpleMessage(
       "إرسال رابط إعادة تعيين كلمة المرور إلى البريد",
@@ -63,6 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteComplaintConfirmation": MessageLookupByLibrary.simpleMessage(
       "هل أنت متأكد من رغبتك في حذف هذه الشكوى/المقترح؟",
     ),
+    "deselectAll": MessageLookupByLibrary.simpleMessage("إلغاء الكل"),
     "dontHaveAnAccount": MessageLookupByLibrary.simpleMessage("لا تمتلك حساب؟"),
     "editProfile": MessageLookupByLibrary.simpleMessage("تعديل الملف الشخصي"),
     "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
@@ -248,6 +255,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rounds": MessageLookupByLibrary.simpleMessage("جولات"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("حفظ التغييرات"),
     "scoringTitle": MessageLookupByLibrary.simpleMessage("تقييم الجولة"),
+    "selectAll": MessageLookupByLibrary.simpleMessage("تحديد الكل"),
     "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
       "اختر 4 فئات على الأقل",
     ),

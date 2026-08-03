@@ -7,6 +7,7 @@ import 'package:autobus_complete/src/core/navigation/transition/implementation/f
 import 'package:autobus_complete/src/core/navigation/transition/implementation/fade/Option/fade_animation_option.dart';
 import 'package:autobus_complete/src/core/navigation/transition/implementation/scale/Animator/scale_animator.dart';
 import 'package:autobus_complete/src/core/navigation/transition/implementation/scale/Options/scale_animation_option.dart';
+import 'package:autobus_complete/src/core/services/notification_service.dart';
 import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
 import 'package:autobus_complete/src/core/widgets/app_scaffold.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_data_source.dart';
@@ -29,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
+    sl<NotificationService>().isSplashActive = true;
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
 
     _scaleAnimation = ScaleAnimator(const ScaleAnimationOptions(begin: 0.5)).animator(_controller);
@@ -41,10 +43,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       final isLoggedIn = await authLocalDataSource.isUserLoggedIn();
       final token = await authLocalDataSource.getToken();
 
+      sl<NotificationService>().isSplashActive = false;
+
       if (isLoggedIn && token != null && token.trim().isNotEmpty) {
-        unawaited(Go.offNamed(NamedRoutes.home));
+        await Go.offNamed(NamedRoutes.home);
+        sl<NotificationService>().consumePendingNotificationRoute();
       } else {
-        unawaited(Go.offNamed(NamedRoutes.login));
+        await Go.offNamed(NamedRoutes.login);
       }
     });
   }

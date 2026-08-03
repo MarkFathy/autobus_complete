@@ -1,4 +1,3 @@
-
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -10,17 +9,17 @@ class ForgetPasswordButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Align(
-      alignment: AlignmentDirectional.topEnd,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Text(
-          S.of(context).forgotPassword,
-          style: context.textTheme.titleMedium?.copyWith(
-            color: context.colors.onSurfaceVariant,
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-          ),
+    alignment: AlignmentDirectional.topEnd,
+    child: GestureDetector(
+      onTap: onTap,
+      child: Text(
+        S.of(context).forgotPassword,
+        style: context.textTheme.titleMedium?.copyWith(
+          color: context.colors.onSurfaceVariant,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
         ),
       ),
-    );
+    ),
+  );
 }

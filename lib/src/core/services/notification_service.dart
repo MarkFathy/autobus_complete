@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:autobus_complete/src/core/helpers/cache_service.dart';
+import 'package:autobus_complete/src/core/navigation/named_routes.dart';
+import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,7 +37,7 @@ void _showAwesomeNotificationFromRemoteMessage(RemoteMessage message) {
           channelKey: 'basic_channel',
           title: title,
           body: body,
-          payload: Map<String, String>.from(message.data),
+          payload: message.data.map((key, value) => MapEntry(key, value.toString())),
         ),
       ),
     );
@@ -88,13 +90,20 @@ class NotificationService {
     // App opened from notification (background → foreground)
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       debugPrint('Notification tapped (background): ${message.data}');
+      _handleNotificationClick(message.data);
     });
 
     // App opened from terminated state via notification
     final initialMessage = await _fcm.getInitialMessage();
     if (initialMessage != null) {
       debugPrint('App launched from notification: ${initialMessage.data}');
+      _handleNotificationClick(initialMessage.data);
     }
+
+    // Local / foreground notification tap listener
+    await AwesomeNotifications().setListeners(
+      onActionReceivedMethod: _onActionReceivedMethod,
+    );
 
     // 4. Subscribe to topic 'all' for dashboard broadcast notifications
     await _fcm.subscribeToTopic('all');
@@ -227,5 +236,40 @@ class NotificationService {
         payload: payload,
       ),
     );
+  }
+
+  bool isSplashActive = false;
+  NamedRoutes? _pendingNotificationRoute;
+
+  @pragma('vm:entry-point')
+  static Future<void> _onActionReceivedMethod(ReceivedAction receivedAction) async {
+    final payload = receivedAction.payload;
+    if (payload != null) {
+      _instance._handleNotificationClick(payload);
+    }
+  }
+
+  /// Handle notification tap action based on payload 'type'
+  void _handleNotificationClick(Map<String, dynamic> data) {
+    final type = data['type']?.toString();
+    debugPrint('[NotificationService] Notification tapped with type: $type, data: $data');
+
+    // ponytail: queue complaints route specifically for complaint_reply payload
+    if (type == 'complaint_reply' || type == 'complaint' || type == 'complaints') {
+      _pendingNotificationRoute = NamedRoutes.complaints;
+      consumePendingNotificationRoute();
+    }
+  }
+
+  /// Consume pending notification route after splash animation and auth check complete
+  void consumePendingNotificationRoute() {
+    final route = _pendingNotificationRoute;
+    if (route == null || isSplashActive) return;
+
+    final navState = Go.navigatorKey.currentState;
+    if (navState != null) {
+      _pendingNotificationRoute = null;
+      unawaited(Go.toNamed(route));
+    }
   }
 }

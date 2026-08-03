@@ -5,117 +5,86 @@ class RoomLobbyScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider.value(
-      value: sl<RoomCubit>(),
-      child: BlocConsumer<RoomCubit, RoomState>(
-        listener: (context, state) {
-          if (state is RoomCodeCopiedSuccess) {
-            CustomSnackBar.showSuccess(
-              context,
-              message: S.of(context).roomCodeCopied,
-            );
-          } else if (state is RoomGameStarted) {
-            unawaited(Go.offNamed(NamedRoutes.countdown));
-          } else if (state is RoomLeftSuccess) {
-            unawaited(Go.offAllNamed(NamedRoutes.home));
-          } else if (state is RoomKickedByHost) {
-            CustomSnackBar.showError(
-              context,
-              message: S.of(context).kickedByHost,
-            );
-            unawaited(Go.offAllNamed(NamedRoutes.home));
-          } else if (state is RoomError) {
-            CustomSnackBar.showError(context, message: state.message);
-          }
-        },
-        builder: (context, state) {
-          final roomCubit = context.read<RoomCubit>();
-          final room = roomCubit.currentRoom;
-          final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    value: sl<RoomCubit>(),
+    child: BlocConsumer<RoomCubit, RoomState>(
+      listener: (context, state) {
+        if (state is RoomCodeCopiedSuccess) {
+          CustomSnackBar.showSuccess(context, message: S.of(context).roomCodeCopied);
+        } else if (state is RoomGameStarted) {
+          unawaited(Go.offNamed(NamedRoutes.countdown));
+        } else if (state is RoomLeftSuccess) {
+          unawaited(Go.offAllNamed(NamedRoutes.home));
+        } else if (state is RoomKickedByHost) {
+          CustomSnackBar.showError(context, message: S.of(context).kickedByHost);
+          unawaited(Go.offAllNamed(NamedRoutes.home));
+        } else if (state is RoomError) {
+          CustomSnackBar.showError(context, message: state.message);
+        }
+      },
+      builder: (context, state) {
+        final roomCubit = context.read<RoomCubit>();
+        final room = roomCubit.currentRoom;
+        final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
-          if (room == null) {
-            return AppScaffold(
-              appBar: CustomAppBar(
-                title: Text(
-                  S.of(context).lobby,
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: context.colors.onSurface,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.sp,
-                  ),
+        if (room == null) {
+          return AppScaffold(
+            appBar: CustomAppBar(
+              title: Text(
+                S.of(context).lobby,
+                style: context.textTheme.titleMedium?.copyWith(
+                  color: context.colors.onSurface,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20.sp,
                 ),
               ),
-              body: Center(
-                child: CircularProgressIndicator(color: context.colors.primary),
-              ),
-            );
-          }
-
-          final isHost = room.hostId == currentUserId;
-          final playersList = room.players.map((p) => RoomPlayer(
-              id: p.id,
-              name: p.name,
-              photoUrl: p.photoUrl,
-              isHost: p.isHost,
-              isReady: p.isReady,
-            )).toList();
-
-          final selectedCategoryIds =
-              room.categories.map((c) => c.id).toSet();
-
-          final nonHostPlayers = room.players.where((p) => !p.isHost).toList();
-          final allOtherPlayersReady = nonHostPlayers.isNotEmpty &&
-              nonHostPlayers.every((p) => p.isReady);
-          final hasEnoughCategories = room.categories.length >= 4;
-          final canStartGame =
-              isHost && allOtherPlayersReady && hasEnoughCategories;
-
-          final currentPlayer = room.players.firstWhere(
-            (p) => p.id == currentUserId,
-            orElse: () => RoomPlayerModel(
-              id: currentUserId ?? '',
-              name: 'Player',
             ),
+            body: Center(child: CircularProgressIndicator(color: context.colors.primary)),
           );
+        }
 
-          return PopScope(
-            canPop: false,
-            onPopInvokedWithResult: (didPop, result) {
-              if (didPop) return;
-              unawaited(
-                LeaveRoomBottomSheet.show(
-                  context,
-                  onLeaveConfirmed: roomCubit.leaveRoom,
-                ),
-              );
-            },
-            child: AppScaffold(
-              appBar: CustomAppBar(
-                onTap: () {
-                  unawaited(
-                    LeaveRoomBottomSheet.show(
-                      context,
-                      onLeaveConfirmed: roomCubit.leaveRoom,
-                    ),
-                  );
-                },
-                title: Text(
-                  S.of(context).lobby,
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: context.colors.onSurface,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.sp,
-                  ),
+        final isHost = room.hostId == currentUserId;
+        final playersList = room.players
+            .map((p) => RoomPlayer(id: p.id, name: p.name, photoUrl: p.photoUrl, isHost: p.isHost, isReady: p.isReady))
+            .toList();
+
+        final selectedCategoryIds = room.categories.map((c) => c.id).toSet();
+
+        final nonHostPlayers = room.players.where((p) => !p.isHost).toList();
+        final allOtherPlayersReady = nonHostPlayers.isNotEmpty && nonHostPlayers.every((p) => p.isReady);
+        final hasEnoughCategories = room.categories.length >= 4;
+        final canStartGame = isHost && allOtherPlayersReady && hasEnoughCategories;
+
+        final currentPlayer = room.players.firstWhere(
+          (p) => p.id == currentUserId,
+          orElse: () => RoomPlayerModel(id: currentUserId ?? '', name: 'Player'),
+        );
+
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            unawaited(LeaveRoomBottomSheet.show(context, onLeaveConfirmed: roomCubit.leaveRoom));
+          },
+          child: AppScaffold(
+            appBar: CustomAppBar(
+              onTap: () {
+                unawaited(LeaveRoomBottomSheet.show(context, onLeaveConfirmed: roomCubit.leaveRoom));
+              },
+              title: Text(
+                S.of(context).lobby,
+                style: context.textTheme.titleMedium?.copyWith(
+                  color: context.colors.onSurface,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20.sp,
                 ),
               ),
+            ),
             bottomNavigationBar: Container(
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
               decoration: BoxDecoration(
                 color: context.colors.surfaceContainerHighest,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-                border: Border.all(
-                  color: context.colors.primary.withValues(alpha: 0.3),
-                  width: 1.w,
-                ),
+                border: Border.all(color: context.colors.primary.withValues(alpha: 0.3), width: 1.w),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -124,11 +93,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.info_outline_rounded,
-                          color: context.colors.primary,
-                          size: 16.sp,
-                        ),
+                        Icon(Icons.info_outline_rounded, color: context.colors.primary, size: 16.sp),
                         6.szW,
                         Flexible(
                           child: Text(
@@ -151,20 +116,18 @@ class RoomLobbyScreenBody extends StatelessWidget {
                   ],
 
                   if (isHost)
-                    CustomButton(
-                      text: S.of(context).startGame,
-                      onPressed: canStartGame
-                          ? roomCubit.startGame
-                          : null,
-                    )
+                    CustomButton(text: S.of(context).startGame, onPressed: canStartGame ? roomCubit.startGame : null)
                   else
                     CustomButton(
-                      text: currentPlayer.isReady
-                          ? S.of(context).unReady
-                          : S.of(context).ready,
-                      backgroundColor: currentPlayer.isReady
-                          ? context.colors.outline
-                          : context.colors.secondary,
+                      text: currentPlayer.isReady ? S.of(context).unReady : S.of(context).ready,
+                      backgroundColor: currentPlayer.isReady ? context.colors.outline : const Color(0xFF00E5FF),
+                      textStyle: currentPlayer.isReady
+                          ? null
+                          : context.textTheme.titleLarge?.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 19.sp,
+                            ),
                       onPressed: roomCubit.toggleReadyStatus,
                     ),
                 ],
@@ -184,7 +147,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
                   ),
                   20.szH,
 
-                  // ── Room Settings Card (Host Only) ──────────────────────
+                  // ── Room Settings Card (Host Only) vs Categories Overview (Non-Host) ──
                   if (isHost) ...[
                     RoomSettingsCard(
                       initialRounds: room.rounds,
@@ -194,33 +157,29 @@ class RoomLobbyScreenBody extends StatelessWidget {
                           : room.categories,
                       onRoundsChanged: (rounds) {
                         if (isHost) {
-                          unawaited(
-                            roomCubit.updateRoomSettings(
-                              rounds: rounds,
-                              categories: room.categories,
-                            ),
-                          );
+                          unawaited(roomCubit.updateRoomSettings(rounds: rounds, categories: room.categories));
                         }
                       },
                       onCategoriesChanged: (updatedCategoryIds) {
                         if (isHost) {
-                          final availableCategories =
-                              roomCubit.availableCategories.isNotEmpty
-                                  ? roomCubit.availableCategories
-                                  : room.categories;
+                          final availableCategories = roomCubit.availableCategories.isNotEmpty
+                              ? roomCubit.availableCategories
+                              : room.categories;
 
                           final selectedEntities = availableCategories
                               .where((c) => updatedCategoryIds.contains(c.id))
                               .toList();
 
-                          unawaited(
-                            roomCubit.updateRoomSettings(
-                              rounds: room.rounds,
-                              categories: selectedEntities,
-                            ),
-                          );
+                          unawaited(roomCubit.updateRoomSettings(rounds: room.rounds, categories: selectedEntities));
                         }
                       },
+                    ),
+                    20.szH,
+                  ] else ...[
+                    RoomCategoriesOverviewCard(
+                      // ponytail: Non-host categories preview
+                      rounds: room.rounds,
+                      categories: room.categories,
                     ),
                     20.szH,
                   ],
@@ -251,9 +210,9 @@ class RoomLobbyScreenBody extends StatelessWidget {
             ),
           ),
         );
-        },
-      ),
-    );
+      },
+    ),
+  );
 }
 
 class RoomCodeCard extends StatelessWidget {
@@ -261,67 +220,155 @@ class RoomCodeCard extends StatelessWidget {
   final String roomCode;
   final VoidCallback? onTap;
 
-  const RoomCodeCard({
-    required this.title, required this.roomCode, super.key,
-    this.onTap,
-  });
+  const RoomCodeCard({required this.title, required this.roomCode, super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-      onTap: onTap ??
-          () {
-            unawaited(Clipboard.setData(ClipboardData(text: roomCode)));
-            CustomSnackBar.showSuccess(
-              context,
-              message: S.of(context).roomCodeCopied,
-            );
-          },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
-        decoration: BoxDecoration(
-          color: context.colors.surfaceContainerHighest,
-          borderRadius: BorderRadius.all(Radius.circular(20.r)),
-          border: Border.all(
-            color: context.colors.primary.withValues(alpha: 0.3),
-            width: 1.w,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              title,
-              style: context.textTheme.titleMedium?.copyWith(
-                color: context.colors.onSurface,
-                fontWeight: FontWeight.bold,
-                fontSize: 20.sp,
-              ),
-              textAlign: TextAlign.center,
+    onTap:
+        onTap ??
+        () {
+          unawaited(Clipboard.setData(ClipboardData(text: roomCode)));
+          CustomSnackBar.showSuccess(context, message: S.of(context).roomCodeCopied);
+        },
+    child: Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
+      decoration: BoxDecoration(
+        color: context.colors.surfaceContainerHighest,
+        borderRadius: BorderRadius.all(Radius.circular(20.r)),
+        border: Border.all(color: context.colors.primary.withValues(alpha: 0.3), width: 1.w),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: context.textTheme.titleMedium?.copyWith(
+              color: context.colors.onSurface,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
             ),
-            10.szH,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  roomCode,
-                  style: context.textTheme.headlineMedium?.copyWith(
-                    color: context.colors.primary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 28.sp,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                10.szW,
-                Icon(
-                  Icons.copy_rounded,
-                  size: 24.sp,
+            textAlign: TextAlign.center,
+          ),
+          10.szH,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                roomCode,
+                style: context.textTheme.headlineMedium?.copyWith(
                   color: context.colors.primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 28.sp,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              10.szW,
+              Icon(Icons.copy_rounded, size: 24.sp, color: context.colors.primary),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class RoomCategoriesOverviewCard extends StatelessWidget {
+  final int rounds;
+  final List<RoomCategoryEntity> categories;
+
+  const RoomCategoriesOverviewCard({required this.rounds, required this.categories, super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: double.infinity,
+    padding: EdgeInsets.all(16.r),
+    decoration: BoxDecoration(
+      color: context.colors.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(20.r),
+      border: Border.all(color: context.colors.primary.withValues(alpha: 0.3), width: 1.w),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.tune_rounded, color: context.colors.primary, size: 22.sp),
+                8.szW,
+                Text(
+                  S.of(context).roomSettings,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.colors.onSurface,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18.sp,
+                  ),
                 ),
               ],
             ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: context.colors.primaryContainer,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Text(
+                '$rounds ${S.of(context).rounds}',
+                style: context.textTheme.labelMedium?.copyWith(
+                  color: context.colors.primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
           ],
         ),
-      ),
-    );
+        12.szH,
+        Divider(color: context.colors.outline.withValues(alpha: 0.2), height: 1),
+        14.szH,
+        Text(
+          S.of(context).categories,
+          style: context.textTheme.titleSmall?.copyWith(
+            color: context.colors.onSurface,
+            fontWeight: FontWeight.w600,
+            fontSize: 14.sp,
+          ),
+        ),
+        10.szH,
+        Wrap(
+          spacing: 8.w,
+          runSpacing: 8.h,
+          children: categories
+              .map(
+                (cat) => Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    color: context.colors.surface,
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: context.colors.primary.withValues(alpha: 0.3), width: 1.w),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(cat.icon, style: TextStyle(fontSize: 15.sp)),
+                      6.szW,
+                      Text(
+                        cat.getLocalizedName(context),
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          color: context.colors.primary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ],
+    ),
+  );
 }

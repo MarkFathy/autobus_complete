@@ -774,6 +774,41 @@ class S {
     );
   }
 
+  /// `Select All`
+  String get selectAll {
+    return Intl.message('Select All', name: 'selectAll', desc: '', args: []);
+  }
+
+  /// `Deselect All`
+  String get deselectAll {
+    return Intl.message(
+      'Deselect All',
+      name: 'deselectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} categories selected`
+  String categoriesSelected(Object count) {
+    return Intl.message(
+      '$count categories selected',
+      name: 'categoriesSelected',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Select at least {count} more category(ies)`
+  String categoriesRemaining(Object count) {
+    return Intl.message(
+      'Select at least $count more category(ies)',
+      name: 'categoriesRemaining',
+      desc: '',
+      args: [count],
+    );
+  }
+
   /// `Boy`
   String get boyCategory {
     return Intl.message('Boy', name: 'boyCategory', desc: '', args: []);

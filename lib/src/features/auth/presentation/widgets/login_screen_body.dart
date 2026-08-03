@@ -23,32 +23,29 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-      create: (_) => sl<AuthCubit>(),
-      child: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is AuthAuthenticated) {
-            CustomSnackBar.showSuccess(
-              context,
-              message: S.of(context).loginSuccess,
-            );
-            unawaited(Go.offAllNamed(NamedRoutes.home));
-          } else if (state is AuthPasswordResetSent) {
-            CustomSnackBar.showSuccess(context, message: state.message);
-          } else if (state is AuthError) {
-            _emailKey.currentState?.shake();
-            _passwordKey.currentState?.shake();
-            CustomSnackBar.showError(context, message: state.message);
-          }
-        },
-        builder: (context, state) {
-          final isLoading = state is AuthLoading;
-          return AppLoadingOverlay(
-            isLoading: isLoading,
-            child: AppScaffold(
-              safeTop: true,
-              body: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
+    create: (_) => sl<AuthCubit>(),
+    child: BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthAuthenticated) {
+          CustomSnackBar.showSuccess(context, message: S.of(context).loginSuccess);
+          unawaited(Go.offAllNamed(NamedRoutes.home));
+        } else if (state is AuthPasswordResetSent) {
+          CustomSnackBar.showSuccess(context, message: state.message);
+        } else if (state is AuthError) {
+          _emailKey.currentState?.shake();
+          _passwordKey.currentState?.shake();
+          CustomSnackBar.showError(context, message: state.message);
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is AuthLoading;
+        return AppLoadingOverlay(
+          isLoading: isLoading,
+          child: AppScaffold(
+            safeTop: true,
+            body: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
                 child: Column(
                   children: [
                     10.szH,
@@ -100,10 +97,7 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                     15.szH,
                     ForgetPasswordButton(
                       onTap: () {
-                        ForgetPasswordDialog.show(
-                          context,
-                          authCubit: context.read<AuthCubit>(),
-                        );
+                        ForgetPasswordDialog.show(context, authCubit: context.read<AuthCubit>());
                       },
                     ),
                     25.szH,
@@ -113,16 +107,10 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                           ? null
                           : () {
                               if (!_formKey.currentState!.validate()) {
-                                if (Validators.validateEmail(
-                                      _emailController.text,
-                                    ) !=
-                                    null) {
+                                if (Validators.validateEmail(_emailController.text) != null) {
                                   _emailKey.currentState?.shake();
                                 }
-                                if (Validators.validatePassword(
-                                      _passwordController.text,
-                                    ) !=
-                                    null) {
+                                if (Validators.validatePassword(_passwordController.text) != null) {
                                   _passwordKey.currentState?.shake();
                                 }
                                 return;
@@ -136,54 +124,45 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                               );
                             },
                     ),
-                  25.szH,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        S.of(context).dontHaveAnAccount,
-                        style: context.textTheme.titleMedium?.copyWith(
-                          color: context.colors.onSurfaceVariant,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      5.szW,
-                      GestureDetector(
-                        onTap: () {
-                          unawaited(
-                            Go.toNamed(
-                              NamedRoutes.register,
-                              transition: TransitionType.fade,
-                            ),
-                          );
-                        },
-                        child: Text(
-                          S.of(context).register,
+                    25.szH,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          S.of(context).dontHaveAnAccount,
                           style: context.textTheme.titleMedium?.copyWith(
-                            color: context.colors.primary,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w600,
+                            color: context.colors.onSurfaceVariant,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  18.szH,
-                   const OrDivider(),
-                  20.szH,
-                  GoogleLoginButton(
-                    onTap: isLoading
-                        ? () {}
-                        : () => context.read<AuthCubit>().loginWithGoogle(),
-                  ),
-                ],
+                        5.szW,
+                        GestureDetector(
+                          onTap: () {
+                            unawaited(Go.toNamed(NamedRoutes.register, transition: TransitionType.fade));
+                          },
+                          child: Text(
+                            S.of(context).register,
+                            style: context.textTheme.titleMedium?.copyWith(
+                              color: context.colors.primary,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    18.szH,
+                    const OrDivider(),
+                    20.szH,
+                    GoogleLoginButton(onTap: isLoading ? () {} : () => context.read<AuthCubit>().loginWithGoogle()),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-    },
-  ),
-);
+        );
+      },
+    ),
+  );
 }

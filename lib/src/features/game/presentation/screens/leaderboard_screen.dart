@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:autobus_complete/gen/assets.gen.dart';
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/extensions/context_extension.dart';

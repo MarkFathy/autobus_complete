@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
@@ -15,8 +16,7 @@ class GameCountdownScreen extends StatefulWidget {
   State<GameCountdownScreen> createState() => _GameCountdownScreenState();
 }
 
-class _GameCountdownScreenState extends State<GameCountdownScreen>
-    with SingleTickerProviderStateMixin {
+class _GameCountdownScreenState extends State<GameCountdownScreen> with SingleTickerProviderStateMixin {
   int _secondsLeft = 3;
   Timer? _timer;
   late AnimationController _animationController;
@@ -25,16 +25,11 @@ class _GameCountdownScreenState extends State<GameCountdownScreen>
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.2).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.elasticOut,
-      ),
-    );
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    _scaleAnimation = Tween<double>(
+      begin: 0.5,
+      end: 1.2,
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.elasticOut));
 
     _startCountdown();
   }
@@ -63,70 +58,63 @@ class _GameCountdownScreenState extends State<GameCountdownScreen>
 
   @override
   Widget build(BuildContext context) => PopScope(
-      canPop: false,
-      child: AppScaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Get Ready Text
-              Text(
-                S.of(context).getReady,
-                style: context.textTheme.titleLarge?.copyWith(
-                  color: context.colors.onSurface,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24.sp,
-                ),
+    canPop: false,
+    child: AppScaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Get Ready Text
+            Text(
+              S.of(context).getReady,
+              style: context.textTheme.titleLarge?.copyWith(
+                color: context.colors.onSurface,
+                fontWeight: FontWeight.w700,
+                fontSize: 24.sp,
               ),
-              12.szH,
+            ),
+            12.szH,
 
-              // Yellow Text: Game starts in
-              Text(
-                S.of(context).gameStartsIn,
-                style: context.textTheme.titleLarge?.copyWith(
-                  color: context.colors.primary,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20.sp,
-                ),
+            // Yellow Text: Game starts in
+            Text(
+              S.of(context).gameStartsIn,
+              style: context.textTheme.titleLarge?.copyWith(
+                color: context.colors.primary,
+                fontWeight: FontWeight.w700,
+                fontSize: 20.sp,
               ),
-              36.szH,
+            ),
+            36.szH,
 
-              // Animated Countdown Number
-              ScaleTransition(
-                scale: _scaleAnimation,
-                child: Container(
-                  width: 140.r,
-                  height: 140.r,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: context.colors.primaryContainer,
-                    border: Border.all(
+            // Animated Countdown Number
+            ScaleTransition(
+              scale: _scaleAnimation,
+              child: Container(
+                width: 140.r,
+                height: 140.r,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: context.colors.primaryContainer,
+                  border: Border.all(color: context.colors.primary, width: 3.w),
+                  boxShadow: [
+                    BoxShadow(color: context.colors.primary.withValues(alpha: 0.3), blurRadius: 20, spreadRadius: 4),
+                  ],
+                ),
+                child: Center(
+                  child: Text(
+                    '$_secondsLeft',
+                    style: context.textTheme.displayMedium?.copyWith(
+                      fontSize: 64.sp,
+                      fontWeight: FontWeight.w900,
                       color: context.colors.primary,
-                      width: 3.w,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.colors.primary.withValues(alpha: 0.3),
-                        blurRadius: 20,
-                        spreadRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      '$_secondsLeft',
-                      style: context.textTheme.displayMedium?.copyWith(
-                        fontSize: 64.sp,
-                        fontWeight: FontWeight.w900,
-                        color: context.colors.primary,
-                      ),
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
+    ),
+  );
 }

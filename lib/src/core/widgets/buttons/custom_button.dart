@@ -14,7 +14,9 @@ class CustomButton extends StatelessWidget {
   final bool isLoading;
 
   const CustomButton({
-    required this.text, required this.onPressed, super.key,
+    required this.text,
+    required this.onPressed,
+    super.key,
     this.width,
     this.height,
     this.borderRadius,
@@ -54,11 +56,13 @@ class CustomButton extends StatelessWidget {
                 )
               : Text(
                   text,
-                  style: textStyle ?? context.textTheme.titleLarge?.copyWith(
-                    color: context.colors.onPrimary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 22.sp,
-                  ),
+                  style:
+                      textStyle ??
+                      context.textTheme.titleLarge?.copyWith(
+                        color: context.colors.onPrimary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 19.sp,
+                      ),
                 ),
         ),
       ),

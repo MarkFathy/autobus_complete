@@ -20,6 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String m0(count) => "Select at least ${count} more category(ies)";
+
+  static String m1(count) => "${count} categories selected";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "aboutUs": MessageLookupByLibrary.simpleMessage("About Us"),
@@ -31,6 +35,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "camera": MessageLookupByLibrary.simpleMessage("Camera"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "categories": MessageLookupByLibrary.simpleMessage("Categories"),
+    "categoriesRemaining": m0,
+    "categoriesSelected": m1,
     "changePassword": MessageLookupByLibrary.simpleMessage("Change Password"),
     "changePasswordInfo": MessageLookupByLibrary.simpleMessage(
       "Send password reset link to email",
@@ -63,6 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteComplaintConfirmation": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to delete this complaint/suggestion?",
     ),
+    "deselectAll": MessageLookupByLibrary.simpleMessage("Deselect All"),
     "dontHaveAnAccount": MessageLookupByLibrary.simpleMessage(
       "Don\'t have an account?",
     ),
@@ -248,6 +255,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rounds": MessageLookupByLibrary.simpleMessage("Rounds"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save Changes"),
     "scoringTitle": MessageLookupByLibrary.simpleMessage("Round Evaluation"),
+    "selectAll": MessageLookupByLibrary.simpleMessage("Select All"),
     "selectAtLeast4Categories": MessageLookupByLibrary.simpleMessage(
       "Select at least 4 categories",
     ),

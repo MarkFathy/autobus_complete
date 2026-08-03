@@ -14,6 +14,11 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
   void initState() {
     super.initState();
     _isNotificationEnabled = sl<NotificationService>().isNotificationsEnabled();
+    // ponytail: silently fetch profile if not cached to avoid blocking UI
+    final profileCubit = sl<ProfileCubit>();
+    if (profileCubit.currentUser == null) {
+      unawaited(profileCubit.getUserProfile());
+    }
   }
 
   @override
@@ -21,7 +26,6 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final authCubit = sl<AuthCubit>();
     final profileCubit = sl<ProfileCubit>();
-    unawaited(profileCubit.getUserProfile());
 
     return MultiBlocProvider(
       providers: [
@@ -41,12 +45,9 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
         child: BlocSelector<AuthCubit, AuthState, bool>(
           bloc: authCubit,
           selector: (authState) => authState is AuthLoading,
-          builder: (context, isAuthLoading) => BlocSelector<ProfileCubit, ProfileState, bool>(
-            bloc: profileCubit,
-            selector: (profileState) => profileState is ProfileLoading,
-            builder: (context, isProfileLoading) => AppLoadingOverlay(
-              isLoading: isAuthLoading || isProfileLoading,
-              child: AppScaffold(
+          builder: (context, isAuthLoading) => AppLoadingOverlay(
+            isLoading: isAuthLoading,
+            child: AppScaffold(
                 safeTop: true,
                 appBar: CustomAppBar(
                   title: Text(
@@ -250,7 +251,6 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
-}

@@ -27,7 +27,7 @@ class GoogleLoginButton extends StatelessWidget {
             S.of(context).loginWithGoogle,
             style: context.textTheme.titleLarge?.copyWith(
               color: Colors.black,
-              fontSize: 22.sp,
+              fontSize: 19.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
