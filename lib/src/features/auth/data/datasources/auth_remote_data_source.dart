@@ -69,7 +69,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           ? existingData!['name'] as String
           : (refreshedUser.displayName ?? '');
 
-      final resolvedPhotoUrl = existingData?['photoUrl'] as String? ?? refreshedUser.photoURL;
+      final resolvedPhotoUrl = (existingData != null && existingData.containsKey('photoUrl'))
+          ? existingData['photoUrl'] as String?
+          : refreshedUser.photoURL;
 
       await firestore.collection('users').doc(refreshedUser.uid).set({
         'email': refreshedUser.email,
@@ -211,12 +213,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         ? existingData!['name'] as String
         : (user.displayName ?? '');
 
-    final resolvedPhotoUrl = existingData?['photoUrl'] as String? ?? user.photoURL;
+    final resolvedPhotoUrl = (existingData != null && existingData.containsKey('photoUrl'))
+        ? existingData['photoUrl'] as String?
+        : user.photoURL;
 
     await firestore.collection('users').doc(user.uid).set({
       'email': user.email,
       if (resolvedName.isNotEmpty) 'name': resolvedName,
-      'photoUrl': ?resolvedPhotoUrl,
+      'photoUrl': resolvedPhotoUrl,
       'emailVerified': user.emailVerified,
       'provider': 'google',
     }, SetOptions(merge: true));

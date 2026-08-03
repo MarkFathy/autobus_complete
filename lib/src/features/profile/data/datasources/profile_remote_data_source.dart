@@ -54,20 +54,19 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       if ((data['email'] as String?)?.isNotEmpty ?? false) {
         resolvedEmail = data['email'] as String;
       }
-      if (data['photoUrl'] != null) {
+      if (data.containsKey('photoUrl')) {
         resolvedPhotoUrl = data['photoUrl'] as String?;
       }
     }
 
     if (!docSnapshot.exists ||
         ((docSnapshot.data()?['name'] as String?)?.isEmpty ?? true) ||
-        docSnapshot.data()?['photoUrl'] == null) {
+        (docSnapshot.data() != null && !docSnapshot.data()!.containsKey('photoUrl'))) {
       await firestore.collection('users').doc(refreshedUser.uid).set({
         'email': resolvedEmail,
         if (resolvedName.isNotEmpty) 'name': resolvedName,
         'photoUrl': resolvedPhotoUrl,
         'emailVerified': refreshedUser.emailVerified,
-        'provider': 'email',
       }, SetOptions(merge: true));
     }
 
@@ -86,7 +85,12 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       throw Exception(S.current.firebaseUserNotFound);
     }
 
-    var photoUrl = user.photoURL;
+    final docSnapshot = await firestore.collection('users').doc(user.uid).get();
+    final existingData = docSnapshot.data();
+
+    var photoUrl = (existingData != null && existingData.containsKey('photoUrl'))
+        ? existingData['photoUrl'] as String?
+        : user.photoURL;
 
     if (removeImage) {
       photoUrl = null;
@@ -95,14 +99,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         final bytes = await imageFile.readAsBytes();
         final base64String = base64Encode(bytes);
         final generatedDataUrl = 'data:image/jpeg;base64,$base64String';
-        if (generatedDataUrl.length < 800000) {
+        if (generatedDataUrl.length < 1500000) {
           photoUrl = generatedDataUrl;
-        } else {
-          photoUrl = user.photoURL;
         }
-      } on Object catch (_) {
-        photoUrl = user.photoURL;
-      }
+      } on Object catch (_) {}
     }
 
     try {
@@ -118,7 +118,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       } on Object catch (_) {}
     }
 
-    final updatedData = {'name': name, 'email': email, 'photoUrl': photoUrl};
+    final updatedData = <String, dynamic>{'name': name, 'email': email, 'photoUrl': photoUrl};
 
     await firestore.collection('users').doc(user.uid).set(updatedData, SetOptions(merge: true));
 

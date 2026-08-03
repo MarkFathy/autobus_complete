@@ -9,31 +9,35 @@ class SettingsScreenBody extends StatefulWidget {
 
 class _SettingsScreenBodyState extends State<SettingsScreenBody> {
   late bool _isNotificationEnabled;
+  late final ProfileCubit _profileCubit;
+  late final AuthCubit _authCubit;
 
   @override
   void initState() {
     super.initState();
     _isNotificationEnabled = sl<NotificationService>().isNotificationsEnabled();
-    // ponytail: silently fetch profile if not cached to avoid blocking UI
-    final profileCubit = sl<ProfileCubit>();
-    if (profileCubit.currentUser == null) {
-      unawaited(profileCubit.getUserProfile());
-    }
+    _authCubit = sl<AuthCubit>();
+    _profileCubit = sl<ProfileCubit>();
+    unawaited(_profileCubit.getUserProfile());
+  }
+
+  @override
+  void dispose() {
+    unawaited(_profileCubit.close());
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final authCubit = sl<AuthCubit>();
-    final profileCubit = sl<ProfileCubit>();
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: authCubit),
-        BlocProvider.value(value: profileCubit),
+        BlocProvider.value(value: _authCubit),
+        BlocProvider.value(value: _profileCubit),
       ],
       child: BlocListener<AuthCubit, AuthState>(
-        bloc: authCubit,
+        bloc: _authCubit,
         listener: (context, authState) {
           if (authState is AuthUnauthenticated) {
             CustomSnackBar.showSuccess(context, message: S.of(context).logoutSuccess);
@@ -43,7 +47,7 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
           }
         },
         child: BlocSelector<AuthCubit, AuthState, bool>(
-          bloc: authCubit,
+          bloc: _authCubit,
           selector: (authState) => authState is AuthLoading,
           builder: (context, isAuthLoading) => AppLoadingOverlay(
             isLoading: isAuthLoading,
@@ -64,9 +68,9 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                     children: [
                       // ── User Header Row ──────────────────────────────
                       BlocSelector<ProfileCubit, ProfileState, (String, String, String?)>(
-                        bloc: profileCubit,
+                        bloc: _profileCubit,
                         selector: (state) {
-                          final currentUser = profileCubit.currentUser;
+                          final currentUser = _profileCubit.currentUser;
                           final firebaseUser = FirebaseAuth.instance.currentUser;
                           final userName = (currentUser?.name != null && currentUser!.name.trim().isNotEmpty)
                               ? currentUser.name
@@ -74,7 +78,9 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                           final userEmail = (currentUser?.email != null && currentUser!.email.trim().isNotEmpty)
                               ? currentUser.email
                               : (firebaseUser?.email ?? '');
-                          final userPhoto = currentUser?.photoUrl ?? firebaseUser?.photoURL;
+                          final userPhoto = currentUser != null
+                              ? currentUser.photoUrl
+                              : firebaseUser?.photoURL;
                           return (userName, userEmail, userPhoto);
                         },
                         builder: (context, userTuple) => SettingsUserHeader(
@@ -84,7 +90,7 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                           onTap: () async {
                             await Go.toNamed(NamedRoutes.profile, transition: TransitionType.slide);
                             if (context.mounted) {
-                              unawaited(profileCubit.getUserProfile());
+                              unawaited(_profileCubit.getUserProfile());
                             }
                           },
                         ),
@@ -239,7 +245,7 @@ class _SettingsScreenBodyState extends State<SettingsScreenBody> {
                           iconColor: context.colors.secondary,
                           textColor: context.colors.secondary,
                           onTap: () {
-                            unawaited(LogoutConfirmationBottomSheet.show(context, onConfirmLogout: authCubit.logout));
+                            unawaited(LogoutConfirmationBottomSheet.show(context, onConfirmLogout: _authCubit.logout));
                           },
                         ),
                       ),

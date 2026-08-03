@@ -118,7 +118,9 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     final userName = (userData?['name'] as String?)?.isNotEmpty ?? false
         ? userData!['name'] as String
         : (user.displayName ?? 'Host');
-    final userPhotoUrl = userData?['photoUrl'] as String? ?? user.photoURL;
+    final userPhotoUrl = (userData != null && userData.containsKey('photoUrl'))
+        ? userData['photoUrl'] as String?
+        : user.photoURL;
 
     final categoryModels = categories
         .map(RoomCategoryModel.fromEntity)
@@ -175,7 +177,9 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     final userName = (userData?['name'] as String?)?.isNotEmpty ?? false
         ? userData!['name'] as String
         : (user.displayName ?? 'Player');
-    final userPhotoUrl = userData?['photoUrl'] as String? ?? user.photoURL;
+    final userPhotoUrl = (userData != null && userData.containsKey('photoUrl'))
+        ? userData['photoUrl'] as String?
+        : user.photoURL;
 
     final existingPlayerIndex = room.players.indexWhere((p) => p.id == user.uid);
     if (existingPlayerIndex != -1) {

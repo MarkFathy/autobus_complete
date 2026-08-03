@@ -43,9 +43,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     final picker = ImagePicker();
     final picked = await picker.pickImage(
       source: source,
-      maxWidth: 512,
-      maxHeight: 512,
-      imageQuality: 60,
+      maxWidth: 400,
+      maxHeight: 400,
+      imageQuality: 50,
     );
     if (picked != null) {
       selectedImage = File(picked.path);

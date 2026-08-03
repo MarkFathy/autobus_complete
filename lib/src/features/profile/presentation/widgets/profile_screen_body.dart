@@ -65,6 +65,11 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
           final cubit = context.read<ProfileCubit>();
           final isLoading = state is ProfileLoading;
           final currentUser = cubit.currentUser;
+          final firebaseUser = FirebaseAuth.instance.currentUser;
+          final isGoogleUser = firebaseUser?.providerData.any(
+                (info) => info.providerId.contains('google'),
+              ) ??
+              false;
 
           return AppLoadingOverlay(
             isLoading: isLoading,
@@ -118,15 +123,25 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                       DefaultTextField(
                         controller: _emailController,
                         hint: S.of(context).email,
+                        readOnly: isGoogleUser,
                         prefixIcon: Icon(
                           Icons.email_outlined,
                           color: context.colors.onSurfaceVariant,
                         ),
+                        suffixIcon: isGoogleUser
+                            ? Icon(
+                                Icons.lock_outline_rounded,
+                                color: context.colors.onSurfaceVariant,
+                                size: 20.sp,
+                              )
+                            : null,
                         inputType: TextInputType.emailAddress,
-                        validator: (value) => Validators.validateEmail(
-                          value,
-                          emptyMessage: S.of(context).pleaseFillAllFields,
-                        ),
+                        validator: (value) => isGoogleUser
+                            ? null
+                            : Validators.validateEmail(
+                                value,
+                                emptyMessage: S.of(context).pleaseFillAllFields,
+                              ),
                       ),
                       24.szH,
 

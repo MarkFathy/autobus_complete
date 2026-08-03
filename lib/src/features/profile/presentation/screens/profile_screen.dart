@@ -17,6 +17,7 @@ import 'package:autobus_complete/src/core/widgets/user_avatar_picker.dart';
 import 'package:autobus_complete/src/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:autobus_complete/src/features/profile/presentation/cubit/profile_state.dart';
 import 'package:autobus_complete/src/features/profile/presentation/widgets/delete_account_bottom_sheet.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
