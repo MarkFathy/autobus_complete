@@ -104,6 +104,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Network error. Please check your internet connection"),
         "firebaseTooManyRequests": MessageLookupByLibrary.simpleMessage(
             "Too many failed attempts. Please try again later"),
+        "accountDeletedMessage": MessageLookupByLibrary.simpleMessage(
+            "This user account has been deleted"),
         "firebaseUserDisabled": MessageLookupByLibrary.simpleMessage(
             "This user account has been disabled"),
         "firebaseUserNotFound": MessageLookupByLibrary.simpleMessage(

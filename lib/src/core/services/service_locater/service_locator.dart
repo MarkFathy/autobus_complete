@@ -1,5 +1,6 @@
 import 'package:autobus_complete/src/core/app_cubit/app_cubit.dart';
 import 'package:autobus_complete/src/core/services/notification_service.dart';
+import 'package:autobus_complete/src/core/services/user_status_service.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:autobus_complete/src/features/auth/data/repositories/auth_repository_impl.dart';
@@ -178,6 +179,13 @@ Future<void> setupServiceLocator() async {
     ..registerLazySingleton<ComplaintsRemoteDataSource>(() => ComplaintsRemoteDataSourceImpl(firestore: sl()))
     // Services
     ..registerLazySingleton(NotificationService.new)
+    ..registerLazySingleton(
+      () => UserStatusService(
+        firebaseAuth: sl(),
+        firestore: sl(),
+        authLocalDataSource: sl(),
+      ),
+    )
     // External
     ..registerLazySingleton(() => FirebaseAuth.instance)
     ..registerLazySingleton(() => FirebaseFirestore.instance)

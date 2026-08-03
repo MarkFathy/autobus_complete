@@ -37,10 +37,53 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     if (user == null) {
       throw Exception(S.current.firebaseUserNotFound);
     }
-    await user.reload();
+    try {
+      await user.reload();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-disabled') {
+        await SessionManager.clearSession();
+        await authLocalDataSource.clearToken();
+        await authLocalDataSource.saveUserLoggedIn(value: false);
+        await firebaseAuth.signOut();
+        throw Exception(S.current.firebaseUserDisabled);
+      } else if (e.code == 'user-not-found') {
+        await SessionManager.clearSession();
+        await authLocalDataSource.clearToken();
+        await authLocalDataSource.saveUserLoggedIn(value: false);
+        await firebaseAuth.signOut();
+        throw Exception(S.current.accountDeletedMessage);
+      }
+    } on Object catch (_) {}
+
     final refreshedUser = firebaseAuth.currentUser ?? user;
 
     final docSnapshot = await firestore.collection('users').doc(refreshedUser.uid).get();
+
+    if (docSnapshot.exists && docSnapshot.data() != null) {
+      final data = docSnapshot.data()!;
+      if (data['isDeleted'] == true) {
+        await SessionManager.clearSession();
+        await authLocalDataSource.clearToken();
+        await authLocalDataSource.saveUserLoggedIn(value: false);
+        await firebaseAuth.signOut();
+        throw Exception(S.current.accountDeletedMessage);
+      } else if (data['isBanned'] == true ||
+          data['status'] == 'banned' ||
+          data['status'] == 'disabled' ||
+          data['disabled'] == true) {
+        await SessionManager.clearSession();
+        await authLocalDataSource.clearToken();
+        await authLocalDataSource.saveUserLoggedIn(value: false);
+        await firebaseAuth.signOut();
+        throw Exception(S.current.firebaseUserDisabled);
+      }
+    } else if (!docSnapshot.exists) {
+      await SessionManager.clearSession();
+      await authLocalDataSource.clearToken();
+      await authLocalDataSource.saveUserLoggedIn(value: false);
+      await firebaseAuth.signOut();
+      throw Exception(S.current.accountDeletedMessage);
+    }
 
     var resolvedName = refreshedUser.displayName ?? '';
     var resolvedEmail = refreshedUser.email ?? '';

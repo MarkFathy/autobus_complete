@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:autobus_complete/gen/assets.gen.dart';
+import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/navigation/named_routes.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:autobus_complete/src/core/navigation/transition/implementation/fade/Animator/fade_animator.dart';
@@ -9,8 +10,12 @@ import 'package:autobus_complete/src/core/navigation/transition/implementation/s
 import 'package:autobus_complete/src/core/navigation/transition/implementation/scale/Options/scale_animation_option.dart';
 import 'package:autobus_complete/src/core/services/notification_service.dart';
 import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
+import 'package:autobus_complete/src/core/services/session_manager.dart';
 import 'package:autobus_complete/src/core/widgets/app_scaffold.dart';
+import 'package:autobus_complete/src/core/widgets/custom_snack_bar.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_data_source.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -46,8 +51,68 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       sl<NotificationService>().isSplashActive = false;
 
       if (isLoggedIn && token != null && token.trim().isNotEmpty) {
-        await Go.offNamed(NamedRoutes.home);
-        sl<NotificationService>().consumePendingNotificationRoute();
+        final user = FirebaseAuth.instance.currentUser;
+        var isAccountValid = true;
+        String? errorMessage;
+
+        if (user != null) {
+          try {
+            await user.reload();
+          } on FirebaseAuthException catch (e) {
+            if (e.code == 'user-disabled') {
+              isAccountValid = false;
+              errorMessage = S.current.firebaseUserDisabled;
+            } else if (e.code == 'user-not-found') {
+              isAccountValid = false;
+              errorMessage = S.current.accountDeletedMessage;
+            }
+          } on Object catch (_) {}
+
+          if (isAccountValid) {
+            try {
+              final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+              if (userDoc.exists && userDoc.data() != null) {
+                final data = userDoc.data()!;
+                if (data['isDeleted'] == true) {
+                  isAccountValid = false;
+                  errorMessage = S.current.accountDeletedMessage;
+                } else if (data['isBanned'] == true ||
+                    data['status'] == 'banned' ||
+                    data['status'] == 'disabled' ||
+                    data['disabled'] == true) {
+                  isAccountValid = false;
+                  errorMessage = S.current.firebaseUserDisabled;
+                }
+              } else if (!userDoc.exists) {
+                isAccountValid = false;
+                errorMessage = S.current.accountDeletedMessage;
+              }
+            } on Object catch (_) {}
+          }
+        } else {
+          isAccountValid = false;
+          errorMessage = S.current.accountDeletedMessage;
+        }
+
+        if (isAccountValid) {
+          await Go.offNamed(NamedRoutes.home);
+          sl<NotificationService>().consumePendingNotificationRoute();
+        } else {
+          await authLocalDataSource.clearToken();
+          await authLocalDataSource.saveUserLoggedIn(value: false);
+          await SessionManager.clearSession();
+          try {
+            await FirebaseAuth.instance.signOut();
+          } on Object catch (_) {}
+
+          await Go.offNamed(NamedRoutes.login);
+          if (mounted) {
+            CustomSnackBar.showError(
+              context,
+              message: errorMessage ?? S.of(context).firebaseUserDisabled,
+            );
+          }
+        }
       } else {
         await Go.offNamed(NamedRoutes.login);
       }
