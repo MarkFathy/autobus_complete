@@ -52,7 +52,6 @@ import 'package:autobus_complete/src/features/settings/domain/usecases/get_priva
 import 'package:autobus_complete/src/features/settings/presentation/cubit/app_info_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -92,7 +91,6 @@ Future<void> setupServiceLocator() async {
         googleSignIn: sl(),
         authLocalDataSource: sl(),
         firestore: sl(),
-        storage: sl(),
       ),
     )
     // Features - Profile
@@ -114,7 +112,7 @@ Future<void> setupServiceLocator() async {
     ..registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(remoteDataSource: sl()))
     // Data sources
     ..registerLazySingleton<ProfileRemoteDataSource>(
-      () => ProfileRemoteDataSourceImpl(firebaseAuth: sl(), firestore: sl(), storage: sl(), authLocalDataSource: sl()),
+      () => ProfileRemoteDataSourceImpl(firebaseAuth: sl(), firestore: sl(), authLocalDataSource: sl()),
     )
     // Features - Room
     // Cubit
@@ -182,7 +180,6 @@ Future<void> setupServiceLocator() async {
     // External
     ..registerLazySingleton(() => FirebaseAuth.instance)
     ..registerLazySingleton(() => FirebaseFirestore.instance)
-    ..registerLazySingleton(() => FirebaseStorage.instance)
     ..registerLazySingleton(() => GoogleSignIn.instance)
     ..registerLazySingleton(() => const FlutterSecureStorage());
 }

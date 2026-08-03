@@ -9,7 +9,6 @@ import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_d
 import 'package:autobus_complete/src/features/auth/data/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthRemoteDataSource {
@@ -25,7 +24,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final GoogleSignIn googleSignIn;
   final AuthLocalDataSource authLocalDataSource;
   final FirebaseFirestore firestore;
-  final FirebaseStorage storage;
 
   bool _googleSignInInitialized = false;
 
@@ -34,7 +32,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required this.googleSignIn,
     required this.authLocalDataSource,
     required this.firestore,
-    required this.storage,
   });
 
   Future<void> _ensureGoogleSignInInitialized() async {
@@ -77,7 +74,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       await firestore.collection('users').doc(refreshedUser.uid).set({
         'email': refreshedUser.email,
         if (resolvedName.isNotEmpty) 'name': resolvedName,
-        'photoUrl': ?resolvedPhotoUrl,
+        'photoUrl': resolvedPhotoUrl,
         'emailVerified': refreshedUser.emailVerified,
         'provider': 'email',
       }, SetOptions(merge: true));
@@ -111,23 +108,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (userCredential.user != null) {
         final user = userCredential.user!;
 
-        // Upload profile image if provided (with safe fallback)
+        // Base64 encode image if provided without Firebase Storage
         String? photoUrl;
         if (imageFile != null) {
           try {
-            final ref = storage.ref().child('user_photos/${user.uid}.jpg');
-            await ref.putFile(imageFile);
-            photoUrl = await ref.getDownloadURL();
-          } on Object catch (_) {
-            try {
-              final bytes = await imageFile.readAsBytes();
-              final base64String = base64Encode(bytes);
-              final generatedDataUrl = 'data:image/jpeg;base64,$base64String';
-              if (generatedDataUrl.length < 800000) {
-                photoUrl = generatedDataUrl;
-              }
-            } on Object catch (_) {}
-          }
+            final bytes = await imageFile.readAsBytes();
+            final base64String = base64Encode(bytes);
+            final generatedDataUrl = 'data:image/jpeg;base64,$base64String';
+            if (generatedDataUrl.length < 800000) {
+              photoUrl = generatedDataUrl;
+            }
+          } on Object catch (_) {}
         }
 
         // Save user data to Firestore IMMEDIATELY!

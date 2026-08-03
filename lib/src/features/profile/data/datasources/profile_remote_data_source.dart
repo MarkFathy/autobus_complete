@@ -7,7 +7,6 @@ import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_d
 import 'package:autobus_complete/src/features/profile/data/models/profile_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 abstract class ProfileRemoteDataSource {
   Future<ProfileModel> getUserProfile();
@@ -24,13 +23,11 @@ abstract class ProfileRemoteDataSource {
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final FirebaseAuth firebaseAuth;
   final FirebaseFirestore firestore;
-  final FirebaseStorage storage;
   final AuthLocalDataSource authLocalDataSource;
 
   ProfileRemoteDataSourceImpl({
     required this.firebaseAuth,
     required this.firestore,
-    required this.storage,
     required this.authLocalDataSource,
   });
 
@@ -68,7 +65,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       await firestore.collection('users').doc(refreshedUser.uid).set({
         'email': resolvedEmail,
         if (resolvedName.isNotEmpty) 'name': resolvedName,
-        'photoUrl': ?resolvedPhotoUrl,
+        'photoUrl': resolvedPhotoUrl,
         'emailVerified': refreshedUser.emailVerified,
         'provider': 'email',
       }, SetOptions(merge: true));
@@ -93,28 +90,18 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
     if (removeImage) {
       photoUrl = null;
-      try {
-        final ref = storage.ref().child('user_photos/${user.uid}.jpg');
-        await ref.delete();
-      } on Object catch (_) {}
     } else if (imageFile != null) {
       try {
-        final ref = storage.ref().child('user_photos/${user.uid}.jpg');
-        await ref.putFile(imageFile);
-        photoUrl = await ref.getDownloadURL();
-      } on Object catch (_) {
-        try {
-          final bytes = await imageFile.readAsBytes();
-          final base64String = base64Encode(bytes);
-          final generatedDataUrl = 'data:image/jpeg;base64,$base64String';
-          if (generatedDataUrl.length < 800000) {
-            photoUrl = generatedDataUrl;
-          } else {
-            photoUrl = user.photoURL;
-          }
-        } on Object catch (_) {
+        final bytes = await imageFile.readAsBytes();
+        final base64String = base64Encode(bytes);
+        final generatedDataUrl = 'data:image/jpeg;base64,$base64String';
+        if (generatedDataUrl.length < 800000) {
+          photoUrl = generatedDataUrl;
+        } else {
           photoUrl = user.photoURL;
         }
+      } on Object catch (_) {
+        photoUrl = user.photoURL;
       }
     }
 
