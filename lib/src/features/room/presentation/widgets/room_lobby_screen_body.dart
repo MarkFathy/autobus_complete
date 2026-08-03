@@ -328,13 +328,34 @@ class RoomCategoriesOverviewCard extends StatelessWidget {
         12.szH,
         Divider(color: context.colors.outline.withValues(alpha: 0.2), height: 1),
         14.szH,
-        Text(
-          S.of(context).categories,
-          style: context.textTheme.titleSmall?.copyWith(
-            color: context.colors.onSurface,
-            fontWeight: FontWeight.w600,
-            fontSize: 14.sp,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              S.of(context).categories,
+              style: context.textTheme.titleSmall?.copyWith(
+                color: context.colors.onSurface,
+                fontWeight: FontWeight.w600,
+                fontSize: 14.sp,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: context.colors.primaryContainer,
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(color: context.colors.primary, width: 1.w),
+              ),
+              child: Text(
+                '${categories.length}/7',
+                style: context.textTheme.labelMedium?.copyWith(
+                  color: context.colors.primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
+          ],
         ),
         10.szH,
         Wrap(

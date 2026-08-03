@@ -5,6 +5,7 @@ import 'package:autobus_complete/src/features/complaints/domain/usecases/delete_
 import 'package:autobus_complete/src/features/complaints/domain/usecases/get_complaints_stream_usecase.dart';
 import 'package:autobus_complete/src/features/complaints/domain/usecases/submit_complaint_usecase.dart';
 import 'package:autobus_complete/src/features/complaints/presentation/cubit/complaints_state.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,6 +14,7 @@ class ComplaintsCubit extends Cubit<ComplaintsState> {
   final GetComplaintsStreamUseCase getComplaintsStreamUseCase;
   final DeleteComplaintUseCase deleteComplaintUseCase;
   final FirebaseAuth firebaseAuth;
+  final FirebaseFirestore firestore;
 
   StreamSubscription<List<ComplaintEntity>>? _streamSubscription;
 
@@ -21,6 +23,7 @@ class ComplaintsCubit extends Cubit<ComplaintsState> {
     required this.getComplaintsStreamUseCase,
     required this.deleteComplaintUseCase,
     required this.firebaseAuth,
+    required this.firestore,
   }) : super(ComplaintsInitial());
 
   void listenToComplaints() {
@@ -55,12 +58,21 @@ class ComplaintsCubit extends Cubit<ComplaintsState> {
 
     emit(ComplaintSubmitting());
 
+    final userDoc = await firestore.collection('users').doc(user.uid).get();
+    final userData = userDoc.data();
+    final userName = (userData?['name'] as String?)?.isNotEmpty ?? false
+        ? userData!['name'] as String
+        : (user.displayName ?? 'User');
+    final userPhotoUrl = (userData != null && userData.containsKey('photoUrl'))
+        ? userData['photoUrl'] as String?
+        : user.photoURL;
+
     final entity = ComplaintEntity(
       id: '',
       userId: user.uid,
-      userName: user.displayName ?? 'User',
+      userName: userName,
       userEmail: user.email ?? '',
-      userPhoto: user.photoURL,
+      userPhoto: userPhotoUrl,
       type: type,
       title: title,
       message: message,

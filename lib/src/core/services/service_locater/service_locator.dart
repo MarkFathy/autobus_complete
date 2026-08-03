@@ -168,6 +168,7 @@ Future<void> setupServiceLocator() async {
         getComplaintsStreamUseCase: sl(),
         deleteComplaintUseCase: sl(),
         firebaseAuth: sl(),
+        firestore: sl(),
       ),
     )
     ..registerLazySingleton(() => SubmitComplaintUseCase(sl()))

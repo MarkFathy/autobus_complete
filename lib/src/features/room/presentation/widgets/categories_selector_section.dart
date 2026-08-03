@@ -52,27 +52,24 @@ class CategoriesSelectorSection extends StatelessWidget {
                 8.szW,
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 3.h),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                   decoration: BoxDecoration(
                     color: isValid
-                        ? context.colors.primaryContainer.withValues(alpha: 0.8)
+                        ? context.colors.primaryContainer
                         : context.colors.secondaryContainer,
                     borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(color: isValid ? context.colors.primary : context.colors.secondary, width: 1.w),
+                    border: Border.all(
+                      color: isValid ? context.colors.primary : context.colors.secondary,
+                      width: 1.w,
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (isValid) ...[Icon(Icons.check_rounded, size: 12.sp, color: context.colors.primary), 4.szW],
-                      Text(
-                        '${selectedCategories.length}/$total',
-                        style: context.textTheme.labelMedium?.copyWith(
-                          color: isValid ? context.colors.primary : context.colors.secondary,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12.sp,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    '${selectedCategories.length}/$total',
+                    style: context.textTheme.labelMedium?.copyWith(
+                      color: isValid ? context.colors.primary : context.colors.secondary,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12.sp,
+                    ),
                   ),
                 ),
               ],
