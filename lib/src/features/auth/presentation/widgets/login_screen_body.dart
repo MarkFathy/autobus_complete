@@ -59,7 +59,11 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                         5.szW,
                         Text(
                           S.of(context).autobusComplete,
-                          style: getTextStyle().white.s22.bold,
+                          style: context.textTheme.titleLarge?.copyWith(
+                            color: context.colors.onSurface,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22.sp,
+                          ),
                         ),
                         Assets.lotties.bus.lottie(width: 26.w, height: 26.h),
                       ],
@@ -138,7 +142,11 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                     children: [
                       Text(
                         S.of(context).dontHaveAnAccount,
-                        style: getTextStyle().greyColor.s18.w400,
+                        style: context.textTheme.titleMedium?.copyWith(
+                          color: context.colors.onSurfaceVariant,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                       5.szW,
                       GestureDetector(
@@ -152,7 +160,11 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                         },
                         child: Text(
                           S.of(context).register,
-                          style: getTextStyle().yellowColor.s18.w600,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            color: context.colors.primary,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],

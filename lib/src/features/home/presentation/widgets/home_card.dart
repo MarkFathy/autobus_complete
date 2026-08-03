@@ -1,6 +1,4 @@
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,10 +23,10 @@ class HomeCard extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
         decoration: BoxDecoration(
-          color: AppColors.textFieldFillColor,
+          color: context.colors.surfaceContainerHighest,
           borderRadius: BorderRadius.all(Radius.circular(20.r)),
           border: Border.all(
-            color: AppColors.yellowColor.withValues(alpha: 0.3),
+            color: context.colors.primary.withValues(alpha: 0.3),
             width: 1.w,
           ),
         ),
@@ -38,18 +36,26 @@ class HomeCard extends StatelessWidget {
             Icon(
               icon,
               size: 55.sp,
-              color: iconColor ?? AppColors.yellowColor,
+              color: iconColor ?? context.colors.primary,
             ),
             10.szH,
             Text(
               title,
-              style: getTextStyle().s20.w700.whiteColor,
+              style: context.textTheme.titleMedium?.copyWith(
+                color: context.colors.onSurface,
+                fontWeight: FontWeight.w700,
+                fontSize: 20.sp,
+              ),
               textAlign: TextAlign.center,
             ),
             5.szH,
             Text(
               subtitle,
-              style: getTextStyle().s14.w400.greyColor,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colors.onSurfaceVariant,
+                fontWeight: FontWeight.w400,
+                fontSize: 14.sp,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

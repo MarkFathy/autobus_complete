@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -29,29 +27,37 @@ class RoundsSelectorRow extends StatelessWidget {
       children: [
         Text(
           S.of(context).numberOfRounds,
-          style: getTextStyle().s16.w600.whiteColor,
+          style: context.textTheme.titleMedium?.copyWith(
+            color: context.colors.onSurface,
+            fontWeight: FontWeight.w600,
+            fontSize: 16.sp,
+          ),
         ),
         const Spacer(),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
           decoration: BoxDecoration(
-            color: AppColors.scaffoldBackgroundColor,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: AppColors.yellowColor.withValues(alpha: 0.4),
+              color: context.colors.primary.withValues(alpha: 0.4),
               width: 1.w,
             ),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<int>(
               value: selectedRounds,
-              dropdownColor: AppColors.textFieldFillColor,
+              dropdownColor: context.colors.surfaceContainerHighest,
               icon: Icon(
                 Icons.keyboard_arrow_down_rounded,
-                color: AppColors.yellowColor,
+                color: context.colors.primary,
                 size: 22.sp,
               ),
-              style: getTextStyle().s14.w700.yellowColor,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colors.primary,
+                fontWeight: FontWeight.w700,
+                fontSize: 14.sp,
+              ),
               items: List.generate(10, (i) => i + 1).map((rounds) => DropdownMenuItem<int>(
                   value: rounds,
                   child: Text('$rounds ${_getRoundsLabel(context, rounds)}'),

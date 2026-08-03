@@ -27,7 +27,15 @@ class AboutGameScreenBody extends StatelessWidget {
                 ? Center(
                     child: Padding(
                       padding: EdgeInsets.all(24.r),
-                      child: Text(errorMessage, style: getTextStyle().s14.w600.redColor, textAlign: TextAlign.center),
+                      child: Text(
+                        errorMessage,
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          color: context.colors.secondary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.sp,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   )
                 : SingleChildScrollView(
@@ -35,9 +43,24 @@ class AboutGameScreenBody extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title, style: getTextStyle().s18.bold.yellowColor),
+                        Text(
+                          title,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            color: context.colors.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.sp,
+                          ),
+                        ),
                         20.szH,
-                        Text(content, style: getTextStyle().s16.w400.whiteColor.copyWith(height: 1.6)),
+                        Text(
+                          content,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            color: context.colors.onSurface,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16.sp,
+                            height: 1.6,
+                          ),
+                        ),
                       ],
                     ),
                   ),

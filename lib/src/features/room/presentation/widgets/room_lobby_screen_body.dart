@@ -37,11 +37,15 @@ class RoomLobbyScreenBody extends StatelessWidget {
               appBar: CustomAppBar(
                 title: Text(
                   S.of(context).lobby,
-                  style: getTextStyle().s20.w700.whiteColor,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.colors.onSurface,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.sp,
+                  ),
                 ),
               ),
-              body: const Center(
-                child: CircularProgressIndicator(color: AppColors.yellowColor),
+              body: Center(
+                child: CircularProgressIndicator(color: context.colors.primary),
               ),
             );
           }
@@ -96,16 +100,20 @@ class RoomLobbyScreenBody extends StatelessWidget {
                 },
                 title: Text(
                   S.of(context).lobby,
-                  style: getTextStyle().s20.w700.whiteColor,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.colors.onSurface,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.sp,
+                  ),
                 ),
               ),
             bottomNavigationBar: Container(
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
               decoration: BoxDecoration(
-                color: AppColors.textFieldFillColor,
+                color: context.colors.surfaceContainerHighest,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                 border: Border.all(
-                  color: AppColors.yellowColor.withValues(alpha: 0.3),
+                  color: context.colors.primary.withValues(alpha: 0.3),
                   width: 1.w,
                 ),
               ),
@@ -118,7 +126,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.info_outline_rounded,
-                          color: AppColors.yellowColor,
+                          color: context.colors.primary,
                           size: 16.sp,
                         ),
                         6.szW,
@@ -127,7 +135,11 @@ class RoomLobbyScreenBody extends StatelessWidget {
                             !allOtherPlayersReady
                                 ? S.of(context).waitingForOtherPlayers
                                 : S.of(context).selectAtLeast4Categories,
-                            style: getTextStyle().s12.w500.yellowColor,
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colors.primary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12.sp,
+                            ),
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -151,8 +163,8 @@ class RoomLobbyScreenBody extends StatelessWidget {
                           ? S.of(context).unReady
                           : S.of(context).ready,
                       backgroundColor: currentPlayer.isReady
-                          ? AppColors.greyColor
-                          : AppColors.cyanColor,
+                          ? context.colors.outline
+                          : context.colors.secondary,
                       onPressed: roomCubit.toggleReadyStatus,
                     ),
                 ],
@@ -268,10 +280,10 @@ class RoomCodeCard extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
         decoration: BoxDecoration(
-          color: AppColors.textFieldFillColor,
+          color: context.colors.surfaceContainerHighest,
           borderRadius: BorderRadius.all(Radius.circular(20.r)),
           border: Border.all(
-            color: AppColors.yellowColor.withValues(alpha: 0.3),
+            color: context.colors.primary.withValues(alpha: 0.3),
             width: 1.w,
           ),
         ),
@@ -280,7 +292,11 @@ class RoomCodeCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: getTextStyle().s20.bold.whiteColor,
+              style: context.textTheme.titleMedium?.copyWith(
+                color: context.colors.onSurface,
+                fontWeight: FontWeight.bold,
+                fontSize: 20.sp,
+              ),
               textAlign: TextAlign.center,
             ),
             10.szH,
@@ -289,14 +305,18 @@ class RoomCodeCard extends StatelessWidget {
               children: [
                 Text(
                   roomCode,
-                  style: getTextStyle().s28.w700.yellowColor,
+                  style: context.textTheme.headlineMedium?.copyWith(
+                    color: context.colors.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 28.sp,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 10.szW,
                 Icon(
                   Icons.copy_rounded,
                   size: 24.sp,
-                  color: AppColors.yellowColor,
+                  color: context.colors.primary,
                 ),
               ],
             ),

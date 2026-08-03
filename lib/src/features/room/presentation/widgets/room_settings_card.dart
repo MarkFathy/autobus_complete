@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/widgets/categories_selector_section.dart';
@@ -46,10 +44,10 @@ class _RoomSettingsCardState extends State<RoomSettingsCard> {
       width: double.infinity,
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: AppColors.textFieldFillColor,
+        color: context.colors.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: AppColors.yellowColor.withValues(alpha: 0.3),
+          color: context.colors.primary.withValues(alpha: 0.3),
           width: 1.w,
         ),
       ),
@@ -61,19 +59,23 @@ class _RoomSettingsCardState extends State<RoomSettingsCard> {
             children: [
               Icon(
                 Icons.tune_rounded,
-                color: AppColors.yellowColor,
+                color: context.colors.primary,
                 size: 22.sp,
               ),
               8.szW,
               Text(
                 S.of(context).roomSettings,
-                style: getTextStyle().s18.w700.whiteColor,
+                style: context.textTheme.titleMedium?.copyWith(
+                  color: context.colors.onSurface,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18.sp,
+                ),
               ),
             ],
           ),
           16.szH,
           Divider(
-            color: AppColors.greyColor.withValues(alpha: 0.2),
+            color: context.colors.outline.withValues(alpha: 0.2),
             height: 1,
           ),
           16.szH,
@@ -88,7 +90,7 @@ class _RoomSettingsCardState extends State<RoomSettingsCard> {
           ),
           16.szH,
           Divider(
-            color: AppColors.greyColor.withValues(alpha: 0.2),
+            color: context.colors.outline.withValues(alpha: 0.2),
             height: 1,
           ),
           16.szH,

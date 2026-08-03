@@ -1,4 +1,4 @@
-import 'package:autobus_complete/src/config/res/color_manager.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,14 +21,14 @@ class SettingsIconButton extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: AppColors.yellowColor,
+            color: context.colors.primary,
             width: 1.5.w,
           ),
-          color: AppColors.textFieldFillColor,
+          color: context.colors.surfaceContainerHighest,
         ),
         child: Icon(
           Icons.settings,
-          color: AppColors.whiteColor,
+          color: context.colors.onSurface,
           size: (size * 0.57).sp,
         ),
       ),

@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +18,7 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
     required ValueChanged<ImageSource> onSourceSelected,
   }) => showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.scaffoldBackgroundColor,
+      backgroundColor: context.colors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.r)),
       ),
@@ -40,7 +38,7 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
             width: 45.w,
             height: 4.h,
             decoration: BoxDecoration(
-              color: AppColors.greyColor.withValues(alpha: 0.4),
+              color: context.colors.outline.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(10.r),
             ),
           ),
@@ -49,7 +47,11 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
           // ── Title ────────────────────────────────────────────────
           Text(
             S.of(context).chooseImageSource,
-            style: getTextStyle().s18.w700.whiteColor,
+            style: context.textTheme.titleMedium?.copyWith(
+              color: context.colors.onSurface,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           24.szH,
 
@@ -66,10 +68,10 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 20.h),
                     decoration: BoxDecoration(
-                      color: AppColors.textFieldFillColor,
+                      color: context.colors.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(16.r),
                       border: Border.all(
-                        color: AppColors.yellowColor.withValues(alpha: 0.3),
+                        color: context.colors.primary.withValues(alpha: 0.3),
                         width: 1.w,
                       ),
                     ),
@@ -78,19 +80,23 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
                         Container(
                           padding: EdgeInsets.all(12.r),
                           decoration: BoxDecoration(
-                            color: AppColors.yellowColor.withValues(alpha: 0.15),
+                            color: context.colors.primaryContainer,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.camera_alt_rounded,
-                            color: AppColors.yellowColor,
+                            color: context.colors.primary,
                             size: 28.sp,
                           ),
                         ),
                         10.szH,
                         Text(
                           S.of(context).camera,
-                          style: getTextStyle().s16.w600.whiteColor,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            color: context.colors.onSurface,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
@@ -109,10 +115,10 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 20.h),
                     decoration: BoxDecoration(
-                      color: AppColors.textFieldFillColor,
+                      color: context.colors.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(16.r),
                       border: Border.all(
-                        color: AppColors.yellowColor.withValues(alpha: 0.3),
+                        color: context.colors.primary.withValues(alpha: 0.3),
                         width: 1.w,
                       ),
                     ),
@@ -121,19 +127,23 @@ class ImageSourceSelectionBottomSheet extends StatelessWidget {
                         Container(
                           padding: EdgeInsets.all(12.r),
                           decoration: BoxDecoration(
-                            color: AppColors.yellowColor.withValues(alpha: 0.15),
+                            color: context.colors.primaryContainer,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.photo_library_rounded,
-                            color: AppColors.yellowColor,
+                            color: context.colors.primary,
                             size: 28.sp,
                           ),
                         ),
                         10.szH,
                         Text(
                           S.of(context).gallery,
-                          style: getTextStyle().s16.w600.whiteColor,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            color: context.colors.onSurface,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),

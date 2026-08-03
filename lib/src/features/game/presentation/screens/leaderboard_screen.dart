@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:autobus_complete/gen/assets.gen.dart';
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/navigation/named_routes.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
@@ -58,7 +56,14 @@ class LeaderboardScreen extends StatelessWidget {
             child: AppScaffold(
               appBar: CustomAppBar(
                 showBackButton: false,
-                title: Text(S.of(context).finalResults, style: getTextStyle().s20.w700.yellowColor),
+                title: Text(
+                  S.of(context).finalResults,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.colors.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.sp,
+                  ),
+                ),
               ),
               body: SafeArea(
                 child: Padding(
@@ -91,18 +96,32 @@ class LeaderboardScreen extends StatelessWidget {
                                     6.szH,
 
                                     // Winner Name
-                                    Text(winner.name, style: getTextStyle().s16.bold.yellowColor),
+                                    Text(
+                                      winner.name,
+                                      style: context.textTheme.titleMedium?.copyWith(
+                                        color: context.colors.primary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.sp,
+                                      ),
+                                    ),
                                     4.szH,
 
                                     // Winner Total Points Badge
                                     Container(
                                       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
                                       decoration: BoxDecoration(
-                                        color: AppColors.yellowColor.withValues(alpha: 0.2),
+                                        color: context.colors.primaryContainer,
                                         borderRadius: BorderRadius.circular(14.r),
-                                        border: Border.all(color: AppColors.yellowColor),
+                                        border: Border.all(color: context.colors.primary),
                                       ),
-                                      child: Text('$winnerTotal pts', style: getTextStyle().s12.bold.yellowColor),
+                                      child: Text(
+                                        '$winnerTotal pts',
+                                        style: context.textTheme.labelMedium?.copyWith(
+                                          color: context.colors.primary,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12.sp,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -116,9 +135,9 @@ class LeaderboardScreen extends StatelessWidget {
                       Expanded(
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: AppColors.textFieldFillColor,
+                            color: context.colors.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(20.r),
-                            border: Border.all(color: AppColors.yellowColor.withValues(alpha: 0.3)),
+                            border: Border.all(color: context.colors.primary.withValues(alpha: 0.3)),
                           ),
                           child: Column(
                             children: [
@@ -126,7 +145,7 @@ class LeaderboardScreen extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                                 decoration: BoxDecoration(
-                                  color: AppColors.yellowColor.withValues(alpha: 0.15),
+                                  color: context.colors.primaryContainer,
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(20.r),
                                     topRight: Radius.circular(20.r),
@@ -138,7 +157,11 @@ class LeaderboardScreen extends StatelessWidget {
                                       width: 36.w,
                                       child: Text(
                                         '#',
-                                        style: getTextStyle().s12.bold.yellowColor,
+                                        style: context.textTheme.labelMedium?.copyWith(
+                                          color: context.colors.primary,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12.sp,
+                                        ),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -146,12 +169,20 @@ class LeaderboardScreen extends StatelessWidget {
                                     Expanded(
                                       child: Text(
                                         isArabic ? 'اللاعب' : 'Player',
-                                        style: getTextStyle().s12.bold.yellowColor,
+                                        style: context.textTheme.labelMedium?.copyWith(
+                                          color: context.colors.primary,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12.sp,
+                                        ),
                                       ),
                                     ),
                                     Text(
                                       isArabic ? 'المجموع الكلي' : 'Total Score',
-                                      style: getTextStyle().s12.bold.yellowColor,
+                                      style: context.textTheme.labelMedium?.copyWith(
+                                        color: context.colors.primary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12.sp,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -162,11 +193,12 @@ class LeaderboardScreen extends StatelessWidget {
                                 child: ListView.separated(
                                   physics: const BouncingScrollPhysics(),
                                   itemCount: sortedPlayers.length,
-                                  separatorBuilder: (_, _) => const Divider(color: AppColors.greyColor, height: 1),
+                                  separatorBuilder: (_, _) => Divider(color: context.colors.outline, height: 1),
                                   itemBuilder: (context, index) {
                                     final player = sortedPlayers[index];
                                     final rank = index + 1;
                                     final isWinnerPlayer = rank == 1;
+                                    final rankColor = _getRankColor(context, rank);
 
                                     return Padding(
                                       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
@@ -178,13 +210,17 @@ class LeaderboardScreen extends StatelessWidget {
                                             height: 32.w,
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: _getRankColor(rank).withValues(alpha: 0.2),
-                                              border: Border.all(color: _getRankColor(rank)),
+                                              color: rankColor.withValues(alpha: 0.2),
+                                              border: Border.all(color: rankColor),
                                             ),
                                             child: Center(
                                               child: Text(
                                                 '$rank',
-                                                style: getTextStyle().s12.bold.copyWith(color: _getRankColor(rank)),
+                                                style: context.textTheme.labelMedium?.copyWith(
+                                                  color: rankColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12.sp,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -194,7 +230,7 @@ class LeaderboardScreen extends StatelessWidget {
                                           UserProfileAvatar(
                                             imageUrl: player.photoUrl,
                                             radius: 16,
-                                            borderColor: _getRankColor(rank),
+                                            borderColor: rankColor,
                                           ),
                                           10.szW,
 
@@ -203,8 +239,16 @@ class LeaderboardScreen extends StatelessWidget {
                                             child: Text(
                                               player.name,
                                               style: isWinnerPlayer
-                                                  ? getTextStyle().s14.bold.yellowColor
-                                                  : getTextStyle().s14.w500.whiteColor,
+                                                  ? context.textTheme.bodyMedium?.copyWith(
+                                                      color: context.colors.primary,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 14.sp,
+                                                    )
+                                                  : context.textTheme.bodyMedium?.copyWith(
+                                                      color: context.colors.onSurface,
+                                                      fontWeight: FontWeight.w500,
+                                                      fontSize: 14.sp,
+                                                    ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -243,8 +287,12 @@ class LeaderboardScreen extends StatelessWidget {
                       // ── EXIT ROOM BUTTON ─────────────────────────────────────
                       CustomButton(
                         text: S.of(context).leaveRoom,
-                        backgroundColor: AppColors.redColor.withValues(alpha: 0.15),
-                        textStyle: getTextStyle().s18.w700.redColor,
+                        backgroundColor: context.colors.secondaryContainer,
+                        textStyle: context.textTheme.titleMedium?.copyWith(
+                          color: context.colors.secondary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp,
+                        ),
                         onPressed: () {
                           unawaited(
                             LeaveRoomBottomSheet.show(
@@ -269,16 +317,16 @@ class LeaderboardScreen extends StatelessWidget {
     );
   }
 
-  Color _getRankColor(int rank) {
+  Color _getRankColor(BuildContext context, int rank) {
     switch (rank) {
       case 1:
-        return AppColors.yellowColor;
+        return context.colors.primary;
       case 2:
         return const Color(0xFFC0C0C0);
       case 3:
         return const Color(0xFFCD7F32);
       default:
-        return AppColors.greyColor;
+        return context.colors.outline;
     }
   }
 

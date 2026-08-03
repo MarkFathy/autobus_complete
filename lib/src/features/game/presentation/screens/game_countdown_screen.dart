@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/navigation/named_routes.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
@@ -74,14 +72,22 @@ class _GameCountdownScreenState extends State<GameCountdownScreen>
               // Get Ready Text
               Text(
                 S.of(context).getReady,
-                style: getTextStyle().s24.w700.whiteColor,
+                style: context.textTheme.titleLarge?.copyWith(
+                  color: context.colors.onSurface,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 24.sp,
+                ),
               ),
               12.szH,
 
               // Yellow Text: Game starts in
               Text(
                 S.of(context).gameStartsIn,
-                style: getTextStyle().s20.w700.yellowColor,
+                style: context.textTheme.titleLarge?.copyWith(
+                  color: context.colors.primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20.sp,
+                ),
               ),
               36.szH,
 
@@ -93,14 +99,14 @@ class _GameCountdownScreenState extends State<GameCountdownScreen>
                   height: 140.r,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.yellowColor.withValues(alpha: 0.15),
+                    color: context.colors.primaryContainer,
                     border: Border.all(
-                      color: AppColors.yellowColor,
+                      color: context.colors.primary,
                       width: 3.w,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.yellowColor.withValues(alpha: 0.3),
+                        color: context.colors.primary.withValues(alpha: 0.3),
                         blurRadius: 20,
                         spreadRadius: 4,
                       ),
@@ -109,10 +115,10 @@ class _GameCountdownScreenState extends State<GameCountdownScreen>
                   child: Center(
                     child: Text(
                       '$_secondsLeft',
-                      style: TextStyle(
+                      style: context.textTheme.displayMedium?.copyWith(
                         fontSize: 64.sp,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.yellowColor,
+                        color: context.colors.primary,
                       ),
                     ),
                   ),

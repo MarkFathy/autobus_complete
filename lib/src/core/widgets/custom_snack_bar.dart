@@ -1,6 +1,4 @@
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +12,7 @@ class CustomSnackBar {
     SnackBarType type = SnackBarType.error,
     Duration duration = const Duration(seconds: 4),
   }) {
-    final theme = _getSnackBarTheme(type);
+    final theme = _getSnackBarTheme(context, type);
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -38,7 +36,11 @@ class CustomSnackBar {
             Expanded(
               child: Text(
                 message,
-                style: getTextStyle().whiteColor.s14.w500,
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colors.onSurface,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                ),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -87,31 +89,31 @@ class CustomSnackBar {
     );
   }
 
-  static _SnackBarThemeData _getSnackBarTheme(SnackBarType type) {
+  static _SnackBarThemeData _getSnackBarTheme(BuildContext context, SnackBarType type) {
     switch (type) {
       case SnackBarType.success:
-        return const _SnackBarThemeData(
-          backgroundColor: AppColors.textFieldFillColor,
+        return _SnackBarThemeData(
+          backgroundColor: context.colors.surfaceContainerHighest,
           icon: Icons.check_circle_outline_rounded,
-          iconColor: Colors.white,
+          iconColor: context.colors.onSurface,
         );
       case SnackBarType.warning:
-        return const _SnackBarThemeData(
-          backgroundColor:AppColors.redColor,
+        return _SnackBarThemeData(
+          backgroundColor: context.colors.error,
           icon: Icons.warning_amber_rounded,
-          iconColor: Colors.white,
+          iconColor: context.colors.onSurface,
         );
       case SnackBarType.info:
-        return const _SnackBarThemeData(
-          backgroundColor: Color(0xFF0288D1),
+        return _SnackBarThemeData(
+          backgroundColor: context.colors.secondary,
           icon: Icons.info_outline_rounded,
-          iconColor: Colors.white,
+          iconColor: context.colors.onSurface,
         );
       case SnackBarType.error:
-        return const _SnackBarThemeData(
-          backgroundColor: AppColors.redColor,
+        return _SnackBarThemeData(
+          backgroundColor: context.colors.error,
           icon: Icons.error_outline_rounded,
-          iconColor: Colors.white,
+          iconColor: context.colors.onSurface,
         );
     }
   }

@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/widgets/user_profile_avatar.dart';
 import 'package:flutter/material.dart';
@@ -39,10 +37,10 @@ class RoomPlayersCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: AppColors.textFieldFillColor,
+        color: context.colors.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: AppColors.yellowColor.withValues(alpha: 0.3),
+          color: context.colors.primary.withValues(alpha: 0.3),
           width: 1.w,
         ),
       ),
@@ -57,36 +55,44 @@ class RoomPlayersCard extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.groups_rounded,
-                    color: AppColors.yellowColor,
+                    color: context.colors.primary,
                     size: 24.sp,
                   ),
                   8.szW,
                   Text(
                     S.of(context).players,
-                    style: getTextStyle().s18.w700.whiteColor,
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: context.colors.onSurface,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18.sp,
+                    ),
                   ),
                 ],
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: AppColors.yellowColor.withValues(alpha: 0.15),
+                  color: context.colors.primaryContainer,
                   borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
-                    color: AppColors.yellowColor,
+                    color: context.colors.primary,
                     width: 1.w,
                   ),
                 ),
                 child: Text(
                   '${players.length}/$maxPlayers',
-                  style: getTextStyle().s12.w700.yellowColor,
+                  style: context.textTheme.labelMedium?.copyWith(
+                    color: context.colors.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12.sp,
+                  ),
                 ),
               ),
             ],
           ),
           16.szH,
           Divider(
-            color: AppColors.greyColor.withValues(alpha: 0.2),
+            color: context.colors.outline.withValues(alpha: 0.2),
             height: 1,
           ),
           16.szH,
@@ -132,18 +138,18 @@ class PlayerTileItem extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(8.r),
         decoration: BoxDecoration(
-          color: AppColors.scaffoldBackgroundColor,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
             color: player.isHost
-                ? AppColors.yellowColor.withValues(alpha: 0.6)
-                : AppColors.greyColor.withValues(alpha: 0.2),
+                ? context.colors.primary.withValues(alpha: 0.6)
+                : context.colors.outline.withValues(alpha: 0.2),
             width: player.isHost ? 1.5.w : 1.w,
           ),
           boxShadow: player.isHost
               ? [
                   BoxShadow(
-                    color: AppColors.yellowColor.withValues(alpha: 0.08),
+                    color: context.colors.primary.withValues(alpha: 0.08),
                     blurRadius: 6,
                     spreadRadius: 1,
                   )
@@ -160,8 +166,8 @@ class PlayerTileItem extends StatelessWidget {
                   radius: 20,
                   imageUrl: player.photoUrl,
                   borderColor: player.isHost
-                      ? AppColors.yellowColor
-                      : AppColors.greyColor,
+                      ? context.colors.primary
+                      : context.colors.outline,
                 ),
                 if (player.isHost)
                   Positioned(
@@ -174,18 +180,18 @@ class PlayerTileItem extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.all(2.r),
                           decoration: BoxDecoration(
-                            color: AppColors.scaffoldBackgroundColor,
+                            color: context.colors.surface,
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.yellowColor.withValues(alpha: 0.5),
+                                color: context.colors.primary.withValues(alpha: 0.5),
                                 blurRadius: 6,
                               )
                             ],
                           ),
                           child: Icon(
                             Icons.workspace_premium_rounded, // King Crown Icon 👑
-                            color: AppColors.yellowColor,
+                            color: context.colors.primary,
                             size: 18.sp,
                           ),
                         ),
@@ -209,12 +215,16 @@ class PlayerTileItem extends StatelessWidget {
                       padding:
                           EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: AppColors.yellowColor.withValues(alpha: 0.2),
+                        color: context.colors.primaryContainer,
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
                         S.of(context).host,
-                        style: getTextStyle().s10.w700.yellowColor,
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: context.colors.primary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 10.sp,
+                        ),
                       ),
                     )
                   else
@@ -223,8 +233,8 @@ class PlayerTileItem extends StatelessWidget {
                           EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                       decoration: BoxDecoration(
                         color: player.isReady
-                            ? AppColors.cyanColor.withValues(alpha: 0.2)
-                            : AppColors.greyColor.withValues(alpha: 0.2),
+                            ? context.colors.secondaryContainer
+                            : context.colors.outline.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
@@ -232,8 +242,16 @@ class PlayerTileItem extends StatelessWidget {
                             ? S.of(context).ready
                             : S.of(context).unReady,
                         style: player.isReady
-                            ? getTextStyle().s10.w700.cyanColor
-                            : getTextStyle().s10.w500.greyColor,
+                            ? context.textTheme.labelSmall?.copyWith(
+                                color: context.colors.secondary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 10.sp,
+                              )
+                            : context.textTheme.labelSmall?.copyWith(
+                                color: context.colors.onSurfaceVariant,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 10.sp,
+                              ),
                       ),
                     ),
                 ],
@@ -325,7 +343,11 @@ class _InteractivePlayerNameState extends State<InteractivePlayerName> {
           physics: const ClampingScrollPhysics(),
           child: Text(
             widget.name,
-            style: getTextStyle().s14.w700.whiteColor,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colors.onSurface,
+              fontWeight: FontWeight.w700,
+              fontSize: 14.sp,
+            ),
             maxLines: 1,
           ),
         ),

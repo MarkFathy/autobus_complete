@@ -17,36 +17,39 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-    create: (_) {
-      final cubit = sl<AppCubit>();
-      unawaited(cubit.loadSettings());
-      return cubit;
-    },
-    child: BlocBuilder<AppCubit, AppState>(
-      builder: (context, appState) => ScreenUtilInit(
-        designSize: const Size(390, 844),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light,
-          // Dynamic Localization managed by AppCubit
-          locale: appState.locale,
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          // Root Navigator
-          navigatorKey: Go.navigatorKey,
-          initialRoute: NamedRoutes.splash.routeName,
-          onGenerateRoute: RouterGenerator.getRoute,
-          onUnknownRoute: (_) => RouterGenerator.undefineRoute(),
+  Widget build(BuildContext context) {
+    final appCubit = sl<AppCubit>();
+    unawaited(appCubit.loadSettings());
+
+    return BlocProvider.value(
+      value: appCubit,
+      child: BlocSelector<AppCubit, AppState, Locale>(
+        bloc: appCubit,
+        selector: (state) => state.locale,
+        builder: (context, locale) => ScreenUtilInit(
+          designSize: const Size(390, 844),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (context, child) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.light,
+            // Dynamic Localization managed by AppCubit
+            locale: locale,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            // Root Navigator
+            navigatorKey: Go.navigatorKey,
+            initialRoute: NamedRoutes.splash.routeName,
+            onGenerateRoute: RouterGenerator.getRoute,
+            onUnknownRoute: (_) => RouterGenerator.undefineRoute(),
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

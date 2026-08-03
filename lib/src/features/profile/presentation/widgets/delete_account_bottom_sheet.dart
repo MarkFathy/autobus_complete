@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +17,7 @@ class DeleteAccountBottomSheet extends StatelessWidget {
     required VoidCallback onConfirmDelete,
   }) => showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.scaffoldBackgroundColor,
+      backgroundColor: context.colors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.r)),
       ),
@@ -39,7 +37,7 @@ class DeleteAccountBottomSheet extends StatelessWidget {
             width: 45.w,
             height: 4.h,
             decoration: BoxDecoration(
-              color: AppColors.greyColor.withValues(alpha: 0.4),
+              color: context.colors.outline.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(10.r),
             ),
           ),
@@ -49,12 +47,12 @@ class DeleteAccountBottomSheet extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(16.r),
             decoration: BoxDecoration(
-              color: AppColors.redColor.withValues(alpha: 0.15),
+              color: context.colors.secondaryContainer,
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.delete_forever_rounded,
-              color: AppColors.redColor,
+              color: context.colors.secondary,
               size: 36.sp,
             ),
           ),
@@ -63,12 +61,20 @@ class DeleteAccountBottomSheet extends StatelessWidget {
           // ── Title & Message ─────────────────────────────────────
           Text(
             S.of(context).deleteAccount,
-            style: getTextStyle().s18.w700.whiteColor,
+            style: context.textTheme.titleMedium?.copyWith(
+              color: context.colors.onSurface,
+              fontWeight: FontWeight.w700,
+              fontSize: 18.sp,
+            ),
           ),
           8.szH,
           Text(
             S.of(context).deleteAccountConfirmation,
-            style: getTextStyle().s14.w400.greyColor,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colors.onSurfaceVariant,
+              fontWeight: FontWeight.w400,
+              fontSize: 14.sp,
+            ),
             textAlign: TextAlign.center,
           ),
           24.szH,
@@ -83,17 +89,21 @@ class DeleteAccountBottomSheet extends StatelessWidget {
                   child: Container(
                     height: 48.h,
                     decoration: BoxDecoration(
-                      color: AppColors.textFieldFillColor,
+                      color: context.colors.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(16.r),
                       border: Border.all(
-                        color: AppColors.greyColor.withValues(alpha: 0.3),
+                        color: context.colors.outline.withValues(alpha: 0.3),
                         width: 1.w,
                       ),
                     ),
                     child: Center(
                       child: Text(
                         S.of(context).cancel,
-                        style: getTextStyle().s16.w600.whiteColor,
+                        style: context.textTheme.titleMedium?.copyWith(
+                          color: context.colors.onSurface,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.sp,
+                        ),
                       ),
                     ),
                   ),
@@ -110,13 +120,17 @@ class DeleteAccountBottomSheet extends StatelessWidget {
                   child: Container(
                     height: 48.h,
                     decoration: BoxDecoration(
-                      color: AppColors.redColor,
+                      color: context.colors.secondary,
                       borderRadius: BorderRadius.circular(16.r),
                     ),
                     child: Center(
                       child: Text(
                         S.of(context).yesDeleteAccount,
-                        style: getTextStyle().s16.w700.whiteColor,
+                        style: context.textTheme.titleMedium?.copyWith(
+                          color: context.colors.onSecondary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16.sp,
+                        ),
                       ),
                     ),
                   ),

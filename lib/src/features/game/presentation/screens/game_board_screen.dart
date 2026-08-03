@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/helpers/app_letters.dart';
@@ -17,20 +18,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 class GameBoardScreen extends StatefulWidget {
   final String? targetLetter;
   final List<RoomCategoryEntity>? categories;
   final int? currentRound;
   final int? totalRounds;
 
-  const GameBoardScreen({
-    super.key,
-    this.targetLetter,
-    this.categories,
-    this.currentRound,
-    this.totalRounds,
-  });
+  const GameBoardScreen({super.key, this.targetLetter, this.categories, this.currentRound, this.totalRounds});
 
   @override
   State<GameBoardScreen> createState() => _GameBoardScreenState();
@@ -199,7 +193,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                     ListenableBuilder(
                       listenable: _allControllers,
                       builder: (context, _) {
-                        final isButtonEnabled = !_isShuffling &&
+                        final isButtonEnabled =
+                            !_isShuffling &&
                             _controllers.isNotEmpty &&
                             _controllers.values.every((c) => c.text.trim().isNotEmpty);
                         return CustomButton(

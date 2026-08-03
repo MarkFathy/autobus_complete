@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +18,7 @@ class LanguageBottomSheet extends StatelessWidget {
     ValueChanged<String>? onLanguageSelected,
   }) => showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.scaffoldBackgroundColor,
+      backgroundColor: context.colors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.r)),
       ),
@@ -43,7 +41,7 @@ class LanguageBottomSheet extends StatelessWidget {
             width: 45.w,
             height: 4.h,
             decoration: BoxDecoration(
-              color: AppColors.greyColor.withValues(alpha: 0.4),
+              color: context.colors.outline.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(10.r),
             ),
           ),
@@ -52,7 +50,11 @@ class LanguageBottomSheet extends StatelessWidget {
           // ── Title ────────────────────────────────────────────────
           Text(
             S.of(context).chooseLanguage,
-            style: getTextStyle().s18.w700.whiteColor,
+            style: context.textTheme.titleMedium?.copyWith(
+              color: context.colors.onSurface,
+              fontWeight: FontWeight.w700,
+              fontSize: 18.sp,
+            ),
           ),
           20.szH,
 
@@ -101,12 +103,12 @@ class _LanguageOptionTile extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         decoration: BoxDecoration(
-          color: AppColors.textFieldFillColor,
+          color: context.colors.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color: isSelected
-                ? AppColors.yellowColor
-                : AppColors.greyColor.withValues(alpha: 0.2),
+                ? context.colors.primary
+                : context.colors.outline.withValues(alpha: 0.2),
             width: isSelected ? 1.8.w : 1.w,
           ),
         ),
@@ -115,22 +117,29 @@ class _LanguageOptionTile extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: (isSelected
-                        ? getTextStyle().yellowColor.w700
-                        : getTextStyle().whiteColor.w600)
-                    .s16,
+                style: isSelected
+                    ? context.textTheme.titleMedium?.copyWith(
+                        color: context.colors.primary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16.sp,
+                      )
+                    : context.textTheme.titleMedium?.copyWith(
+                        color: context.colors.onSurface,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp,
+                      ),
               ),
             ),
             if (isSelected)
               Container(
                 padding: EdgeInsets.all(4.r),
-                decoration: const BoxDecoration(
-                  color: AppColors.yellowColor,
+                decoration: BoxDecoration(
+                  color: context.colors.primary,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.check_rounded,
-                  color: AppColors.whiteColor,
+                  color: context.colors.onPrimary,
                   size: 16.sp,
                 ),
               ),

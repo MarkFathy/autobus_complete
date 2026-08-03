@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/widgets/user_profile_avatar.dart';
 import 'package:autobus_complete/src/features/room/presentation/widgets/room_players_card.dart';
@@ -37,10 +35,10 @@ class PlayerActionsBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) => Container(
       padding: EdgeInsets.all(24.r),
       decoration: BoxDecoration(
-        color: AppColors.textFieldFillColor,
+        color: context.colors.surfaceContainerHighest,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         border: Border.all(
-          color: AppColors.yellowColor.withValues(alpha: 0.3),
+          color: context.colors.primary.withValues(alpha: 0.3),
           width: 1.w,
         ),
       ),
@@ -55,44 +53,52 @@ class PlayerActionsBottomSheet extends StatelessWidget {
           12.szH,
           Text(
             player.name,
-            style: getTextStyle().s18.bold.whiteColor,
+            style: context.textTheme.titleMedium?.copyWith(
+              color: context.colors.onSurface,
+              fontWeight: FontWeight.bold,
+              fontSize: 18.sp,
+            ),
             textAlign: TextAlign.center,
           ),
           20.szH,
           Divider(
-            color: AppColors.greyColor.withValues(alpha: 0.2),
+            color: context.colors.outline.withValues(alpha: 0.2),
             height: 1,
           ),
           16.szH,
 
           // ── Action 1: Make Host ───────────────────────────────────
           Material(
-            color: AppColors.scaffoldBackgroundColor,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(14.r),
             clipBehavior: Clip.antiAlias,
             child: ListTile(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 side: BorderSide(
-                  color: AppColors.yellowColor.withValues(alpha: 0.3),
+                  color: context.colors.primary.withValues(alpha: 0.3),
                   width: 1.w,
                 ),
               ),
               leading: Container(
                 padding: EdgeInsets.all(8.r),
                 decoration: BoxDecoration(
-                  color: AppColors.yellowColor.withValues(alpha: 0.15),
+                  color: context.colors.primaryContainer,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.workspace_premium_rounded,
-                  color: AppColors.yellowColor,
+                  color: context.colors.primary,
                   size: 22.sp,
                 ),
               ),
               title: Text(
                 S.of(context).makeHost,
-                style: getTextStyle().s14.w700.yellowColor,
+                style: context.textTheme.titleSmall?.copyWith(
+                  color: context.colors.primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.sp,
+                ),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -104,32 +110,36 @@ class PlayerActionsBottomSheet extends StatelessWidget {
 
           // ── Action 2: Kick Player ─────────────────────────────────
           Material(
-            color: AppColors.scaffoldBackgroundColor,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(14.r),
             clipBehavior: Clip.antiAlias,
             child: ListTile(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 side: BorderSide(
-                  color: AppColors.redColor.withValues(alpha: 0.3),
+                  color: context.colors.secondary.withValues(alpha: 0.3),
                   width: 1.w,
                 ),
               ),
               leading: Container(
                 padding: EdgeInsets.all(8.r),
                 decoration: BoxDecoration(
-                  color: AppColors.redColor.withValues(alpha: 0.15),
+                  color: context.colors.secondaryContainer,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.person_remove_rounded,
-                  color: AppColors.redColor,
+                  color: context.colors.secondary,
                   size: 22.sp,
                 ),
               ),
               title: Text(
                 S.of(context).kickPlayer,
-                style: getTextStyle().s14.w700.redColor,
+                style: context.textTheme.titleSmall?.copyWith(
+                  color: context.colors.secondary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.sp,
+                ),
               ),
               onTap: () {
                 Navigator.of(context).pop();

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:autobus_complete/gen/assets.gen.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/widgets/image_source_selection_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,11 +55,11 @@ class UserAvatarPicker extends StatelessWidget {
             padding: EdgeInsets.all(3.r),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.yellowColor, width: 2.5.w),
+              border: Border.all(color: context.colors.primary, width: 2.5.w),
             ),
             child: CircleAvatar(
               radius: radius.r,
-              backgroundColor: AppColors.textFieldFillColor,
+              backgroundColor: context.colors.surfaceContainerHighest,
               backgroundImage: _getImageProvider(),
             ),
           ),
@@ -88,12 +88,12 @@ class UserAvatarPicker extends StatelessWidget {
                 padding: EdgeInsets.all(2.r),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.yellowColor, width: 1.5.w),
+                  border: Border.all(color: context.colors.primary, width: 1.5.w),
                 ),
                 child: CircleAvatar(
                   radius: 16.r,
-                  backgroundColor: AppColors.textFieldFillColor,
-                  child: Icon(hasImage ? Icons.close : Icons.add, color: AppColors.whiteColor, size: 20.sp),
+                  backgroundColor: context.colors.surfaceContainerHighest,
+                  child: Icon(hasImage ? Icons.close : Icons.add, color: context.colors.onSurface, size: 20.sp),
                 ),
               ),
             ),

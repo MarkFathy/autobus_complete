@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,15 +20,15 @@ class GameTopBar extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: AppColors.textFieldFillColor,
+        color: context.colors.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
-          color: AppColors.yellowColor.withValues(alpha: 0.3),
+          color: context.colors.primary.withValues(alpha: 0.3),
           width: 1.w,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.blackColor.withValues(alpha: 0.25),
+            color: Colors.black.withValues(alpha: 0.25),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -43,10 +41,10 @@ class GameTopBar extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
             decoration: BoxDecoration(
-              color: AppColors.scaffoldBackgroundColor,
+              color: context.colors.surface,
               borderRadius: BorderRadius.circular(14.r),
               border: Border.all(
-                color: AppColors.yellowColor.withValues(alpha: 0.4),
+                color: context.colors.primary.withValues(alpha: 0.4),
                 width: 1.w,
               ),
             ),
@@ -54,13 +52,17 @@ class GameTopBar extends StatelessWidget {
               children: [
                 Icon(
                   Icons.flag_rounded,
-                  color: AppColors.yellowColor,
+                  color: context.colors.primary,
                   size: 18.sp,
                 ),
                 6.szW,
                 Text(
                   '${S.of(context).round} $currentRound/$totalRounds',
-                  style: getTextStyle().s14.bold.whiteColor,
+                  style: context.textTheme.titleSmall?.copyWith(
+                    color: context.colors.onSurface,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.sp,
+                  ),
                 ),
               ],
             ),
@@ -71,7 +73,11 @@ class GameTopBar extends StatelessWidget {
             children: [
               Text(
                 '${S.of(context).currentLetter}: ',
-                style: getTextStyle().s14.bold.yellowColor,
+                style: context.textTheme.titleSmall?.copyWith(
+                  color: context.colors.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.sp,
+                ),
               ),
               6.szW,
               Container(
@@ -79,18 +85,18 @@ class GameTopBar extends StatelessWidget {
                 height: 48.r,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.redColor.withValues(alpha: 0.25),
+                  color: context.colors.secondary.withValues(alpha: 0.25),
                   border: Border.all(
                     color: isShuffling
-                        ? AppColors.redColor.withValues(alpha: 0.5)
-                        : AppColors.redColor,
+                        ? context.colors.secondary.withValues(alpha: 0.5)
+                        : context.colors.secondary,
                     width: 2.w,
                   ),
                   boxShadow: isShuffling
                       ? []
                       : [
                           BoxShadow(
-                            color: AppColors.redColor.withValues(alpha: 0.35),
+                            color: context.colors.secondary.withValues(alpha: 0.35),
                             blurRadius: 12,
                             spreadRadius: 2,
                           ),
@@ -103,10 +109,10 @@ class GameTopBar extends StatelessWidget {
                     child: Text(
                       letter,
                       key: ValueKey<String>(letter),
-                      style: TextStyle(
+                      style: context.textTheme.titleLarge?.copyWith(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.whiteColor,
+                        color: context.colors.onSurface,
                       ),
                     ),
                   ),

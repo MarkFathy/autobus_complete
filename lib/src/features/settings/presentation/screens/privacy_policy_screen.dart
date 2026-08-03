@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
 import 'package:autobus_complete/src/core/widgets/app_loading_overlay.dart';

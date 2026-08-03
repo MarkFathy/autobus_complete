@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'package:autobus_complete/src/config/res/app_sizes.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/constants_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/helpers/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DefaultTextField extends StatefulWidget {
   final String? hint;
@@ -97,8 +95,7 @@ class DefaultTextField extends StatefulWidget {
   State<DefaultTextField> createState() => DefaultTextFieldState();
 }
 
-class DefaultTextFieldState extends State<DefaultTextField>
-    with SingleTickerProviderStateMixin {
+class DefaultTextFieldState extends State<DefaultTextField> with SingleTickerProviderStateMixin {
   late bool _isSecure;
   late final AnimationController _shakeController;
   late FocusNode _focusNode;
@@ -109,10 +106,7 @@ class DefaultTextFieldState extends State<DefaultTextField>
   void initState() {
     super.initState();
     _isSecure = widget.isPassword ?? false;
-    _shakeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
+    _shakeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
     if (widget.focusNode != null) {
       _focusNode = widget.focusNode!;
     } else {
@@ -175,16 +169,14 @@ class DefaultTextFieldState extends State<DefaultTextField>
       return;
     }
 
-    final valid =
-        Validators.validatePhone(widget.controller?.text ?? '') == null;
+    final valid = Validators.validatePhone(widget.controller?.text ?? '') == null;
 
     widget.validityNotifier!.value = valid;
   }
 
   @override
   Widget build(BuildContext context) {
-    final radius =
-        widget.borderRadius ?? BorderRadius.circular(AppCircular.r16);
+    final radius = widget.borderRadius ?? BorderRadius.circular(AppCircular.r16);
 
     Widget fieldWidget = Padding(
       padding: widget.padding ?? EdgeInsets.zero,
@@ -194,7 +186,13 @@ class DefaultTextFieldState extends State<DefaultTextField>
           if (widget.label != null) ...[
             Text(
               widget.label!,
-              style: widget.labelStyle ?? getTextStyle().whiteColor.s14.w400,
+              style:
+                  widget.labelStyle ??
+                  context.textTheme.bodyMedium?.copyWith(
+                    color: context.colors.onSurface,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
             ),
             SizedBox(height: AppSize.sH8),
           ],
@@ -207,32 +205,35 @@ class DefaultTextFieldState extends State<DefaultTextField>
             onChanged: widget.onChanged ?? _validateInput,
             onTap: widget.onTap,
             obscureText: widget.isPassword ?? false ? _isSecure : widget.secure,
-            keyboardType: widget.isPhone ?? false
-                ? TextInputType.phone
-                : widget.inputType,
+            keyboardType: widget.isPhone ?? false ? TextInputType.phone : widget.inputType,
             maxLength: widget.maxLength,
-            maxLines: widget.inputType == TextInputType.multiline
-                ? widget.maxLines ?? 7
-                : 1,
+            maxLines: widget.inputType == TextInputType.multiline ? widget.maxLines ?? 7 : 1,
             readOnly: widget.readOnly,
             textAlign: widget.textAlign!,
-            style: widget.style ?? getTextStyle().s16.yellowColor,
-            cursorColor: AppColors.yellowColor,
+            style:
+                widget.style ?? context.textTheme.bodyLarge?.copyWith(color: context.colors.primary, fontSize: 16.sp),
+            cursorColor: context.colors.primary,
             decoration: InputDecoration(
               isDense: true,
               contentPadding:
                   widget.contentPadding ??
-                  EdgeInsetsDirectional.only(
-                    top: AppPadding.pH20,
-                    bottom: AppPadding.pH20,
-                    start: AppPadding.pH12,
-                  ),
-              counterText: ConstantManager.emptyText,
+                  EdgeInsetsDirectional.only(top: AppPadding.pH20, bottom: AppPadding.pH20, start: AppPadding.pH12),
+              counterText: '',
               filled: widget.filled,
-              fillColor: widget.fillColor ?? AppColors.textFieldFillColor,
+              fillColor: widget.fillColor ?? context.colors.surfaceContainerHighest,
               hintText: widget.hint,
-              hintStyle: widget.hintStyle ?? getTextStyle().greyColor.s14.w400,
-              errorStyle: getTextStyle().redColor.s12.w400,
+              hintStyle:
+                  widget.hintStyle ??
+                  context.textTheme.bodyMedium?.copyWith(
+                    color: context.colors.onSurfaceVariant,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
+              errorStyle: context.textTheme.bodySmall?.copyWith(
+                color: context.colors.error,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+              ),
 
               prefixIcon: widget.prefixIcon,
               prefixIconConstraints: widget.prefixIconConstraints,
@@ -247,34 +248,26 @@ class DefaultTextFieldState extends State<DefaultTextField>
                         });
                       },
                       icon: Icon(
-                        _isSecure
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        color: AppColors.greyColor,
+                        _isSecure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                        color: context.colors.onSurfaceVariant,
                       ),
                     )
                   : widget.isPhone ?? false
                   ? _suffixIconWhenPhoneType(context)
                   : widget.suffixIcon,
 
-              enabledBorder: OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide.none,
-              ),
+              enabledBorder: OutlineInputBorder(borderRadius: radius, borderSide: BorderSide.none),
 
-              focusedBorder: OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide.none,
-              ),
+              focusedBorder: OutlineInputBorder(borderRadius: radius, borderSide: BorderSide.none),
 
               errorBorder: OutlineInputBorder(
                 borderRadius: radius,
-                borderSide: const BorderSide(color: AppColors.redColor),
+                borderSide: BorderSide(color: context.colors.error),
               ),
 
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: radius,
-                borderSide: const BorderSide(color: AppColors.redColor),
+                borderSide: BorderSide(color: context.colors.error),
               ),
             ),
           ),
@@ -294,12 +287,19 @@ class DefaultTextFieldState extends State<DefaultTextField>
 
 /// Phone suffix
 Widget _suffixIconWhenPhoneType(BuildContext context) => SizedBox(
-    width: AppSize.sW90,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('+966', style: getTextStyle().whiteColor.s14.w400),
-        SizedBox(width: AppSize.sW8),
-      ],
-    ),
-  );
+  width: AppSize.sW90,
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Text(
+        '+966',
+        style: context.textTheme.bodyMedium?.copyWith(
+          color: context.colors.onSurface,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      SizedBox(width: AppSize.sW8),
+    ],
+  ),
+);

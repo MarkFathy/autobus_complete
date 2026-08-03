@@ -4,7 +4,6 @@ import 'package:autobus_complete/src/config/res/app_sizes.dart';
 import 'package:autobus_complete/src/config/res/color_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CachedImage extends StatelessWidget {
   final String url;
@@ -95,9 +94,9 @@ class CachedImage extends StatelessWidget {
             shape: boxShape ?? BoxShape.rectangle,
             color: bgColor ?? AppColors.whiteColor.withValues(alpha: .5),
           ),
-          child: SpinKitCircle(
+          child: const CircularProgressIndicator(
             color: AppColors.whiteColor,
-            size: AppSize.sH30,
+            strokeWidth: 2,
           ),
         ),
         errorWidget: (context, url, error) => Container(

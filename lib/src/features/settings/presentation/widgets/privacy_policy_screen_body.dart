@@ -33,7 +33,11 @@ class PrivacyPolicyScreenBody extends StatelessWidget {
                         padding: EdgeInsets.all(24.r),
                         child: Text(
                           errorMessage,
-                          style: getTextStyle().s14.w600.redColor,
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            color: context.colors.secondary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14.sp,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -45,12 +49,19 @@ class PrivacyPolicyScreenBody extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: getTextStyle().s18.bold.yellowColor,
+                            style: context.textTheme.titleMedium?.copyWith(
+                              color: context.colors.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.sp,
+                            ),
                           ),
                           20.szH,
                           Text(
                             content,
-                            style: getTextStyle().s16.w400.whiteColor.copyWith(
+                            style: context.textTheme.titleMedium?.copyWith(
+                              color: context.colors.onSurface,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16.sp,
                               height: 1.6,
                             ),
                           ),

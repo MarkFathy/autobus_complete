@@ -73,7 +73,11 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
               appBar: CustomAppBar(
                 title: Text(
                   S.of(context).editProfile,
-                  style: getTextStyle().s20.w700.whiteColor,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.colors.onSurface,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.sp,
+                  ),
                 ),
               ),
               body: SingleChildScrollView(
@@ -99,9 +103,9 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                       DefaultTextField(
                         controller: _nameController,
                         hint: S.of(context).fullName,
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.person_outline_rounded,
-                          color: AppColors.greyColor,
+                          color: context.colors.onSurfaceVariant,
                         ),
                         validator: (value) =>
                             value == null || value.trim().isEmpty
@@ -114,9 +118,9 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                       DefaultTextField(
                         controller: _emailController,
                         hint: S.of(context).email,
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.email_outlined,
-                          color: AppColors.greyColor,
+                          color: context.colors.onSurfaceVariant,
                         ),
                         inputType: TextInputType.emailAddress,
                         validator: (value) => Validators.validateEmail(
@@ -145,11 +149,10 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                       // ── Change Password & Actions Group ───────────
                       DecoratedBox(
                         decoration: BoxDecoration(
-                          color: AppColors.textFieldFillColor,
+                          color: context.colors.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(20.r),
                           border: Border.all(
-                            color:
-                                AppColors.yellowColor.withValues(alpha: 0.3),
+                            color: context.colors.primary.withValues(alpha: 0.3),
                             width: 1.w,
                           ),
                         ),
@@ -164,27 +167,34 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                             leading: Container(
                               padding: EdgeInsets.all(8.r),
                               decoration: BoxDecoration(
-                                color:
-                                    AppColors.yellowColor.withValues(alpha: 0.15),
+                                color: context.colors.primaryContainer,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 Icons.lock_reset_rounded,
-                                color: AppColors.yellowColor,
+                                color: context.colors.primary,
                                 size: 22.sp,
                               ),
                             ),
                             title: Text(
                               S.of(context).changePassword,
-                              style: getTextStyle().s16.w600.whiteColor,
+                              style: context.textTheme.titleMedium?.copyWith(
+                                color: context.colors.onSurface,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16.sp,
+                              ),
                             ),
                             subtitle: Text(
                               S.of(context).changePasswordInfo,
-                              style: getTextStyle().s12.w400.greyColor,
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colors.onSurfaceVariant,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12.sp,
+                              ),
                             ),
                             trailing: Icon(
                               Icons.send_rounded,
-                              color: AppColors.yellowColor,
+                              color: context.colors.primary,
                               size: 18.sp,
                             ),
                             onTap: cubit.sendPasswordResetEmail,
@@ -196,10 +206,10 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                       // ── Delete Account Button ─────────────────────
                       DecoratedBox(
                         decoration: BoxDecoration(
-                          color: AppColors.textFieldFillColor,
+                          color: context.colors.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(20.r),
                           border: Border.all(
-                            color: AppColors.redColor.withValues(alpha: 0.4),
+                            color: context.colors.secondary.withValues(alpha: 0.4),
                             width: 1.w,
                           ),
                         ),
@@ -214,18 +224,22 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                             leading: Container(
                               padding: EdgeInsets.all(8.r),
                               decoration: BoxDecoration(
-                                color: AppColors.redColor.withValues(alpha: 0.15),
+                                color: context.colors.secondaryContainer,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 Icons.delete_forever_rounded,
-                                color: AppColors.redColor,
+                                color: context.colors.secondary,
                                 size: 22.sp,
                               ),
                             ),
                             title: Text(
                               S.of(context).deleteAccount,
-                              style: getTextStyle().s16.w600.redColor,
+                              style: context.textTheme.titleMedium?.copyWith(
+                                color: context.colors.secondary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16.sp,
+                              ),
                             ),
                             onTap: () {
                               unawaited(

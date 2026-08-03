@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:autobus_complete/gen/assets.gen.dart';
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/helpers/validators.dart';
 import 'package:autobus_complete/src/core/navigation/constants/imports_constants.dart';

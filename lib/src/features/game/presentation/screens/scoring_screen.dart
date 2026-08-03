@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/navigation/named_routes.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
@@ -103,7 +101,11 @@ class _ScoringScreenState extends State<ScoringScreen> {
                 showBackButton: false,
                 title: Text(
                   S.of(context).scoringTitle,
-                  style: getTextStyle().s20.w700.whiteColor,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.colors.onSurface,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.sp,
+                  ),
                 ),
               ),
               body: SafeArea(
@@ -116,10 +118,10 @@ class _ScoringScreenState extends State<ScoringScreen> {
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                       decoration: BoxDecoration(
-                        color: AppColors.textFieldFillColor,
+                        color: context.colors.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(16.r),
                         border: Border.all(
-                          color: AppColors.yellowColor.withValues(alpha: 0.3),
+                          color: context.colors.primary.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Row(
@@ -127,11 +129,19 @@ class _ScoringScreenState extends State<ScoringScreen> {
                         children: [
                           Text(
                             '${S.of(context).round} $currentRound/$totalRounds',
-                            style: getTextStyle().s16.bold.yellowColor,
+                            style: context.textTheme.titleMedium?.copyWith(
+                              color: context.colors.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.sp,
+                            ),
                           ),
                           Text(
                             '${S.of(context).currentLetter}: ${activeRoom?.currentLetter ?? 'أ'}',
-                            style: getTextStyle().s16.bold.whiteColor,
+                            style: context.textTheme.titleMedium?.copyWith(
+                              color: context.colors.onSurface,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.sp,
+                            ),
                           ),
                         ],
                       ),
@@ -151,10 +161,10 @@ class _ScoringScreenState extends State<ScoringScreen> {
                             margin: EdgeInsets.only(bottom: 16.h),
                             padding: EdgeInsets.all(14.r),
                             decoration: BoxDecoration(
-                              color: AppColors.textFieldFillColor,
+                              color: context.colors.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(20.r),
                               border: Border.all(
-                                color: AppColors.yellowColor.withValues(alpha: 0.25),
+                                color: context.colors.primary.withValues(alpha: 0.25),
                               ),
                             ),
                             child: Column(
@@ -171,7 +181,11 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                     Expanded(
                                       child: Text(
                                         player.name,
-                                        style: getTextStyle().s16.bold.whiteColor,
+                                        style: context.textTheme.titleMedium?.copyWith(
+                                          color: context.colors.onSurface,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.sp,
+                                        ),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -183,7 +197,7 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                   ],
                                 ),
                                 12.szH,
-                                const Divider(color: AppColors.greyColor, height: 1),
+                                Divider(color: context.colors.outline, height: 1),
                                 12.szH,
 
                                 // Categories Answers & Score Buttons
@@ -205,14 +219,26 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                             children: [
                                               Text(
                                                 cat.getLocalizedName(context),
-                                                style: getTextStyle().s12.w600.greyColor,
+                                                style: context.textTheme.bodySmall?.copyWith(
+                                                  color: context.colors.onSurfaceVariant,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12.sp,
+                                                ),
                                               ),
                                               2.szH,
                                               Text(
                                                 isEmpty ? S.of(context).noAnswerGiven : rawAnswer,
                                                 style: isEmpty
-                                                    ? getTextStyle().s12.w500.redColor
-                                                    : getTextStyle().s14.w700.whiteColor,
+                                                    ? context.textTheme.bodySmall?.copyWith(
+                                                        color: context.colors.secondary,
+                                                        fontWeight: FontWeight.w500,
+                                                        fontSize: 12.sp,
+                                                      )
+                                                    : context.textTheme.bodyMedium?.copyWith(
+                                                        color: context.colors.onSurface,
+                                                        fontWeight: FontWeight.w700,
+                                                        fontSize: 14.sp,
+                                                      ),
                                               ),
                                             ],
                                           ),
@@ -224,13 +250,17 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                           Container(
                                             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                                             decoration: BoxDecoration(
-                                              color: AppColors.redColor.withValues(alpha: 0.15),
+                                              color: context.colors.secondaryContainer,
                                               borderRadius: BorderRadius.circular(8.r),
-                                              border: Border.all(color: AppColors.redColor),
+                                              border: Border.all(color: context.colors.secondary),
                                             ),
                                             child: Text(
                                               '0',
-                                              style: getTextStyle().s12.bold.redColor,
+                                              style: context.textTheme.labelMedium?.copyWith(
+                                                color: context.colors.secondary,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12.sp,
+                                              ),
                                             ),
                                           )
                                         else if (isHost)
@@ -258,20 +288,28 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                                                   decoration: BoxDecoration(
                                                     color: isSelected
-                                                        ? AppColors.yellowColor
-                                                        : AppColors.scaffoldBackgroundColor,
+                                                        ? context.colors.primary
+                                                        : context.colors.surface,
                                                     borderRadius: BorderRadius.circular(8.r),
                                                     border: Border.all(
                                                       color: isSelected
-                                                          ? AppColors.yellowColor
-                                                          : AppColors.greyColor.withValues(alpha: 0.3),
+                                                          ? context.colors.primary
+                                                          : context.colors.outline.withValues(alpha: 0.3),
                                                     ),
                                                   ),
                                                   child: Text(
                                                     '$scoreVal',
                                                     style: isSelected
-                                                        ? getTextStyle().s12.bold.blackColor
-                                                        : getTextStyle().s12.bold.whiteColor,
+                                                        ? context.textTheme.labelMedium?.copyWith(
+                                                            color: context.colors.onPrimary,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 12.sp,
+                                                          )
+                                                        : context.textTheme.labelMedium?.copyWith(
+                                                            color: context.colors.onSurface,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 12.sp,
+                                                          ),
                                                   ),
                                                 ),
                                               );
@@ -282,13 +320,17 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                           Container(
                                             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                                             decoration: BoxDecoration(
-                                              color: AppColors.yellowColor.withValues(alpha: 0.2),
+                                              color: context.colors.primaryContainer,
                                               borderRadius: BorderRadius.circular(8.r),
-                                              border: Border.all(color: AppColors.yellowColor),
+                                              border: Border.all(color: context.colors.primary),
                                             ),
                                             child: Text(
                                               '$currentScore',
-                                              style: getTextStyle().s12.bold.yellowColor,
+                                              style: context.textTheme.labelMedium?.copyWith(
+                                                color: context.colors.primary,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12.sp,
+                                              ),
                                             ),
                                           ),
                                       ],
@@ -297,7 +339,7 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                 }),
 
                                 4.szH,
-                                const Divider(color: AppColors.greyColor, height: 1),
+                                Divider(color: context.colors.outline, height: 1),
                                 10.szH,
 
                                 // Round Score Footer (Below Last Answer)
@@ -306,18 +348,26 @@ class _ScoringScreenState extends State<ScoringScreen> {
                                   children: [
                                     Text(
                                       '${S.of(context).round} Score',
-                                      style: getTextStyle().s12.w600.greyColor,
+                                      style: context.textTheme.bodySmall?.copyWith(
+                                        color: context.colors.onSurfaceVariant,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12.sp,
+                                      ),
                                     ),
                                     Container(
                                       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                                       decoration: BoxDecoration(
-                                        color: AppColors.yellowColor.withValues(alpha: 0.15),
+                                        color: context.colors.primaryContainer,
                                         borderRadius: BorderRadius.circular(10.r),
-                                        border: Border.all(color: AppColors.yellowColor),
+                                        border: Border.all(color: context.colors.primary),
                                       ),
                                       child: Text(
                                         '${S.of(context).round}: $playerTotal',
-                                        style: getTextStyle().s12.bold.yellowColor,
+                                        style: context.textTheme.labelMedium?.copyWith(
+                                          color: context.colors.primary,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12.sp,
+                                        ),
                                       ),
                                     ),
                                   ],

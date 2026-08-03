@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/widgets/buttons/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +28,10 @@ class LeaveRoomBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) => Container(
       padding: EdgeInsets.all(24.r),
       decoration: BoxDecoration(
-        color: AppColors.textFieldFillColor,
+        color: context.colors.surfaceContainerHighest,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         border: Border.all(
-          color: AppColors.yellowColor.withValues(alpha: 0.3),
+          color: context.colors.primary.withValues(alpha: 0.3),
           width: 1.w,
         ),
       ),
@@ -44,16 +42,16 @@ class LeaveRoomBottomSheet extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(16.r),
             decoration: BoxDecoration(
-              color: AppColors.redColor.withValues(alpha: 0.15),
+              color: context.colors.secondaryContainer,
               shape: BoxShape.circle,
               border: Border.all(
-                color: AppColors.redColor,
+                color: context.colors.secondary,
                 width: 1.5.w,
               ),
             ),
             child: Icon(
               Icons.directions_bus_filled_rounded,
-              color: AppColors.redColor,
+              color: context.colors.secondary,
               size: 36.sp,
             ),
           ),
@@ -62,13 +60,21 @@ class LeaveRoomBottomSheet extends StatelessWidget {
           // ── Title & Confirmation Message ───────────────────────────
           Text(
             S.of(context).leaveRoom,
-            style: getTextStyle().s20.bold.whiteColor,
+            style: context.textTheme.titleMedium?.copyWith(
+              color: context.colors.onSurface,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
+            ),
             textAlign: TextAlign.center,
           ),
           8.szH,
           Text(
             S.of(context).leaveRoomConfirmation,
-            style: getTextStyle().s14.w500.greyColor,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colors.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
+              fontSize: 14.sp,
+            ),
             textAlign: TextAlign.center,
           ),
           24.szH,
@@ -79,7 +85,7 @@ class LeaveRoomBottomSheet extends StatelessWidget {
               Expanded(
                 child: CustomButton(
                   text: S.of(context).cancel,
-                  backgroundColor: AppColors.greyColor.withValues(alpha: 0.3),
+                  backgroundColor: context.colors.outline.withValues(alpha: 0.3),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -89,7 +95,7 @@ class LeaveRoomBottomSheet extends StatelessWidget {
               Expanded(
                 child: CustomButton(
                   text: S.of(context).yesLeave,
-                  backgroundColor: AppColors.redColor,
+                  backgroundColor: context.colors.secondary,
                   onPressed: () {
                     Navigator.of(context).pop();
                     onLeaveConfirmed();

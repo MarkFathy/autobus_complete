@@ -1,6 +1,4 @@
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/widgets/user_profile_avatar.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +26,10 @@ class SettingsUserHeader extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
           decoration: BoxDecoration(
-            color: AppColors.textFieldFillColor,
+            color: context.colors.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(20.r),
             border: Border.all(
-              color: AppColors.yellowColor.withValues(alpha: 0.3),
+              color: context.colors.primary.withValues(alpha: 0.3),
               width: 1.w,
             ),
           ),
@@ -52,14 +50,24 @@ class SettingsUserHeader extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: getTextStyle().s16.w700.whiteColor.ellipsis,
+                      style: context.textTheme.titleMedium?.copyWith(
+                        color: context.colors.onSurface,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16.sp,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     4.szH,
                     Text(
                       email,
-                      style: getTextStyle().s14.w400.greyColor.ellipsis,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colors.onSurfaceVariant,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14.sp,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

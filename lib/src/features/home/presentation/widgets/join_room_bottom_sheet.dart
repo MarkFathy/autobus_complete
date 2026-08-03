@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:autobus_complete/src/core/widgets/buttons/custom_button.dart';
@@ -17,7 +15,7 @@ class JoinRoomBottomSheet extends StatefulWidget {
   static Future<void> show(BuildContext context, {required ValueChanged<String> onJoinPressed}) => showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: AppColors.scaffoldBackgroundColor,
+    backgroundColor: context.colors.surface,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.r))),
     builder: (modalContext) => Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(modalContext).viewInsets.bottom),
@@ -80,16 +78,30 @@ class _JoinRoomBottomSheetState extends State<JoinRoomBottomSheet> {
           width: 45.w,
           height: 4.h,
           decoration: BoxDecoration(
-            color: AppColors.greyColor.withValues(alpha: 0.4),
+            color: context.colors.outline.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(10.r),
           ),
         ),
         24.szH,
 
         // ── Title & Subtitle ─────────────────────────────────────────
-        Text(S.of(context).joinGame, style: getTextStyle().s22.w700.whiteColor),
+        Text(
+          S.of(context).joinGame,
+          style: context.textTheme.titleMedium?.copyWith(
+            color: context.colors.onSurface,
+            fontWeight: FontWeight.w700,
+            fontSize: 22.sp,
+          ),
+        ),
         8.szH,
-        Text(S.of(context).enterRoomCode, style: getTextStyle().s14.w400.greyColor),
+        Text(
+          S.of(context).enterRoomCode,
+          style: context.textTheme.bodyMedium?.copyWith(
+            color: context.colors.onSurfaceVariant,
+            fontWeight: FontWeight.w400,
+            fontSize: 14.sp,
+          ),
+        ),
         60.szH,
 
         // ── 6-Digit PIN Fields ────────────────────────────────────────
@@ -107,19 +119,23 @@ class _JoinRoomBottomSheetState extends State<JoinRoomBottomSheet> {
                   focusNode: _focusNodes[index],
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
-                  style: getTextStyle().s22.w700.yellowColor,
+                  style: context.textTheme.titleLarge?.copyWith(
+                    color: context.colors.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 22.sp,
+                  ),
                   inputFormatters: [LengthLimitingTextInputFormatter(1), FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: AppColors.textFieldFillColor,
+                    fillColor: context.colors.surfaceContainerHighest,
                     contentPadding: EdgeInsets.zero,
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(color: AppColors.yellowColor.withValues(alpha: 0.3), width: 1.w),
+                      borderSide: BorderSide(color: context.colors.primary.withValues(alpha: 0.3), width: 1.w),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(color: AppColors.yellowColor, width: 2.w),
+                      borderSide: BorderSide(color: context.colors.primary, width: 2.w),
                     ),
                   ),
                   // Intercept the native "Paste" button to fill all 6 fields

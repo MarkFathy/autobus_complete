@@ -1,6 +1,4 @@
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,10 +23,10 @@ class CategoryInputCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: AppColors.textFieldFillColor,
+        color: context.colors.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: AppColors.yellowColor.withValues(alpha: 0.25),
+          color: context.colors.primary.withValues(alpha: 0.25),
           width: 1.w,
         ),
       ),
@@ -42,7 +40,11 @@ class CategoryInputCard extends StatelessWidget {
               8.szW,
               Text(
                 categoryName,
-                style: getTextStyle().s14.w700.yellowColor,
+                style: context.textTheme.titleSmall?.copyWith(
+                  color: context.colors.primary,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),
@@ -54,12 +56,20 @@ class CategoryInputCard extends StatelessWidget {
             focusNode: focusNode,
             onChanged: onChanged,
             textInputAction: textInputAction ?? TextInputAction.next,
-            style: getTextStyle().s14.w600.whiteColor,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colors.onSurface,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+            ),
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.scaffoldBackgroundColor,
+              fillColor: context.colors.surface,
               hintText: categoryName,
-              hintStyle: getTextStyle().s12.w400.greyColor,
+              hintStyle: context.textTheme.bodySmall?.copyWith(
+                color: context.colors.onSurfaceVariant,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+              ),
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 14.w,
                 vertical: 12.h,
@@ -67,14 +77,14 @@ class CategoryInputCard extends StatelessWidget {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
                 borderSide: BorderSide(
-                  color: AppColors.greyColor.withValues(alpha: 0.2),
+                  color: context.colors.outline.withValues(alpha: 0.2),
                   width: 1.w,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
                 borderSide: BorderSide(
-                  color: AppColors.yellowColor,
+                  color: context.colors.primary,
                   width: 1.5.w,
                 ),
               ),

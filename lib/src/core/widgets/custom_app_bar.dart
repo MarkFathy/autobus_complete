@@ -1,4 +1,4 @@
-import 'package:autobus_complete/src/config/res/color_manager.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,14 +41,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     width: 35,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.whiteColor),
+                      border: Border.all(color: context.colors.onSurface),
 
-                      color: AppColors.yellowColor,
+                      color: context.colors.primary,
                     ),
 
                     child: Icon(
                       Icons.arrow_back_ios_new_sharp,
-                      color: AppColors.whiteColor,
+                      color: context.colors.onSurface,
                       size: 26.sp,
                     ),
                   ),

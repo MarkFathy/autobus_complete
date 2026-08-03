@@ -1,7 +1,5 @@
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/presentation/widgets/category_chip.dart';
@@ -37,25 +35,37 @@ class CategoriesSelectorSection extends StatelessWidget {
           children: [
             Text(
               S.of(context).categories,
-              style: getTextStyle().s16.w600.whiteColor,
+              style: context.textTheme.titleMedium?.copyWith(
+                color: context.colors.onSurface,
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+              ),
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
               decoration: BoxDecoration(
                 color: isValid
-                    ? AppColors.yellowColor.withValues(alpha: 0.15)
-                    : AppColors.redColor.withValues(alpha: 0.15),
+                    ? context.colors.primaryContainer
+                    : context.colors.secondaryContainer,
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
-                  color: isValid ? AppColors.yellowColor : AppColors.redColor,
+                  color: isValid ? context.colors.primary : context.colors.secondary,
                   width: 1.w,
                 ),
               ),
               child: Text(
                 '${selectedCategories.length}/$total',
                 style: isValid
-                    ? getTextStyle().s12.w700.yellowColor
-                    : getTextStyle().s12.w700.redColor,
+                    ? context.textTheme.labelMedium?.copyWith(
+                        color: context.colors.primary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12.sp,
+                      )
+                    : context.textTheme.labelMedium?.copyWith(
+                        color: context.colors.secondary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12.sp,
+                      ),
               ),
             ),
           ],
@@ -63,7 +73,11 @@ class CategoriesSelectorSection extends StatelessWidget {
         6.szH,
         Text(
           S.of(context).selectAtLeast4Categories,
-          style: getTextStyle().s12.w400.greyColor,
+          style: context.textTheme.bodySmall?.copyWith(
+            color: context.colors.onSurfaceVariant,
+            fontWeight: FontWeight.w400,
+            fontSize: 12.sp,
+          ),
         ),
         14.szH,
 
@@ -94,21 +108,25 @@ class CategoriesSelectorSection extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             decoration: BoxDecoration(
-              color: AppColors.redColor.withValues(alpha: 0.1),
+              color: context.colors.secondaryContainer,
               borderRadius: BorderRadius.circular(10.r),
               border: Border.all(
-                color: AppColors.redColor.withValues(alpha: 0.4),
+                color: context.colors.secondary.withValues(alpha: 0.4),
                 width: 1.w,
               ),
             ),
             child: Row(
               children: [
-                Icon(Icons.warning_amber_rounded, color: AppColors.redColor, size: 18.sp),
+                Icon(Icons.warning_amber_rounded, color: context.colors.secondary, size: 18.sp),
                 8.szW,
                 Expanded(
                   child: Text(
                     S.of(context).selectAtLeast4Categories,
-                    style: getTextStyle().s12.w600.redColor,
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colors.secondary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12.sp,
+                    ),
                   ),
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:autobus_complete/gen/assets.gen.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,7 +10,7 @@ class UserProfileAvatar extends StatelessWidget {
   final String? imageUrl;
   final double radius;
   final double borderWidth;
-  final Color borderColor;
+  final Color? borderColor;
   final VoidCallback? onTap;
 
   const UserProfileAvatar({
@@ -19,7 +19,7 @@ class UserProfileAvatar extends StatelessWidget {
     this.imageUrl,
     this.radius = 18,
     this.borderWidth = 2,
-    this.borderColor = AppColors.yellowColor,
+    this.borderColor,
     this.onTap,
   });
 
@@ -47,13 +47,13 @@ class UserProfileAvatar extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: borderColor,
+            color: borderColor ?? context.colors.primary,
             width: borderWidth.w,
           ),
         ),
         child: CircleAvatar(
           radius: radius.r,
-          backgroundColor: AppColors.textFieldFillColor,
+          backgroundColor: context.colors.surfaceContainerHighest,
           backgroundImage: _getImageProvider(),
         ),
       ),

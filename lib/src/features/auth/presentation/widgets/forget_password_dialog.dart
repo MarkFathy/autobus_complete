@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/helpers/validators.dart';
 import 'package:autobus_complete/src/core/widgets/buttons/custom_button.dart';
@@ -25,7 +23,7 @@ class ForgetPasswordDialog extends StatefulWidget {
       showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
-        backgroundColor: AppColors.scaffoldBackgroundColor,
+        backgroundColor: context.colors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
@@ -87,7 +85,7 @@ class _ForgetPasswordDialogState extends State<ForgetPasswordDialog> {
                       width: 40.w,
                       height: 4.h,
                       decoration: BoxDecoration(
-                        color: AppColors.greyColor.withValues(alpha: 0.4),
+                        color: context.colors.outline.withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(2.r),
                       ),
                     ),
@@ -95,12 +93,20 @@ class _ForgetPasswordDialogState extends State<ForgetPasswordDialog> {
                   16.szH,
                   Text(
                     S.of(context).forgotPasswordTitle,
-                    style: getTextStyle().whiteColor.s20.bold,
+                    style: context.textTheme.titleLarge?.copyWith(
+                      color: context.colors.onSurface,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.sp,
+                    ),
                   ),
                   8.szH,
                   Text(
                     S.of(context).enterEmailToResetPassword,
-                    style: getTextStyle().greyColor.s14.w400,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colors.onSurfaceVariant,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                   20.szH,
                   DefaultTextField(

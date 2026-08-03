@@ -1,8 +1,6 @@
 import 'package:autobus_complete/gen/assets.gen.dart';
 import 'package:autobus_complete/generated/l10n.dart';
-import 'package:autobus_complete/src/config/res/color_manager.dart';
-import 'package:autobus_complete/src/config/res/font_manager.dart';
-import 'package:autobus_complete/src/config/res/text_style_extensions.dart';
+import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,12 +18,19 @@ class GoogleLoginButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.yellowColor, width: 1.5),
+        border: Border.all(color: context.colors.primary, width: 1.5),
       ),
       child: Row(
-        mainAxisAlignment: .center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(S.of(context).loginWithGoogle, style: getTextStyle().s22.blackColor.w700),
+          Text(
+            S.of(context).loginWithGoogle,
+            style: context.textTheme.titleLarge?.copyWith(
+              color: Colors.black,
+              fontSize: 22.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           10.szW,
           Assets.svgs.google.svg(width: 40.w, height: 40.h),
         ],
