@@ -111,6 +111,25 @@ class RoomModel extends RoomEntity {
       });
     }
 
+    final lastSeenMap = <String, int>{};
+    if (json['lastSeenMap'] != null && json['lastSeenMap'] is Map) {
+      (json['lastSeenMap'] as Map<String, dynamic>).forEach((key, val) {
+        if (val is num) {
+          lastSeenMap[key] = val.toInt();
+        }
+      });
+    }
+
+    final rawPlayersList = (json['players'] as List<dynamic>?) ?? [];
+    final parsedPlayers = rawPlayersList.map((p) {
+      final playerMap = Map<String, dynamic>.from(p as Map);
+      final playerId = playerMap['id']?.toString() ?? '';
+      if (lastSeenMap.containsKey(playerId)) {
+        playerMap['lastSeen'] = lastSeenMap[playerId];
+      }
+      return RoomPlayerModel.fromJson(playerMap);
+    }).toList();
+
     return RoomModel(
       roomCode: (json['roomCode'] as String?) ?? '',
       hostId: (json['hostId'] as String?) ?? '',
@@ -128,10 +147,7 @@ class RoomModel extends RoomEntity {
               ?.map((c) => RoomCategoryModel.fromJson(c as Map<String, dynamic>))
               .toList() ??
           [],
-      players: (json['players'] as List<dynamic>?)
-              ?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>))
-              .toList() ??
-          [],
+      players: parsedPlayers,
     );
   }
 

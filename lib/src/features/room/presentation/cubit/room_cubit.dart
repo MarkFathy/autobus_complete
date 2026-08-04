@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:autobus_complete/src/core/error/failure.dart';
 import 'package:autobus_complete/src/core/usecases/usecase.dart';
+import 'package:autobus_complete/src/features/room/data/models/room_model.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/clean_stale_players_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/create_room_usecase.dart';
@@ -51,6 +52,7 @@ class RoomCubit extends Cubit<RoomState> {
   Timer? _heartbeatTimer;
   RoomEntity? currentRoom;
   List<RoomCategoryEntity> availableCategories = [];
+  bool? _pendingReadyStatus;
 
   RoomCubit({
     required this.getCategoriesUseCase,
@@ -149,6 +151,31 @@ class RoomCubit extends Cubit<RoomState> {
     }
   }
 
+  bool _isVisuallyDifferent(RoomEntity? oldRoom, RoomEntity newRoom) {
+    if (oldRoom == null) return true;
+    if (oldRoom.status != newRoom.status) return true;
+    if (oldRoom.hostId != newRoom.hostId) return true;
+    if (oldRoom.rounds != newRoom.rounds) return true;
+    if (oldRoom.currentRound != newRoom.currentRound) return true;
+    if (oldRoom.currentLetter != newRoom.currentLetter) return true;
+    if (oldRoom.categories.length != newRoom.categories.length) return true;
+    if (oldRoom.players.length != newRoom.players.length) return true;
+
+    for (var i = 0; i < oldRoom.players.length; i++) {
+      final p1 = oldRoom.players[i];
+      final p2 = newRoom.players[i];
+      if (p1.id != p2.id ||
+          p1.isReady != p2.isReady ||
+          p1.isHost != p2.isHost ||
+          p1.score != p2.score ||
+          p1.name != p2.name ||
+          p1.photoUrl != p2.photoUrl) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Future<void> listenToRoom(String roomCode) async {
     _initLifecycleListener();
     _startHeartbeat(roomCode);
@@ -181,17 +208,63 @@ class RoomCubit extends Cubit<RoomState> {
               return;
             }
 
-            currentRoom = roomEntity;
-            _checkAndCleanStalePlayers(roomEntity);
+            // Apply pending optimistic ready status if server snapshot hasn't caught up yet
+            var adjustedRoomEntity = roomEntity;
+            if (_pendingReadyStatus != null && currentUserId != null) {
+              final serverPlayer = roomEntity.players.firstWhere(
+                (p) => p.id == currentUserId,
+                orElse: () => RoomPlayerModel(id: currentUserId, name: ''),
+              );
+              if (serverPlayer.isReady == _pendingReadyStatus) {
+                // Server has confirmed our toggle!
+                _pendingReadyStatus = null;
+              } else {
+                // Server snapshot is still old, override isReady with pending status to prevent flicker
+                final overriddenPlayers = roomEntity.players.map((p) {
+                  if (p.id == currentUserId) {
+                    return RoomPlayerModel(
+                      id: p.id,
+                      name: p.name,
+                      photoUrl: p.photoUrl,
+                      isHost: p.isHost,
+                      isReady: _pendingReadyStatus!,
+                      score: p.score,
+                      lastSeen: p.lastSeen,
+                    );
+                  }
+                  return p;
+                }).toList();
+                adjustedRoomEntity = RoomModel(
+                  roomCode: roomEntity.roomCode,
+                  hostId: roomEntity.hostId,
+                  status: roomEntity.status,
+                  rounds: roomEntity.rounds,
+                  currentRound: roomEntity.currentRound,
+                  currentLetter: roomEntity.currentLetter,
+                  usedLetters: roomEntity.usedLetters,
+                  roundAnswers: roomEntity.roundAnswers,
+                  roundScores: roomEntity.roundScores,
+                  categories: roomEntity.categories,
+                  players: overriddenPlayers,
+                );
+              }
+            }
+
+            final needsEmitting = isFirstSnapshot || _isVisuallyDifferent(currentRoom, adjustedRoomEntity);
+            currentRoom = adjustedRoomEntity;
+            _checkAndCleanStalePlayers(adjustedRoomEntity);
 
             if (isFirstSnapshot && !completer.isCompleted) {
               isFirstSnapshot = false;
               completer.complete();
             }
-            if (roomEntity.status == 'playing') {
-              emit(RoomGameStarted(roomEntity));
-            } else {
-              emit(RoomUpdated(roomEntity));
+
+            if (needsEmitting) {
+              if (adjustedRoomEntity.status == 'playing') {
+                emit(RoomGameStarted(adjustedRoomEntity));
+              } else {
+                emit(RoomUpdated(adjustedRoomEntity));
+              }
             }
           },
         );
@@ -215,7 +288,88 @@ class RoomCubit extends Cubit<RoomState> {
 
   Future<void> toggleReadyStatus() async {
     if (currentRoom == null) return;
-    await toggleReadyUseCase(currentRoom!.roomCode);
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUserId == null) return;
+
+    final currentPlayer = currentRoom!.players.firstWhere(
+      (p) => p.id == currentUserId,
+      orElse: () => RoomPlayerModel(id: currentUserId, name: ''),
+    );
+    if (currentPlayer.isHost) return;
+
+    final newReadyStatus = !currentPlayer.isReady;
+    _pendingReadyStatus = newReadyStatus;
+
+    // Optimistic UI Update for zero-lag button response
+    final updatedPlayers = currentRoom!.players.map((p) {
+      if (p.id == currentUserId) {
+        return RoomPlayerModel(
+          id: p.id,
+          name: p.name,
+          photoUrl: p.photoUrl,
+          isHost: p.isHost,
+          isReady: newReadyStatus,
+          score: p.score,
+          lastSeen: p.lastSeen,
+        );
+      }
+      return p;
+    }).toList();
+
+    currentRoom = RoomModel(
+      roomCode: currentRoom!.roomCode,
+      hostId: currentRoom!.hostId,
+      status: currentRoom!.status,
+      rounds: currentRoom!.rounds,
+      currentRound: currentRoom!.currentRound,
+      currentLetter: currentRoom!.currentLetter,
+      usedLetters: currentRoom!.usedLetters,
+      roundAnswers: currentRoom!.roundAnswers,
+      roundScores: currentRoom!.roundScores,
+      categories: currentRoom!.categories,
+      players: updatedPlayers,
+    );
+
+    emit(RoomUpdated(currentRoom!));
+
+    final result = await toggleReadyUseCase(currentRoom!.roomCode);
+    result.fold(
+      (failure) {
+        _pendingReadyStatus = null;
+        if (currentRoom != null) {
+          final revertedPlayers = currentRoom!.players.map((p) {
+            if (p.id == currentUserId) {
+              return RoomPlayerModel(
+                id: p.id,
+                name: p.name,
+                photoUrl: p.photoUrl,
+                isHost: p.isHost,
+                isReady: !newReadyStatus,
+                score: p.score,
+                lastSeen: p.lastSeen,
+              );
+            }
+            return p;
+          }).toList();
+          currentRoom = RoomModel(
+            roomCode: currentRoom!.roomCode,
+            hostId: currentRoom!.hostId,
+            status: currentRoom!.status,
+            rounds: currentRoom!.rounds,
+            currentRound: currentRoom!.currentRound,
+            currentLetter: currentRoom!.currentLetter,
+            usedLetters: currentRoom!.usedLetters,
+            roundAnswers: currentRoom!.roundAnswers,
+            roundScores: currentRoom!.roundScores,
+            categories: currentRoom!.categories,
+            players: revertedPlayers,
+          );
+          emit(RoomUpdated(currentRoom!));
+        }
+        emit(RoomError(failure.serverException.message));
+      },
+      (_) {},
+    );
   }
 
   Future<void> updateRoomSettings({required int rounds, required List<RoomCategoryEntity> categories}) async {
