@@ -98,7 +98,7 @@ class RoomLobbyScreenBody extends StatelessWidget {
                         Flexible(
                           child: Text(
                             !allOtherPlayersReady
-                                ? S.of(context).waitingForOtherPlayers
+                                ? S.of(context).waitingInTheLoppy
                                 : S.of(context).selectAtLeast4Categories,
                             style: context.textTheme.bodySmall?.copyWith(
                               color: context.colors.primary,

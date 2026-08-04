@@ -91,6 +91,7 @@
     "roomCode": "رمز الغرفة",
     "roomCodeCopied": "تم نسخ رمز الغرفة بنجاح!",
     "waitingForOtherPlayers": "في انتظار الهوست لحساب النقاط",
+    "waitingInTheLoppy": "في انتظار الاعبين",
     "ready": "جاهز",
     "unReady": "غير جاهز",
     "leaveRoom": "مغادرة الغرفة",

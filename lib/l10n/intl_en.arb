@@ -92,6 +92,7 @@
     "roomCode": "Room Code",
     "roomCodeCopied": "Room code copied successfully!",
     "waitingForOtherPlayers": "Waiting for host to calculate scores",
+    "waitingInTheLoppy": "ًWaiting for the Players",
     "ready": "Ready",
     "unReady": "Not Ready",
     "leaveRoom": "Leave Room",
