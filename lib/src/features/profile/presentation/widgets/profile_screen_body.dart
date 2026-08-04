@@ -58,6 +58,16 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
             );
             unawaited(Go.offAllNamed(NamedRoutes.login));
           } else if (state is ProfileError) {
+            if (state.message == S.of(context).firebaseUserDisabled ||
+                state.message == S.of(context).accountDeletedMessage ||
+                state.message.contains('disabled') ||
+                state.message.contains('تعطيل') ||
+                state.message.contains('banned') ||
+                state.message.contains('حظر') ||
+                state.message.contains('deleted') ||
+                state.message.contains('حذف')) {
+              unawaited(Go.offAllNamed(NamedRoutes.login));
+            }
             CustomSnackBar.showError(context, message: state.message);
           }
         },

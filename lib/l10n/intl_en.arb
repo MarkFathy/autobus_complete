@@ -159,5 +159,6 @@
     "roundScore": "Round",
     "totalScore": "Total Score",
     "roomIsFull": "The room is full",
-    "playAgain": "Play Again"
+    "playAgain": "Play Again",
+    "accountDeletedMessage": "This user account has been deleted"
 }

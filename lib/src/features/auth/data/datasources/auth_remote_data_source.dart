@@ -65,6 +65,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final docSnapshot = await firestore.collection('users').doc(refreshedUser.uid).get();
       final existingData = docSnapshot.data();
 
+      if (existingData != null) {
+        if (existingData['isBanned'] == true ||
+            existingData['isDeleted'] == true ||
+            existingData['status'] == 'banned' ||
+            existingData['status'] == 'disabled' ||
+            existingData['disabled'] == true) {
+          await firebaseAuth.signOut();
+          await authLocalDataSource.clearToken();
+          await authLocalDataSource.saveUserLoggedIn(value: false);
+          throw Exception(S.current.firebaseUserDisabled);
+        }
+      }
+
       final resolvedName = (existingData?['name'] as String?)?.isNotEmpty ?? false
           ? existingData!['name'] as String
           : (refreshedUser.displayName ?? '');
@@ -208,6 +221,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
     final docSnapshot = await firestore.collection('users').doc(user.uid).get();
     final existingData = docSnapshot.data();
+
+    if (existingData != null) {
+      if (existingData['isBanned'] == true ||
+          existingData['isDeleted'] == true ||
+          existingData['status'] == 'banned' ||
+          existingData['status'] == 'disabled' ||
+          existingData['disabled'] == true) {
+        await firebaseAuth.signOut();
+        try {
+          await googleSignIn.signOut();
+        } on Object catch (_) {}
+        await authLocalDataSource.clearToken();
+        await authLocalDataSource.saveUserLoggedIn(value: false);
+        throw Exception(S.current.firebaseUserDisabled);
+      }
+    }
 
     final resolvedName = (existingData?['name'] as String?)?.isNotEmpty ?? false
         ? existingData!['name'] as String

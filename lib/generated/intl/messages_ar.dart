@@ -105,6 +105,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "فشل الاتصال بالشبكة، يرجى التحقق من الاتصال بالإنترنت"),
         "firebaseTooManyRequests": MessageLookupByLibrary.simpleMessage(
             "تم حظر المحاولات مؤقتاً لكثرة المحاولات الخاطئة، يرجى المحاولة لاحقاً"),
+        "accountDeletedMessage":
+            MessageLookupByLibrary.simpleMessage("تم حذف هذا الحساب"),
         "firebaseUserDisabled": MessageLookupByLibrary.simpleMessage(
             "تم تعطيل هذا الحساب بواسطة الإدارة"),
         "firebaseUserNotFound": MessageLookupByLibrary.simpleMessage(

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:autobus_complete/src/features/complaints/domain/entities/complaint_entity.dart';
 import 'package:autobus_complete/src/features/complaints/domain/usecases/delete_complaint_usecase.dart';
 import 'package:autobus_complete/src/features/complaints/domain/usecases/get_complaints_stream_usecase.dart';

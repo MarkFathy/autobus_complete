@@ -1499,6 +1499,16 @@ class S {
       args: [],
     );
   }
+
+  /// `This user account has been deleted`
+  String get accountDeletedMessage {
+    return Intl.message(
+      'This user account has been deleted',
+      name: 'accountDeletedMessage',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
