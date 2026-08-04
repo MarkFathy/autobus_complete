@@ -215,4 +215,30 @@ class RoomRepositoryImpl implements RoomRepository {
       return Left(_failure('RoomRepository.endGame', e));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updatePlayerHeartbeat({required String roomCode}) async {
+    try {
+      await remoteDataSource.updatePlayerHeartbeat(roomCode: roomCode);
+      return const Right(null);
+    } on Object catch (e) {
+      return Left(_failure('RoomRepository.updatePlayerHeartbeat', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> cleanStalePlayers({
+    required String roomCode,
+    required int timeoutSeconds,
+  }) async {
+    try {
+      await remoteDataSource.cleanStalePlayers(
+        roomCode: roomCode,
+        timeoutSeconds: timeoutSeconds,
+      );
+      return const Right(null);
+    } on Object catch (e) {
+      return Left(_failure('RoomRepository.cleanStalePlayers', e));
+    }
+  }
 }

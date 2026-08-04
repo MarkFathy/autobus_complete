@@ -4,6 +4,7 @@ import 'package:autobus_complete/src/core/error/failure.dart';
 import 'package:autobus_complete/src/core/usecases/usecase.dart';
 
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/clean_stale_players_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/create_room_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/end_game_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/get_categories_usecase.dart';
@@ -18,11 +19,13 @@ import 'package:autobus_complete/src/features/room/domain/usecases/start_next_ro
 import 'package:autobus_complete/src/features/room/domain/usecases/submit_round_answers_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/toggle_ready_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/update_category_score_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/update_player_heartbeat_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/update_room_settings_usecase.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_state.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RoomCubit extends Cubit<RoomState> {
@@ -41,8 +44,12 @@ class RoomCubit extends Cubit<RoomState> {
   final SubmitRoundAnswersUseCase submitRoundAnswersUseCase;
   final UpdateCategoryScoreUseCase updateCategoryScoreUseCase;
   final EndGameUseCase endGameUseCase;
+  final UpdatePlayerHeartbeatUseCase updatePlayerHeartbeatUseCase;
+  final CleanStalePlayersUseCase cleanStalePlayersUseCase;
 
   StreamSubscription<Either<Failure, RoomEntity>>? _roomSubscription;
+  AppLifecycleListener? _lifecycleListener;
+  Timer? _heartbeatTimer;
   RoomEntity? currentRoom;
   List<RoomCategoryEntity> availableCategories = [];
 
@@ -62,6 +69,8 @@ class RoomCubit extends Cubit<RoomState> {
     required this.submitRoundAnswersUseCase,
     required this.updateCategoryScoreUseCase,
     required this.endGameUseCase,
+    required this.updatePlayerHeartbeatUseCase,
+    required this.cleanStalePlayersUseCase,
   }) : super(RoomInitial());
 
   Future<List<RoomCategoryEntity>> fetchCategories() async {
@@ -96,7 +105,60 @@ class RoomCubit extends Cubit<RoomState> {
     });
   }
 
+  void _initLifecycleListener() {
+    _lifecycleListener?.dispose();
+    _lifecycleListener = AppLifecycleListener(
+      onDetach: () {
+        if (currentRoom != null) {
+          unawaited(leaveRoom());
+        }
+      },
+    );
+  }
+
+  void _startHeartbeat(String roomCode) {
+    _heartbeatTimer?.cancel();
+    unawaited(updatePlayerHeartbeatUseCase(roomCode));
+    _heartbeatTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      if (currentRoom != null) {
+        unawaited(updatePlayerHeartbeatUseCase(roomCode));
+      }
+    });
+  }
+
+  void _stopHeartbeatAndListener() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
+    _lifecycleListener?.dispose();
+    _lifecycleListener = null;
+  }
+
+  void _checkAndCleanStalePlayers(RoomEntity room) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    const timeoutMs = 15000;
+
+    final hasStalePlayer = room.players.any(
+      (p) => p.lastSeen != null && (now - p.lastSeen!) > timeoutMs,
+    );
+
+    if (!hasStalePlayer) return;
+
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    final activePlayers = room.players.where(
+      (p) => p.lastSeen == null || (now - p.lastSeen!) <= timeoutMs,
+    ).toList();
+
+    final isCleaner = activePlayers.isNotEmpty && activePlayers.first.id == currentUserId;
+    if (isCleaner) {
+      unawaited(cleanStalePlayersUseCase(
+        CleanStalePlayersParams(roomCode: room.roomCode),
+      ));
+    }
+  }
+
   Future<void> listenToRoom(String roomCode) async {
+    _initLifecycleListener();
+    _startHeartbeat(roomCode);
     unawaited(_roomSubscription?.cancel());
     final completer = Completer<void>();
     var isFirstSnapshot = true;
@@ -115,6 +177,7 @@ class RoomCubit extends Cubit<RoomState> {
             final isCurrentPlayerInRoom = currentUserId != null && roomEntity.players.any((p) => p.id == currentUserId);
 
             if (!isCurrentPlayerInRoom && currentRoom != null) {
+              _stopHeartbeatAndListener();
               unawaited(_roomSubscription?.cancel());
               _roomSubscription = null;
               currentRoom = null;
@@ -126,6 +189,8 @@ class RoomCubit extends Cubit<RoomState> {
             }
 
             currentRoom = roomEntity;
+            _checkAndCleanStalePlayers(roomEntity);
+
             if (isFirstSnapshot && !completer.isCompleted) {
               isFirstSnapshot = false;
               completer.complete();
@@ -180,6 +245,7 @@ class RoomCubit extends Cubit<RoomState> {
   }
 
   Future<void> leaveRoom() async {
+    _stopHeartbeatAndListener();
     final roomCodeToLeave = currentRoom?.roomCode;
     unawaited(_roomSubscription?.cancel());
     _roomSubscription = null;
@@ -243,6 +309,7 @@ class RoomCubit extends Cubit<RoomState> {
 
   @override
   Future<void> close() {
+    _stopHeartbeatAndListener();
     unawaited(_roomSubscription?.cancel());
     return super.close();
   }

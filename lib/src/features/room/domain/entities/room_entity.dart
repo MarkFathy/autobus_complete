@@ -65,6 +65,7 @@ class RoomPlayerEntity extends Equatable {
   final bool isHost;
   final bool isReady;
   final int score;
+  final int? lastSeen;
 
   const RoomPlayerEntity({
     required this.id,
@@ -73,10 +74,11 @@ class RoomPlayerEntity extends Equatable {
     this.isHost = false,
     this.isReady = false,
     this.score = 0,
+    this.lastSeen,
   });
 
   @override
-  List<Object?> get props => [id, name, photoUrl, isHost, isReady, score];
+  List<Object?> get props => [id, name, photoUrl, isHost, isReady, score, lastSeen];
 }
 
 class RoomEntity extends Equatable {

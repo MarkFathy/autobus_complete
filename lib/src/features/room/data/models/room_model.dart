@@ -39,6 +39,7 @@ class RoomPlayerModel extends RoomPlayerEntity {
     super.isHost = false,
     super.isReady = false,
     super.score = 0,
+    super.lastSeen,
   });
 
   factory RoomPlayerModel.fromJson(Map<String, dynamic> json) => RoomPlayerModel(
@@ -48,6 +49,7 @@ class RoomPlayerModel extends RoomPlayerEntity {
       isHost: (json['isHost'] as bool?) ?? false,
       isReady: (json['isReady'] as bool?) ?? false,
       score: (json['score'] as int?) ?? 0,
+      lastSeen: json['lastSeen'] as int?,
     );
 
   Map<String, dynamic> toJson() => {
@@ -57,6 +59,7 @@ class RoomPlayerModel extends RoomPlayerEntity {
         'isHost': isHost,
         'isReady': isReady,
         'score': score,
+        'lastSeen': lastSeen,
       };
 
   factory RoomPlayerModel.fromEntity(RoomPlayerEntity entity) => RoomPlayerModel(
@@ -66,6 +69,7 @@ class RoomPlayerModel extends RoomPlayerEntity {
       isHost: entity.isHost,
       isReady: entity.isReady,
       score: entity.score,
+      lastSeen: entity.lastSeen,
     );
 }
 

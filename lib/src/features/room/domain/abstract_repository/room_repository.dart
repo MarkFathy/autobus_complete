@@ -39,4 +39,9 @@ abstract class RoomRepository {
     required int score,
   });
   Future<Either<Failure, void>> endGame({required String roomCode});
+  Future<Either<Failure, void>> updatePlayerHeartbeat({required String roomCode});
+  Future<Either<Failure, void>> cleanStalePlayers({
+    required String roomCode,
+    required int timeoutSeconds,
+  });
 }

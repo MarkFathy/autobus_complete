@@ -28,6 +28,7 @@ import 'package:autobus_complete/src/features/profile/presentation/cubit/profile
 import 'package:autobus_complete/src/features/room/data/datasources/room_remote_data_source.dart';
 import 'package:autobus_complete/src/features/room/data/repositories/room_repository_impl.dart';
 import 'package:autobus_complete/src/features/room/domain/abstract_repository/room_repository.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/clean_stale_players_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/create_room_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/end_game_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/get_categories_usecase.dart';
@@ -42,6 +43,7 @@ import 'package:autobus_complete/src/features/room/domain/usecases/start_next_ro
 import 'package:autobus_complete/src/features/room/domain/usecases/submit_round_answers_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/toggle_ready_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/update_category_score_usecase.dart';
+import 'package:autobus_complete/src/features/room/domain/usecases/update_player_heartbeat_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/update_room_settings_usecase.dart';
 import 'package:autobus_complete/src/features/room/presentation/cubit/room_cubit.dart';
 import 'package:autobus_complete/src/features/settings/data/datasources/app_info_remote_data_source.dart';
@@ -133,6 +135,8 @@ Future<void> setupServiceLocator() async {
         submitRoundAnswersUseCase: sl(),
         updateCategoryScoreUseCase: sl(),
         endGameUseCase: sl(),
+        updatePlayerHeartbeatUseCase: sl(),
+        cleanStalePlayersUseCase: sl(),
       ),
     )
     // Use cases
@@ -151,6 +155,8 @@ Future<void> setupServiceLocator() async {
     ..registerLazySingleton(() => SubmitRoundAnswersUseCase(sl()))
     ..registerLazySingleton(() => UpdateCategoryScoreUseCase(sl()))
     ..registerLazySingleton(() => EndGameUseCase(sl()))
+    ..registerLazySingleton(() => UpdatePlayerHeartbeatUseCase(sl()))
+    ..registerLazySingleton(() => CleanStalePlayersUseCase(sl()))
     // Repository
     ..registerLazySingleton<RoomRepository>(() => RoomRepositoryImpl(remoteDataSource: sl()))
     // Data sources
