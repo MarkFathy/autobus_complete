@@ -10,7 +10,7 @@ class CleanStalePlayersParams extends Equatable {
 
   const CleanStalePlayersParams({
     required this.roomCode,
-    this.timeoutSeconds = 15,
+    this.timeoutSeconds = 10,
   });
 
   @override

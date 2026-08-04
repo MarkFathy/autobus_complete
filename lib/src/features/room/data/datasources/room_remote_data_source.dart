@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:autobus_complete/generated/l10n.dart';
 import 'package:autobus_complete/src/core/helpers/app_letters.dart';
 import 'package:autobus_complete/src/features/room/data/models/room_model.dart';
@@ -8,10 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class RoomRemoteDataSource {
   Future<List<RoomCategoryModel>> getCategories();
-  Future<String> createRoom({
-    required int rounds,
-    required List<RoomCategoryEntity> categories,
-  });
+  Future<String> createRoom({required int rounds, required List<RoomCategoryEntity> categories});
   Future<void> joinRoom({required String roomCode});
   Stream<RoomModel?> listenToRoom({required String roomCode});
   Future<void> toggleReadyStatus({required String roomCode});
@@ -22,10 +20,7 @@ abstract class RoomRemoteDataSource {
   });
   Future<void> startGame({required String roomCode});
   Future<void> startNextRound({required String roomCode});
-  Future<void> submitRoundAnswers({
-    required String roomCode,
-    required Map<String, String> answers,
-  });
+  Future<void> submitRoundAnswers({required String roomCode, required Map<String, String> answers});
   Future<void> updateCategoryScore({
     required String roomCode,
     required String playerId,
@@ -35,29 +30,17 @@ abstract class RoomRemoteDataSource {
   Future<void> endGame({required String roomCode});
   Future<void> playAgain({required String roomCode});
   Future<void> leaveRoom({required String roomCode});
-  Future<void> makeHost({
-    required String roomCode,
-    required String newHostId,
-  });
-  Future<void> kickPlayer({
-    required String roomCode,
-    required String playerId,
-  });
+  Future<void> makeHost({required String roomCode, required String newHostId});
+  Future<void> kickPlayer({required String roomCode, required String playerId});
   Future<void> updatePlayerHeartbeat({required String roomCode});
-  Future<void> cleanStalePlayers({
-    required String roomCode,
-    required int timeoutSeconds,
-  });
+  Future<void> cleanStalePlayers({required String roomCode, required int timeoutSeconds});
 }
 
 class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
   final FirebaseFirestore firestore;
   final FirebaseAuth firebaseAuth;
 
-  RoomRemoteDataSourceImpl({
-    required this.firestore,
-    required this.firebaseAuth,
-  });
+  RoomRemoteDataSourceImpl({required this.firestore, required this.firebaseAuth});
 
   String _generateRandom6DigitCode() {
     final random = Random();
@@ -70,9 +53,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     try {
       final snapshot = await firestore.collection('categories').get();
       if (snapshot.docs.isNotEmpty) {
-        final list = snapshot.docs
-            .map((doc) => RoomCategoryModel.fromJson({'id': doc.id, ...doc.data()}))
-            .toList();
+        final list = snapshot.docs.map((doc) => RoomCategoryModel.fromJson({'id': doc.id, ...doc.data()})).toList();
         final ordered = RoomCategoryEntity.getOrderedCategories(list);
         return ordered
             .map((e) => RoomCategoryModel(id: e.id, nameAr: e.nameAr, nameEn: e.nameEn, icon: e.icon))
@@ -98,10 +79,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
   }
 
   @override
-  Future<String> createRoom({
-    required int rounds,
-    required List<RoomCategoryEntity> categories,
-  }) async {
+  Future<String> createRoom({required int rounds, required List<RoomCategoryEntity> categories}) async {
     final user = firebaseAuth.currentUser;
     if (user == null) {
       throw Exception(S.current.firebaseUserNotFound);
@@ -127,9 +105,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
         ? userData['photoUrl'] as String?
         : user.photoURL;
 
-    final categoryModels = categories
-        .map(RoomCategoryModel.fromEntity)
-        .toList();
+    final categoryModels = categories.map(RoomCategoryModel.fromEntity).toList();
 
     final hostPlayer = RoomPlayerModel(
       id: user.uid,
@@ -150,10 +126,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       players: [hostPlayer],
     );
 
-    await firestore
-        .collection('rooms')
-        .doc(roomCode)
-        .set(roomModel.toJson());
+    await firestore.collection('rooms').doc(roomCode).set(roomModel.toJson());
 
     return roomCode;
   }
@@ -199,16 +172,13 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
             isHost: p.isHost,
             isReady: p.isReady,
             score: p.score,
+            lastSeen: p.lastSeen ?? DateTime.now().millisecondsSinceEpoch,
           );
         }
-        return p;
+        return RoomPlayerModel.fromEntity(p);
       }).toList();
 
-      await docRef.update({
-        'players': updatedPlayersList
-            .map((p) => RoomPlayerModel.fromEntity(p).toJson())
-            .toList(),
-      });
+      await docRef.update({'players': updatedPlayersList.map((p) => RoomPlayerModel.fromEntity(p).toJson()).toList()});
       return;
     }
 
@@ -223,33 +193,22 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       lastSeen: DateTime.now().millisecondsSinceEpoch,
     );
 
-    final updatedPlayers = List<RoomPlayerModel>.from(
-      room.players.map((p) => RoomPlayerModel.fromJson({
-            'id': p.id,
-            'name': p.name,
-            'photoUrl': p.photoUrl,
-            'isHost': p.isHost,
-            'isReady': p.isReady,
-            'score': p.score,
-          })),
-    )..add(newPlayer);
+    final updatedPlayers = room.players
+        .map(RoomPlayerModel.fromEntity)
+        .toList()
+      ..add(newPlayer);
 
-    await docRef.update({
-      'players': updatedPlayers.map((p) => p.toJson()).toList(),
-    });
+    await docRef.update({'players': updatedPlayers.map((p) => p.toJson()).toList()});
   }
 
   @override
-  Stream<RoomModel?> listenToRoom({required String roomCode}) => firestore
-        .collection('rooms')
-        .doc(roomCode)
-        .snapshots()
-        .map((snapshot) {
-      if (!snapshot.exists || snapshot.data() == null) {
-        return null;
-      }
-      return RoomModel.fromJson(snapshot.data()!);
-    });
+  Stream<RoomModel?> listenToRoom({required String roomCode}) =>
+      firestore.collection('rooms').doc(roomCode).snapshots().map((snapshot) {
+        if (!snapshot.exists || snapshot.data() == null) {
+          return null;
+        }
+        return RoomModel.fromJson(snapshot.data()!);
+      });
 
   @override
   Future<void> toggleReadyStatus({required String roomCode}) async {
@@ -270,21 +229,13 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
           isHost: p.isHost,
           isReady: !p.isReady,
           score: p.score,
+          lastSeen: p.lastSeen,
         );
       }
-      return RoomPlayerModel(
-        id: p.id,
-        name: p.name,
-        photoUrl: p.photoUrl,
-        isHost: p.isHost,
-        isReady: p.isReady,
-        score: p.score,
-      );
+      return RoomPlayerModel.fromEntity(p);
     }).toList();
 
-    await docRef.update({
-      'players': updatedPlayers.map((p) => p.toJson()).toList(),
-    });
+    await docRef.update({'players': updatedPlayers.map((p) => p.toJson()).toList()});
   }
 
   @override
@@ -294,20 +245,42 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     required List<RoomCategoryEntity> categories,
   }) async {
     final docRef = firestore.collection('rooms').doc(roomCode);
-    final categoryModels =
-        categories.map(RoomCategoryModel.fromEntity).toList();
+    final categoryModels = categories.map(RoomCategoryModel.fromEntity).toList();
 
-    await docRef.update({
-      'rounds': rounds,
-      'categories': categoryModels.map((c) => c.toJson()).toList(),
-    });
+    await docRef.update({'rounds': rounds, 'categories': categoryModels.map((c) => c.toJson()).toList()});
   }
 
   @override
   Future<void> startGame({required String roomCode}) async {
     final arabicLetters = [
-      'أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش',
-      'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'
+      'أ',
+      'ب',
+      'ت',
+      'ث',
+      'ج',
+      'ح',
+      'خ',
+      'د',
+      'ذ',
+      'ر',
+      'ز',
+      'س',
+      'ش',
+      'ص',
+      'ض',
+      'ط',
+      'ظ',
+      'ع',
+      'غ',
+      'ف',
+      'ق',
+      'ك',
+      'ل',
+      'م',
+      'ن',
+      'هـ',
+      'و',
+      'ي',
     ];
     final randomLetter = (List<String>.from(arabicLetters)..shuffle()).first;
 
@@ -327,14 +300,10 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
 
     final data = snapshot.data() ?? {};
     final currentRound = (data['currentRound'] as int? ?? 1) + 1;
-    final used = (data['usedLetters'] as List<dynamic>?)
-            ?.map((e) => e.toString())
-            .toList() ??
-        [];
+    final used = (data['usedLetters'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [];
 
-    final rawPlayers = (data['players'] as List<dynamic>?)
-            ?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>))
-            .toList() ??
+    final rawPlayers =
+        (data['players'] as List<dynamic>?)?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>)).toList() ??
         [];
 
     final rawAnswers = data['roundAnswers'] as Map<String, dynamic>? ?? {};
@@ -372,6 +341,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
         isHost: player.isHost,
         isReady: player.isReady,
         score: player.score + roundEarned,
+        lastSeen: player.lastSeen,
       );
     }).toList();
 
@@ -394,18 +364,12 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
   }
 
   @override
-  Future<void> submitRoundAnswers({
-    required String roomCode,
-    required Map<String, String> answers,
-  }) async {
+  Future<void> submitRoundAnswers({required String roomCode, required Map<String, String> answers}) async {
     final user = firebaseAuth.currentUser;
     if (user == null) return;
 
     final docRef = firestore.collection('rooms').doc(roomCode);
-    await docRef.update({
-      'roundAnswers.${user.uid}': answers,
-      'status': 'scoring',
-    });
+    await docRef.update({'roundAnswers.${user.uid}': answers, 'status': 'scoring'});
   }
 
   @override
@@ -416,9 +380,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     required int score,
   }) async {
     final docRef = firestore.collection('rooms').doc(roomCode);
-    await docRef.update({
-      'roundScores.$playerId.$categoryId': score,
-    });
+    await docRef.update({'roundScores.$playerId.$categoryId': score});
   }
 
   @override
@@ -428,9 +390,8 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     if (!snapshot.exists) return;
 
     final data = snapshot.data() ?? {};
-    final rawPlayers = (data['players'] as List<dynamic>?)
-            ?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>))
-            .toList() ??
+    final rawPlayers =
+        (data['players'] as List<dynamic>?)?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>)).toList() ??
         [];
 
     final rawAnswers = data['roundAnswers'] as Map<String, dynamic>? ?? {};
@@ -468,6 +429,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
         isHost: player.isHost,
         isReady: player.isReady,
         score: player.score + roundEarned,
+        lastSeen: player.lastSeen,
       );
     }).toList();
 
@@ -486,18 +448,22 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     if (!snapshot.exists) return;
 
     final data = snapshot.data() ?? {};
-    final rawPlayers = (data['players'] as List<dynamic>?)
-            ?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>))
-            .toList() ??
+    final rawPlayers =
+        (data['players'] as List<dynamic>?)?.map((p) => RoomPlayerModel.fromJson(p as Map<String, dynamic>)).toList() ??
         [];
 
-    final resetPlayers = rawPlayers.map((player) => RoomPlayerModel(
-        id: player.id,
-        name: player.name,
-        photoUrl: player.photoUrl,
-        isHost: player.isHost,
-        isReady: player.isHost,
-      )).toList();
+    final resetPlayers = rawPlayers
+        .map(
+          (player) => RoomPlayerModel(
+            id: player.id,
+            name: player.name,
+            photoUrl: player.photoUrl,
+            isHost: player.isHost,
+            isReady: player.isHost,
+            lastSeen: player.lastSeen,
+          ),
+        )
+        .toList();
 
     await docRef.update({
       'status': 'waiting',
@@ -520,8 +486,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     if (!snapshot.exists || snapshot.data() == null) return;
 
     final room = RoomModel.fromJson(snapshot.data()!);
-    final remainingPlayers =
-        room.players.where((p) => p.id != user.uid).toList();
+    final remainingPlayers = room.players.where((p) => p.id != user.uid).toList();
 
     if (remainingPlayers.isEmpty) {
       await docRef.delete();
@@ -542,6 +507,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
         isHost: isNewHost,
         isReady: isNewHost || p.isReady,
         score: p.score,
+        lastSeen: p.lastSeen,
       );
     }).toList();
 
@@ -550,8 +516,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       'players': updatedPlayers.map((p) => p.toJson()).toList(),
     };
 
-    if (remainingPlayers.length == 1 &&
-        (room.status == 'playing' || room.status == 'scoring')) {
+    if (remainingPlayers.length == 1 && (room.status == 'playing' || room.status == 'scoring')) {
       updateData['status'] = 'finished';
     }
 
@@ -559,10 +524,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
   }
 
   @override
-  Future<void> makeHost({
-    required String roomCode,
-    required String newHostId,
-  }) async {
+  Future<void> makeHost({required String roomCode, required String newHostId}) async {
     final docRef = firestore.collection('rooms').doc(roomCode);
     final snapshot = await docRef.get();
     if (!snapshot.exists || snapshot.data() == null) return;
@@ -577,33 +539,23 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
         isHost: isNewHost,
         isReady: isNewHost || p.isReady,
         score: p.score,
+        lastSeen: p.lastSeen,
       );
     }).toList();
 
-    await docRef.update({
-      'hostId': newHostId,
-      'players': updatedPlayers.map((p) => p.toJson()).toList(),
-    });
+    await docRef.update({'hostId': newHostId, 'players': updatedPlayers.map((p) => p.toJson()).toList()});
   }
 
   @override
-  Future<void> kickPlayer({
-    required String roomCode,
-    required String playerId,
-  }) async {
+  Future<void> kickPlayer({required String roomCode, required String playerId}) async {
     final docRef = firestore.collection('rooms').doc(roomCode);
     final snapshot = await docRef.get();
     if (!snapshot.exists || snapshot.data() == null) return;
 
     final room = RoomModel.fromJson(snapshot.data()!);
-    final remainingPlayers =
-        room.players.where((p) => p.id != playerId).toList();
+    final remainingPlayers = room.players.where((p) => p.id != playerId).toList();
 
-    await docRef.update({
-      'players': remainingPlayers
-          .map((p) => RoomPlayerModel.fromEntity(p).toJson())
-          .toList(),
-    });
+    await docRef.update({'players': remainingPlayers.map((p) => RoomPlayerModel.fromEntity(p).toJson()).toList()});
   }
 
   @override
@@ -633,16 +585,11 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       return RoomPlayerModel.fromEntity(p);
     }).toList();
 
-    await docRef.update({
-      'players': updatedPlayers.map((p) => p.toJson()).toList(),
-    });
+    await docRef.update({'players': updatedPlayers.map((p) => p.toJson()).toList()});
   }
 
   @override
-  Future<void> cleanStalePlayers({
-    required String roomCode,
-    required int timeoutSeconds,
-  }) async {
+  Future<void> cleanStalePlayers({required String roomCode, required int timeoutSeconds}) async {
     final docRef = firestore.collection('rooms').doc(roomCode);
     final snapshot = await docRef.get();
     if (!snapshot.exists || snapshot.data() == null) return;
@@ -660,8 +607,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
 
     if (stalePlayerIds.isEmpty) return;
 
-    final remainingPlayers =
-        room.players.where((p) => !stalePlayerIds.contains(p.id)).toList();
+    final remainingPlayers = room.players.where((p) => !stalePlayerIds.contains(p.id)).toList();
 
     if (remainingPlayers.isEmpty) {
       await docRef.delete();
@@ -689,8 +635,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       'players': updatedPlayers.map((p) => p.toJson()).toList(),
     };
 
-    if (remainingPlayers.length == 1 &&
-        (room.status == 'playing' || room.status == 'scoring')) {
+    if (remainingPlayers.length == 1 && (room.status == 'playing' || room.status == 'scoring')) {
       updateData['status'] = 'finished';
     }
 

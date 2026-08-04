@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:autobus_complete/src/core/error/failure.dart';
 import 'package:autobus_complete/src/core/usecases/usecase.dart';
-
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/clean_stale_players_usecase.dart';
 import 'package:autobus_complete/src/features/room/domain/usecases/create_room_usecase.dart';
@@ -119,7 +118,7 @@ class RoomCubit extends Cubit<RoomState> {
   void _startHeartbeat(String roomCode) {
     _heartbeatTimer?.cancel();
     unawaited(updatePlayerHeartbeatUseCase(roomCode));
-    _heartbeatTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+    _heartbeatTimer = Timer.periodic(const Duration(seconds: 3), (_) {
       if (currentRoom != null) {
         unawaited(updatePlayerHeartbeatUseCase(roomCode));
       }
@@ -135,24 +134,18 @@ class RoomCubit extends Cubit<RoomState> {
 
   void _checkAndCleanStalePlayers(RoomEntity room) {
     final now = DateTime.now().millisecondsSinceEpoch;
-    const timeoutMs = 15000;
+    const timeoutMs = 10000;
 
-    final hasStalePlayer = room.players.any(
-      (p) => p.lastSeen != null && (now - p.lastSeen!) > timeoutMs,
-    );
+    final hasStalePlayer = room.players.any((p) => p.lastSeen != null && (now - p.lastSeen!) > timeoutMs);
 
     if (!hasStalePlayer) return;
 
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-    final activePlayers = room.players.where(
-      (p) => p.lastSeen == null || (now - p.lastSeen!) <= timeoutMs,
-    ).toList();
+    final activePlayers = room.players.where((p) => p.lastSeen != null && (now - p.lastSeen!) <= timeoutMs).toList();
 
     final isCleaner = activePlayers.isNotEmpty && activePlayers.first.id == currentUserId;
     if (isCleaner) {
-      unawaited(cleanStalePlayersUseCase(
-        CleanStalePlayersParams(roomCode: room.roomCode),
-      ));
+      unawaited(cleanStalePlayersUseCase(CleanStalePlayersParams(roomCode: room.roomCode)));
     }
   }
 
