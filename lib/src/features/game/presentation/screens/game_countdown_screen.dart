@@ -5,7 +5,9 @@ import 'package:autobus_complete/src/core/extensions/context_extension.dart';
 import 'package:autobus_complete/src/core/extensions/sized_box_helper.dart';
 import 'package:autobus_complete/src/core/navigation/named_routes.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
+import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
 import 'package:autobus_complete/src/core/widgets/app_scaffold.dart';
+import 'package:autobus_complete/src/features/room/presentation/cubit/room_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -35,12 +37,33 @@ class _GameCountdownScreenState extends State<GameCountdownScreen> with SingleTi
   }
 
   void _startCountdown() {
+    final room = sl<RoomCubit>().currentRoom;
+    final targetStartTime = room?.targetStartTime;
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    const defaultCountdownDurationMs = 3000;
+
+    var remainingMs = defaultCountdownDurationMs;
+    if (targetStartTime != null) {
+      remainingMs = targetStartTime - now;
+    }
+
+    if (remainingMs <= 0) {
+      unawaited(Go.offNamed(NamedRoutes.gameBoard));
+      return;
+    }
+
+    _secondsLeft = (remainingMs / 1000).ceil();
+    if (_secondsLeft < 1) _secondsLeft = 1;
+
     unawaited(_animationController.forward(from: 0.0));
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsLeft > 1) {
-        setState(() {
-          _secondsLeft--;
-        });
+        if (mounted) {
+          setState(() {
+            _secondsLeft--;
+          });
+        }
         unawaited(_animationController.forward(from: 0.0));
       } else {
         _timer?.cancel();

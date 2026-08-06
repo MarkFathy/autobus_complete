@@ -32,6 +32,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "adminReply": MessageLookupByLibrary.simpleMessage("رد الإدارة"),
     "animalCategory": MessageLookupByLibrary.simpleMessage("حيوان"),
+    "appLockedMessage": MessageLookupByLibrary.simpleMessage(
+      "التطبيق متوقف حالياً للصيانة والتحديث. يرجى المحاولة في وقت لاحق!",
+    ),
+    "appLockedTitle": MessageLookupByLibrary.simpleMessage(
+      "التطبيق قيد الصيانة",
+    ),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("أتوبيس كومبليت!"),
     "boyCategory": MessageLookupByLibrary.simpleMessage("ولد"),
@@ -246,6 +252,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "registerTitle": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
     "replied": MessageLookupByLibrary.simpleMessage("تم الرد"),
+    "retry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
     "roomCode": MessageLookupByLibrary.simpleMessage("رمز الغرفة"),
     "roomCodeCopied": MessageLookupByLibrary.simpleMessage(
       "تم نسخ رمز الغرفة بنجاح!",

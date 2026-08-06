@@ -8,6 +8,7 @@ import 'package:autobus_complete/src/core/navigation/transition/implementation/f
 import 'package:autobus_complete/src/core/navigation/transition/implementation/fade/Option/fade_animation_option.dart';
 import 'package:autobus_complete/src/core/navigation/transition/implementation/scale/Animator/scale_animator.dart';
 import 'package:autobus_complete/src/core/navigation/transition/implementation/scale/Options/scale_animation_option.dart';
+import 'package:autobus_complete/src/core/services/app_lock_service.dart';
 import 'package:autobus_complete/src/core/services/notification_service.dart';
 import 'package:autobus_complete/src/core/services/service_locater/service_locator.dart';
 import 'package:autobus_complete/src/core/services/session_manager.dart';
@@ -44,11 +45,16 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     unawaited(_controller.forward());
 
     _timer = Timer(const Duration(seconds: 3), () async {
+      sl<NotificationService>().isSplashActive = false;
+
+      if (sl<AppLockService>().isLocked) {
+        await Go.offNamed(NamedRoutes.appLock);
+        return;
+      }
+
       final authLocalDataSource = sl<AuthLocalDataSource>();
       final isLoggedIn = await authLocalDataSource.isUserLoggedIn();
       final token = await authLocalDataSource.getToken();
-
-      sl<NotificationService>().isSplashActive = false;
 
       if (isLoggedIn && token != null && token.trim().isNotEmpty) {
         final user = FirebaseAuth.instance.currentUser;

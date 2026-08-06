@@ -160,6 +160,8 @@ class RoomCubit extends Cubit<RoomState> {
     if (oldRoom.currentLetter != newRoom.currentLetter) return true;
     if (oldRoom.categories.length != newRoom.categories.length) return true;
     if (oldRoom.players.length != newRoom.players.length) return true;
+    if (oldRoom.roundScores != newRoom.roundScores) return true;
+    if (oldRoom.roundAnswers != newRoom.roundAnswers) return true;
 
     for (var i = 0; i < oldRoom.players.length; i++) {
       final p1 = oldRoom.players[i];

@@ -3,6 +3,7 @@ import 'package:autobus_complete/src/core/navigation/helper/Interfaces/helper_im
 import 'package:autobus_complete/src/core/navigation/named_routes.dart';
 import 'package:autobus_complete/src/core/navigation/navigator.dart';
 import 'package:autobus_complete/src/core/navigation/page_router/imports_page_router_builder.dart';
+import 'package:autobus_complete/src/features/app_lock/presentation/screens/app_lock_screen.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:autobus_complete/src/features/auth/presentation/screens/register_screen.dart';
 import 'package:autobus_complete/src/features/complaints/presentation/screens/complaints_screen.dart';
@@ -153,6 +154,14 @@ class RouterGenerator {
       //Complaints Screen
       NamedRoutes.complaints => _pageRouter.build(
         const ComplaintsScreen(),
+        settings: actualSettings,
+        transition: transition,
+        options: options,
+      ),
+
+      //App Lock Screen
+      NamedRoutes.appLock => _pageRouter.build(
+        const AppLockScreen(),
         settings: actualSettings,
         transition: transition,
         options: options,

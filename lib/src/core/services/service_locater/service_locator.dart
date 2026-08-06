@@ -1,4 +1,5 @@
 import 'package:autobus_complete/src/core/app_cubit/app_cubit.dart';
+import 'package:autobus_complete/src/core/services/app_lock_service.dart';
 import 'package:autobus_complete/src/core/services/notification_service.dart';
 import 'package:autobus_complete/src/core/services/user_status_service.dart';
 import 'package:autobus_complete/src/features/auth/data/datasources/auth_local_data_source.dart';
@@ -55,6 +56,7 @@ import 'package:autobus_complete/src/features/settings/domain/usecases/get_priva
 import 'package:autobus_complete/src/features/settings/presentation/cubit/app_info_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -192,9 +194,15 @@ Future<void> setupServiceLocator() async {
         authLocalDataSource: sl(),
       ),
     )
+    ..registerLazySingleton(
+      () => AppLockService(
+        remoteConfig: sl(),
+      ),
+    )
     // External
     ..registerLazySingleton(() => FirebaseAuth.instance)
     ..registerLazySingleton(() => FirebaseFirestore.instance)
+    ..registerLazySingleton(() => FirebaseRemoteConfig.instance)
     ..registerLazySingleton(() => GoogleSignIn.instance)
     ..registerLazySingleton(() => const FlutterSecureStorage());
 }

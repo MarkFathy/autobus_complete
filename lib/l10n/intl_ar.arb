@@ -161,5 +161,8 @@
     "totalScore": "المجموع الكلي",
     "roomIsFull": "الغرفة ممتلئة بالكامل",
     "playAgain": "إعادة اللعب",
-    "accountDeletedMessage": "تم حذف هذا الحساب"
+    "accountDeletedMessage": "تم حذف هذا الحساب",
+    "appLockedTitle": "التطبيق قيد الصيانة",
+    "appLockedMessage": "التطبيق متوقف حالياً للصيانة والتحديث. يرجى المحاولة في وقت لاحق!",
+    "retry": "إعادة المحاولة"
 }

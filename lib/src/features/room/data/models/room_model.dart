@@ -80,13 +80,39 @@ class RoomModel extends RoomEntity {
     required super.status,
     required super.rounds,
     required super.currentRound,
-    required super.categories, required super.players, super.currentLetter,
+    required super.categories,
+    required super.players,
+    super.currentLetter,
     super.usedLetters = const [],
     super.roundAnswers = const {},
     super.roundScores = const {},
+    super.updatedAt,
+    super.startTime,
+    super.targetStartTime,
   });
 
   factory RoomModel.fromJson(Map<String, dynamic> json) {
+    int? updatedAt;
+    if (json['updatedAt'] is Timestamp) {
+      updatedAt = (json['updatedAt'] as Timestamp).millisecondsSinceEpoch;
+    } else if (json['updatedAt'] is num) {
+      updatedAt = (json['updatedAt'] as num).toInt();
+    }
+
+    int? startTime;
+    if (json['startTime'] is Timestamp) {
+      startTime = (json['startTime'] as Timestamp).millisecondsSinceEpoch;
+    } else if (json['startTime'] is num) {
+      startTime = (json['startTime'] as num).toInt();
+    }
+
+    int? targetStartTime;
+    if (json['targetStartTime'] is Timestamp) {
+      targetStartTime = (json['targetStartTime'] as Timestamp).millisecondsSinceEpoch;
+    } else if (json['targetStartTime'] is num) {
+      targetStartTime = (json['targetStartTime'] as num).toInt();
+    }
+
     final parsedAnswers = <String, Map<String, String>>{};
     if (json['roundAnswers'] != null && json['roundAnswers'] is Map) {
       (json['roundAnswers'] as Map<String, dynamic>).forEach((playerKey, val) {
@@ -116,6 +142,8 @@ class RoomModel extends RoomEntity {
       (json['lastSeenMap'] as Map<String, dynamic>).forEach((key, val) {
         if (val is num) {
           lastSeenMap[key] = val.toInt();
+        } else if (val is Timestamp) {
+          lastSeenMap[key] = val.millisecondsSinceEpoch;
         }
       });
     }
@@ -148,6 +176,9 @@ class RoomModel extends RoomEntity {
               .toList() ??
           [],
       players: parsedPlayers,
+      updatedAt: updatedAt,
+      startTime: startTime,
+      targetStartTime: targetStartTime,
     );
   }
 
@@ -167,6 +198,9 @@ class RoomModel extends RoomEntity {
         'players': players
             .map((p) => RoomPlayerModel.fromEntity(p).toJson())
             .toList(),
+        if (updatedAt != null) 'updatedAt': updatedAt,
+        if (startTime != null) 'startTime': startTime,
+        if (targetStartTime != null) 'targetStartTime': targetStartTime,
       };
 
   factory RoomModel.fromFirestore(

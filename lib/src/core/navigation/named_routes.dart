@@ -12,7 +12,8 @@ enum NamedRoutes {
   profile('/profile'),
   privacyPolicy('/privacyPolicy'),
   aboutGame('/aboutGame'),
-  complaints('/complaints');
+  complaints('/complaints'),
+  appLock('/appLock');
   
   final String routeName;
 

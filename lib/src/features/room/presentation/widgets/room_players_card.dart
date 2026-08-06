@@ -88,6 +88,7 @@ class RoomPlayersCard extends StatelessWidget {
           itemBuilder: (context, index) {
             final player = players[index];
             return PlayerTileItem(
+              key: ValueKey(player.id),
               player: player,
               onLongPress: onPlayerLongPress != null ? () => onPlayerLongPress!(player) : null,
             );

@@ -161,5 +161,8 @@
     "totalScore": "Total Score",
     "roomIsFull": "The room is full",
     "playAgain": "Play Again",
-    "accountDeletedMessage": "This user account has been deleted"
+    "accountDeletedMessage": "This user account has been deleted",
+    "appLockedTitle": "App Under Maintenance",
+    "appLockedMessage": "The application is currently locked for maintenance. Please check back soon!",
+    "retry": "Try Again"
 }

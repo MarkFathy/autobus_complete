@@ -32,6 +32,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "adminReply": MessageLookupByLibrary.simpleMessage("Admin Response"),
     "animalCategory": MessageLookupByLibrary.simpleMessage("Animal"),
+    "appLockedMessage": MessageLookupByLibrary.simpleMessage(
+      "The application is currently locked for maintenance. Please check back soon!",
+    ),
+    "appLockedTitle": MessageLookupByLibrary.simpleMessage(
+      "App Under Maintenance",
+    ),
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "autobusComplete": MessageLookupByLibrary.simpleMessage("Bus Complete!"),
     "boyCategory": MessageLookupByLibrary.simpleMessage("Boy"),
@@ -246,6 +252,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "registerTitle": MessageLookupByLibrary.simpleMessage("Register"),
     "replied": MessageLookupByLibrary.simpleMessage("Replied"),
+    "retry": MessageLookupByLibrary.simpleMessage("Try Again"),
     "roomCode": MessageLookupByLibrary.simpleMessage("Room Code"),
     "roomCodeCopied": MessageLookupByLibrary.simpleMessage(
       "Room code copied successfully!",

@@ -1218,6 +1218,31 @@ class S {
       args: [],
     );
   }
+
+  /// `App Under Maintenance`
+  String get appLockedTitle {
+    return Intl.message(
+      'App Under Maintenance',
+      name: 'appLockedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The application is currently locked for maintenance. Please check back soon!`
+  String get appLockedMessage {
+    return Intl.message(
+      'The application is currently locked for maintenance. Please check back soon!',
+      name: 'appLockedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try Again`
+  String get retry {
+    return Intl.message('Try Again', name: 'retry', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

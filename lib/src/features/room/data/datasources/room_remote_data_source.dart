@@ -6,6 +6,7 @@ import 'package:autobus_complete/src/features/room/data/models/room_model.dart';
 import 'package:autobus_complete/src/features/room/domain/entities/room_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 abstract class RoomRemoteDataSource {
   Future<List<RoomCategoryModel>> getCategories();
@@ -42,40 +43,15 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
 
   RoomRemoteDataSourceImpl({required this.firestore, required this.firebaseAuth});
 
-  String _generateRandom6DigitCode() {
-    final random = Random();
-    final code = random.nextInt(900000) + 100000;
-    return code.toString();
-  }
-
   @override
   Future<List<RoomCategoryModel>> getCategories() async {
-    try {
-      final snapshot = await firestore.collection('categories').get();
-      if (snapshot.docs.isNotEmpty) {
-        final list = snapshot.docs.map((doc) => RoomCategoryModel.fromJson({'id': doc.id, ...doc.data()})).toList();
-        final ordered = RoomCategoryEntity.getOrderedCategories(list);
-        return ordered
-            .map((e) => RoomCategoryModel(id: e.id, nameAr: e.nameAr, nameEn: e.nameEn, icon: e.icon))
-            .toList();
-      }
-    } on Object catch (_) {}
-
-    final defaultCategories = RoomCategoryEntity.defaultCategories
-        .map((e) => RoomCategoryModel(id: e.id, nameAr: e.nameAr, nameEn: e.nameEn, icon: e.icon))
-        .toList();
-
-    try {
-      for (final c in defaultCategories) {
-        await firestore.collection('categories').doc(c.id).set({
-          'nameAr': c.nameAr,
-          'nameEn': c.nameEn,
-          'icon': c.icon,
-        });
-      }
-    } on Object catch (_) {}
-
-    return defaultCategories;
+    final snapshot = await firestore.collection('categories').get();
+    final list = snapshot.docs.map((doc) {
+      final data = Map<String, dynamic>.from(doc.data());
+      data['id'] = doc.id;
+      return RoomCategoryModel.fromJson(data);
+    }).toList();
+    return RoomCategoryEntity.getOrderedCategories(list).cast<RoomCategoryModel>();
   }
 
   @override
@@ -85,17 +61,10 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       throw Exception(S.current.firebaseUserNotFound);
     }
 
-    var roomCode = _generateRandom6DigitCode();
-    var docSnapshot = await firestore.collection('rooms').doc(roomCode).get();
+    final random = Random();
+    final code = random.nextInt(900000) + 100000;
+    final roomCode = code.toString();
 
-    var attempts = 0;
-    while (docSnapshot.exists && attempts < 10) {
-      roomCode = _generateRandom6DigitCode();
-      docSnapshot = await firestore.collection('rooms').doc(roomCode).get();
-      attempts++;
-    }
-
-    // Fetch user profile from Firestore to get full name and photoUrl
     final userDoc = await firestore.collection('users').doc(user.uid).get();
     final userData = userDoc.data();
     final userName = (userData?['name'] as String?)?.isNotEmpty ?? false
@@ -107,14 +76,12 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
 
     final categoryModels = categories.map(RoomCategoryModel.fromEntity).toList();
 
-    final now = DateTime.now().millisecondsSinceEpoch;
     final hostPlayer = RoomPlayerModel(
       id: user.uid,
       name: userName,
       photoUrl: userPhotoUrl,
       isHost: true,
       isReady: true,
-      lastSeen: now,
     );
 
     final roomModel = RoomModel(
@@ -128,7 +95,8 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     );
 
     final roomData = roomModel.toJson();
-    roomData['lastSeenMap'] = {user.uid: now};
+    roomData['lastSeenMap'] = {user.uid: FieldValue.serverTimestamp()};
+    roomData['updatedAt'] = FieldValue.serverTimestamp();
 
     await firestore.collection('rooms').doc(roomCode).set(roomData);
 
@@ -152,104 +120,110 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
         ? userData['photoUrl'] as String?
         : user.photoURL;
 
-    final now = DateTime.now().millisecondsSinceEpoch;
+    try {
+      await firestore.runTransaction((transaction) async {
+        final docSnapshot = await transaction.get(docRef);
 
-    await firestore.runTransaction((transaction) async {
-      final docSnapshot = await transaction.get(docRef);
-
-      if (!docSnapshot.exists || docSnapshot.data() == null) {
-        throw Exception('Room not found');
-      }
-
-      final room = RoomModel.fromJson(docSnapshot.data()!);
-      if (room.status != 'waiting') {
-        throw Exception('Game has already started');
-      }
-
-      final stalePlayerIds = <String>{};
-      for (final p in room.players) {
-        if (p.id != user.uid && p.lastSeen != null && (now - p.lastSeen!) > 10000) {
-          stalePlayerIds.add(p.id);
+        if (!docSnapshot.exists || docSnapshot.data() == null) {
+          throw Exception('Room not found');
         }
-      }
 
-      final activePlayers = room.players.where((p) => !stalePlayerIds.contains(p.id)).toList();
+        final room = RoomModel.fromJson(docSnapshot.data()!);
+        if (room.status != 'waiting') {
+          throw Exception('Game has already started');
+        }
 
-      if (activePlayers.isEmpty) {
-        // All previous players were stale and dead! Reset room with joining user as Host
-        final newHostPlayer = RoomPlayerModel(
+        final refTime = room.updatedAt ?? DateTime.now().millisecondsSinceEpoch;
+
+        final stalePlayerIds = <String>{};
+        for (final p in room.players) {
+          if (p.id != user.uid && p.lastSeen != null && (refTime - p.lastSeen!) > 120000) {
+            stalePlayerIds.add(p.id);
+          }
+        }
+
+        final activePlayers = room.players.where((p) => !stalePlayerIds.contains(p.id)).toList();
+
+        if (activePlayers.isEmpty) {
+          final newHostPlayer = RoomPlayerModel(
+            id: user.uid,
+            name: userName,
+            photoUrl: userPhotoUrl,
+            isHost: true,
+            isReady: true,
+          );
+
+          transaction.update(docRef, {
+            'hostId': user.uid,
+            'status': 'waiting',
+            'players': [newHostPlayer.toJson()],
+            'lastSeenMap': {user.uid: FieldValue.serverTimestamp()},
+            'updatedAt': FieldValue.serverTimestamp(),
+          });
+          return;
+        }
+
+        final existingPlayerIndex = activePlayers.indexWhere((p) => p.id == user.uid);
+        if (existingPlayerIndex != -1) {
+          final updatedPlayersList = activePlayers.map((p) {
+            if (p.id == user.uid) {
+              return RoomPlayerModel(
+                id: p.id,
+                name: userName,
+                photoUrl: userPhotoUrl ?? p.photoUrl,
+                isHost: p.isHost,
+                isReady: p.isReady,
+                score: p.score,
+                lastSeen: p.lastSeen,
+              );
+            }
+            return RoomPlayerModel.fromEntity(p);
+          }).toList();
+
+          final updateData = <String, dynamic>{
+            'players': updatedPlayersList.map((p) => RoomPlayerModel.fromEntity(p).toJson()).toList(),
+            'lastSeenMap.${user.uid}': FieldValue.serverTimestamp(),
+            'updatedAt': FieldValue.serverTimestamp(),
+          };
+          for (final staleId in stalePlayerIds) {
+            updateData['lastSeenMap.$staleId'] = FieldValue.delete();
+          }
+
+          transaction.update(docRef, updateData);
+          return;
+        }
+
+        if (activePlayers.length >= 12) {
+          throw Exception(S.current.roomIsFull);
+        }
+
+        final newPlayer = RoomPlayerModel(
           id: user.uid,
           name: userName,
           photoUrl: userPhotoUrl,
-          isHost: true,
-          isReady: true,
-          lastSeen: now,
         );
 
-        transaction.update(docRef, {
-          'hostId': user.uid,
-          'status': 'waiting',
-          'players': [newHostPlayer.toJson()],
-          'lastSeenMap': {user.uid: now},
-        });
-        return;
-      }
-
-      final existingPlayerIndex = activePlayers.indexWhere((p) => p.id == user.uid);
-      if (existingPlayerIndex != -1) {
-        final updatedPlayersList = activePlayers.map((p) {
-          if (p.id == user.uid) {
-            return RoomPlayerModel(
-              id: p.id,
-              name: userName,
-              photoUrl: userPhotoUrl ?? p.photoUrl,
-              isHost: p.isHost,
-              isReady: p.isReady,
-              score: p.score,
-              lastSeen: p.lastSeen ?? now,
-            );
-          }
-          return RoomPlayerModel.fromEntity(p);
-        }).toList();
+        final updatedPlayers = activePlayers
+            .map(RoomPlayerModel.fromEntity)
+            .toList()
+          ..add(newPlayer);
 
         final updateData = <String, dynamic>{
-          'players': updatedPlayersList.map((p) => RoomPlayerModel.fromEntity(p).toJson()).toList(),
-          'lastSeenMap.${user.uid}': now,
+          'players': updatedPlayers.map((p) => p.toJson()).toList(),
+          'lastSeenMap.${user.uid}': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
         };
         for (final staleId in stalePlayerIds) {
           updateData['lastSeenMap.$staleId'] = FieldValue.delete();
         }
 
         transaction.update(docRef, updateData);
-        return;
+      });
+    } on MissingPluginException catch (e) {
+      if (!e.toString().contains('firebase_firestore/transaction')) {
+        rethrow;
       }
-
-      if (activePlayers.length >= 12) {
-        throw Exception(S.current.roomIsFull);
-      }
-
-      final newPlayer = RoomPlayerModel(
-        id: user.uid,
-        name: userName,
-        photoUrl: userPhotoUrl,
-        lastSeen: now,
-      );
-
-      final updatedPlayers = activePlayers
-          .map(RoomPlayerModel.fromEntity)
-          .toList()
-        ..add(newPlayer);
-
-      final updateData = <String, dynamic>{
-        'players': updatedPlayers.map((p) => p.toJson()).toList(),
-        'lastSeenMap.${user.uid}': now,
-      };
-      for (final staleId in stalePlayerIds) {
-        updateData['lastSeenMap.$staleId'] = FieldValue.delete();
-      }
-
-      transaction.update(docRef, updateData);
-    });
+    }
   }
 
   @override
@@ -267,30 +241,28 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     if (user == null) return;
 
     final docRef = firestore.collection('rooms').doc(roomCode);
+    final snapshot = await docRef.get();
+    if (!snapshot.exists || snapshot.data() == null) return;
 
-    await firestore.runTransaction((transaction) async {
-      final snapshot = await transaction.get(docRef);
-      if (!snapshot.exists || snapshot.data() == null) return;
+    final room = RoomModel.fromJson(snapshot.data()!);
+    final updatedPlayers = room.players.map((p) {
+      if (p.id == user.uid && !p.isHost) {
+        return RoomPlayerModel(
+          id: p.id,
+          name: p.name,
+          photoUrl: p.photoUrl,
+          isHost: p.isHost,
+          isReady: !p.isReady,
+          score: p.score,
+          lastSeen: p.lastSeen,
+        );
+      }
+      return RoomPlayerModel.fromEntity(p);
+    }).toList();
 
-      final room = RoomModel.fromJson(snapshot.data()!);
-      final updatedPlayers = room.players.map((p) {
-        if (p.id == user.uid && !p.isHost) {
-          return RoomPlayerModel(
-            id: p.id,
-            name: p.name,
-            photoUrl: p.photoUrl,
-            isHost: p.isHost,
-            isReady: !p.isReady,
-            score: p.score,
-            lastSeen: p.lastSeen,
-          );
-        }
-        return RoomPlayerModel.fromEntity(p);
-      }).toList();
-
-      transaction.update(docRef, {
-        'players': updatedPlayers.map((p) => p.toJson()).toList(),
-      });
+    await docRef.update({
+      'players': updatedPlayers.map((p) => p.toJson()).toList(),
+      'updatedAt': FieldValue.serverTimestamp(),
     });
   }
 
@@ -340,11 +312,15 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     ];
     final randomLetter = (List<String>.from(arabicLetters)..shuffle()).first;
 
+    final targetStartTime = DateTime.now().millisecondsSinceEpoch + 3500;
     await firestore.collection('rooms').doc(roomCode).update({
       'status': 'playing',
       'currentRound': 1,
       'currentLetter': randomLetter,
       'usedLetters': [randomLetter],
+      'startTime': FieldValue.serverTimestamp(),
+      'targetStartTime': targetStartTime,
+      'updatedAt': FieldValue.serverTimestamp(),
     });
   }
 
@@ -408,6 +384,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
 
     final updatedUsed = List<String>.from(used)..add(nextLetter);
 
+    final targetStartTime = DateTime.now().millisecondsSinceEpoch + 3500;
     await docRef.update({
       'status': 'playing',
       'currentRound': currentRound,
@@ -416,6 +393,9 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       'players': updatedPlayers.map((p) => p.toJson()).toList(),
       'roundAnswers': {},
       'roundScores': {},
+      'startTime': FieldValue.serverTimestamp(),
+      'targetStartTime': targetStartTime,
+      'updatedAt': FieldValue.serverTimestamp(),
     });
   }
 
@@ -633,71 +613,77 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
     if (user == null) return;
 
     final docRef = firestore.collection('rooms').doc(roomCode);
-    final now = DateTime.now().millisecondsSinceEpoch;
 
     await docRef.update({
-      'lastSeenMap.${user.uid}': now,
+      'lastSeenMap.${user.uid}': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
     });
   }
 
   @override
   Future<void> cleanStalePlayers({required String roomCode, required int timeoutSeconds}) async {
+    final user = firebaseAuth.currentUser;
     final docRef = firestore.collection('rooms').doc(roomCode);
 
-    await firestore.runTransaction((transaction) async {
-      final snapshot = await transaction.get(docRef);
-      if (!snapshot.exists || snapshot.data() == null) return;
+    try {
+      await firestore.runTransaction((transaction) async {
+        final snapshot = await transaction.get(docRef);
+        if (!snapshot.exists || snapshot.data() == null) return;
 
-      final room = RoomModel.fromJson(snapshot.data()!);
-      final now = DateTime.now().millisecondsSinceEpoch;
-      final timeoutMs = timeoutSeconds * 1000;
+        final room = RoomModel.fromJson(snapshot.data()!);
+        final refTime = room.updatedAt ?? DateTime.now().millisecondsSinceEpoch;
+        final timeoutMs = timeoutSeconds * 1000;
 
-      final stalePlayerIds = <String>{};
-      for (final p in room.players) {
-        if (p.lastSeen != null && (now - p.lastSeen!) > timeoutMs) {
-          stalePlayerIds.add(p.id);
+        final stalePlayerIds = <String>{};
+        for (final p in room.players) {
+          if (user != null && p.id == user.uid) continue;
+          if (p.lastSeen != null && (refTime - p.lastSeen!) > timeoutMs) {
+            stalePlayerIds.add(p.id);
+          }
         }
+
+        if (stalePlayerIds.isEmpty) return;
+
+        final remainingPlayers = room.players.where((p) => !stalePlayerIds.contains(p.id)).toList();
+
+        if (remainingPlayers.isEmpty) return;
+
+        final isHostStale = stalePlayerIds.contains(room.hostId);
+        final updatedHostId = isHostStale ? remainingPlayers.first.id : room.hostId;
+
+        final updatedPlayers = remainingPlayers.map((p) {
+          final isNewHost = p.id == updatedHostId;
+          return RoomPlayerModel(
+            id: p.id,
+            name: p.name,
+            photoUrl: p.photoUrl,
+            isHost: isNewHost,
+            isReady: isNewHost || p.isReady,
+            score: p.score,
+            lastSeen: p.lastSeen,
+          );
+        }).toList();
+
+        final updateData = <String, dynamic>{
+          'hostId': updatedHostId,
+          'players': updatedPlayers.map((p) => p.toJson()).toList(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        };
+
+        for (final staleId in stalePlayerIds) {
+          updateData['lastSeenMap.$staleId'] = FieldValue.delete();
+        }
+
+        if (remainingPlayers.length == 1 && (room.status == 'playing' || room.status == 'scoring')) {
+          updateData['status'] = 'finished';
+        }
+
+        transaction.update(docRef, updateData);
+      });
+    } on MissingPluginException catch (e) {
+      if (!e.toString().contains('firebase_firestore/transaction')) {
+        rethrow;
       }
-
-      if (stalePlayerIds.isEmpty) return;
-
-      final remainingPlayers = room.players.where((p) => !stalePlayerIds.contains(p.id)).toList();
-
-      if (remainingPlayers.isEmpty) {
-        transaction.delete(docRef);
-        return;
-      }
-
-      final isHostStale = stalePlayerIds.contains(room.hostId);
-      final updatedHostId = isHostStale ? remainingPlayers.first.id : room.hostId;
-
-      final updatedPlayers = remainingPlayers.map((p) {
-        final isNewHost = p.id == updatedHostId;
-        return RoomPlayerModel(
-          id: p.id,
-          name: p.name,
-          photoUrl: p.photoUrl,
-          isHost: isNewHost,
-          isReady: isNewHost || p.isReady,
-          score: p.score,
-          lastSeen: p.lastSeen,
-        );
-      }).toList();
-
-      final updateData = <String, dynamic>{
-        'hostId': updatedHostId,
-        'players': updatedPlayers.map((p) => p.toJson()).toList(),
-      };
-
-      for (final staleId in stalePlayerIds) {
-        updateData['lastSeenMap.$staleId'] = FieldValue.delete();
-      }
-
-      if (remainingPlayers.length == 1 && (room.status == 'playing' || room.status == 'scoring')) {
-        updateData['status'] = 'finished';
-      }
-
-      transaction.update(docRef, updateData);
-    });
+    }
   }
 }

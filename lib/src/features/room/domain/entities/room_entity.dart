@@ -93,6 +93,9 @@ class RoomEntity extends Equatable {
   final Map<String, Map<String, int>> roundScores;
   final List<RoomCategoryEntity> categories;
   final List<RoomPlayerEntity> players;
+  final int? updatedAt;
+  final int? startTime;
+  final int? targetStartTime;
 
   const RoomEntity({
     required this.roomCode,
@@ -100,10 +103,15 @@ class RoomEntity extends Equatable {
     required this.status,
     required this.rounds,
     required this.currentRound,
-    required this.categories, required this.players, this.currentLetter,
+    required this.categories,
+    required this.players,
+    this.currentLetter,
     this.usedLetters = const [],
     this.roundAnswers = const {},
     this.roundScores = const {},
+    this.updatedAt,
+    this.startTime,
+    this.targetStartTime,
   });
 
   @override
@@ -119,5 +127,8 @@ class RoomEntity extends Equatable {
         roundScores,
         categories,
         players,
+        updatedAt,
+        startTime,
+        targetStartTime,
       ];
 }
